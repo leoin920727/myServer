@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.1.2
 -- https://www.phpmyadmin.net/
 --
--- 主機： 127.0.0.1
--- 產生時間： 2023-08-30 10:29:49
--- 伺服器版本： 10.4.28-MariaDB
--- PHP 版本： 8.2.4
+-- 主機： localhost:3306
+-- 產生時間： 2023-08-30 11:12:26
+-- 伺服器版本： 5.7.24
+-- PHP 版本： 8.0.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,10 +18,40 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 資料庫： `cleaning_services`
+-- 資料庫: `cleaning_services`
 --
 CREATE DATABASE IF NOT EXISTS `cleaning_services` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `cleaning_services`;
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `employeeinfo`
+--
+
+CREATE TABLE `employeeinfo` (
+  `employeeid` varchar(5) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `phone` int(10) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `photo` varchar(300) DEFAULT NULL,
+  `vaccine` int(1) NOT NULL,
+  `goodid` int(1) NOT NULL,
+  `racheck` int(1) NOT NULL,
+  `cases` int(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- 傾印資料表的資料 `employeeinfo`
+--
+
+INSERT INTO `employeeinfo` (`employeeid`, `name`, `phone`, `email`, `photo`, `vaccine`, `goodid`, `racheck`, `cases`) VALUES
+('RA001', '鄒琦筑', 958237879, 'sophia1207@hotmail.com', NULL, 1, 1, 1, 0),
+('RA002', '鍾圖陽', 912175001, 'jeffrey8325@outlook.com', NULL, 1, 1, 1, 0),
+('RA003', '曹克毓', 970724731, 'jane5953@yahoo.com', NULL, 1, 1, 1, 0),
+('RA004', '沈芮莘', 960800071, 'fawcett9476@outlook.com', NULL, 1, 1, 1, 0),
+('RA005', '洪之寶', 920012384, 'samantha1849@gmail.com', NULL, 1, 1, 1, 0),
+('RA006', '楊年瀚', 930036786, 'dupont882@gmail.com', NULL, 1, 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -42,7 +72,7 @@ CREATE TABLE `userinfo` (
   `address` varchar(50) NOT NULL,
   `admin` int(1) NOT NULL,
   `userid` varchar(8) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- 傾印資料表的資料 `userinfo`
@@ -103,6 +133,12 @@ INSERT INTO `userinfo` (`uid`, `name`, `birthday`, `phone`, `email`, `id`, `pass
 --
 -- 已傾印資料表的索引
 --
+
+--
+-- 資料表索引 `employeeinfo`
+--
+ALTER TABLE `employeeinfo`
+  ADD PRIMARY KEY (`employeeid`);
 
 --
 -- 資料表索引 `userinfo`
