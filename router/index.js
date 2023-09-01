@@ -9,7 +9,7 @@ index.get("/orderlist", function (req, res) {
   const data = [
     {
       orderNumber: "C0021",
-      memberId: "M01242351",
+      memberId: "M351",
       orderDate: "13/08/23",
       weekOfTimes: "2",
       weekOfAmount: "62",
@@ -18,7 +18,7 @@ index.get("/orderlist", function (req, res) {
     },
     {
       orderNumber: "C0020",
-      memberId: "M01242351",
+      memberId: "M0121",
       orderDate: "13/08/23",
       weekOfTimes: "2",
       weekOfAmount: "62",
@@ -27,7 +27,7 @@ index.get("/orderlist", function (req, res) {
     },
     {
       orderNumber: "C0020",
-      memberId: "M01242351",
+      memberId: "M0124",
       orderDate: "13/08/23",
       weekOfTimes: "2",
       weekOfAmount: "62",
