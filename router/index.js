@@ -5,6 +5,7 @@ index.get("/", function (req, res) {
   res.send("可以用了");
 });
 
+// 後台訂單資料
 index.get("/orderlist", function (req, res) {
   const data = [
     {
@@ -36,6 +37,41 @@ index.get("/orderlist", function (req, res) {
     },
   ];
   res.send(data);
+});
+// 後台訂單資料(詳細)
+index.get("/AdminOrder/:order", function (req, res) {
+  const orderNumber = req.params.orderNumber;
+  const data = {
+    IDnum: "TXXXXXXXXX",
+    staffName: "王阿花", //指定人員
+    staffId: "M0020", //員工編號
+    time_W: "星期三", //服務星期
+    time_T: "1300", //服務時段
+    memberName: "鍾秋節", //姓名
+    memberId: "M351", //會員編號
+    phone: "0912345667", //手機
+    email: "123@gmail", //電子信箱
+    city: "台中市",
+    adreess: "黎明路二段658號", //清掃地址 區域
+    common: "客廳的花瓶不要移動，那花瓶要十二萬，清理時要小心點。", //訂單備註
+    pay: "VISA", //付款方式
+    weekOfTimes: 2, //選擇服務週數
+    orderDate: "13/08/23", //服務開始日期
+    orderNumber: "C0021", //訂單編號
+    orderStatus: 0, //訂單狀態
+    weekOfAmount: 62, //服務次數
+    finish: 2, //完成次數
+    price: 1200, //訂單金額
+    imgUrl: "/images/vase.png",
+    staffPhone: "0912345678",
+    staffEmail: "123@gmail.com",
+  };
+  res.send(data);
+});
+// 後台訂單更新
+index.put("/AdminOrder/updata", function (req, res) {
+  const requestData = req.body;
+  res.json({ message: "Data received successfully", data: requestData });
 });
 
 module.exports = index;
