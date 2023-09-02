@@ -61,7 +61,7 @@ index.get("/AdminOrder/:order", function (req, res) {
     orderDate: "13/08/23", //服務開始日期
     orderNumber: "C0021", //訂單編號
     orderStatus: 0, //訂單狀態
-    weekOfAmount: 62, //服務次數
+    weekOfAmount: 6, //服務次數
     finish: 2, //完成次數
     price: 1200, //訂單金額
     imgUrl: "/images/vase.png",
@@ -80,12 +80,25 @@ index.put("/member/updata/:orderID", function (req, res) {
   const requestData = req.body;
   res.json({ message: "Data received successfully", data: requestData });
 });
-// 會員/員工表 //日期格式有問題
+// 會員資料表
 index.get("/dashboard/memberInfo", function (req, res) {
-  var sql = `SELECT * FROM userinfo WHERE admin=?`;
-  var data = [0];
+  var sql = `SELECT * FROM userinfo`;
+  var data = [];
   db.exec(sql, data, function (results, fields) {
     res.send(results);
+  });
+});
+// 會員資料內容 //缺黑名單資料欄位
+index.get("/dashboard/PersonalInfo/:uid", function (req, res) {
+  const uid = req.params.uid;
+  var sql1 = `SELECT * FROM userinfo`;
+  var sql2 = `SELECT * FROM userinfo WHERE uid=?`;
+  var data = [uid];
+  db.exec(sql1, [], function (number, fields) {
+    db.exec(sql2, data, function (results, fields) {
+      const len = number.length;
+      res.send({ data: results, length: len });
+    });
   });
 });
 
