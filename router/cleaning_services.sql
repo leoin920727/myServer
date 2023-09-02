@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.1.2
 -- https://www.phpmyadmin.net/
 --
--- 主機： 127.0.0.1
--- 產生時間： 2023-08-31 10:14:27
--- 伺服器版本： 10.4.28-MariaDB
--- PHP 版本： 8.2.4
+-- 主機： localhost:3306
+-- 產生時間： 2023-09-02 10:50:42
+-- 伺服器版本： 5.7.24
+-- PHP 版本： 8.0.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 資料庫： `cleaning_services`
+-- 資料庫: `cleaning_services`
 --
 CREATE DATABASE IF NOT EXISTS `cleaning_services` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `cleaning_services`;
@@ -28,8 +28,6 @@ USE `cleaning_services`;
 --
 -- 資料表結構 `attendance`
 --
--- 建立時間： 2023-08-31 05:52:25
---
 
 CREATE TABLE `attendance` (
   `employeeid` varchar(5) NOT NULL,
@@ -37,38 +35,24 @@ CREATE TABLE `attendance` (
   `time` time DEFAULT NULL,
   `date` date DEFAULT NULL,
   `week` int(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- 資料表新增資料前，先清除舊資料 `attendance`
---
-
-TRUNCATE TABLE `attendance`;
 -- --------------------------------------------------------
 
 --
 -- 資料表結構 `blacklist`
---
--- 建立時間： 2023-08-31 08:09:58
 --
 
 CREATE TABLE `blacklist` (
   `uid` int(10) NOT NULL,
   `blacklist` int(1) NOT NULL,
   `whyblacklist` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- 資料表新增資料前，先清除舊資料 `blacklist`
---
-
-TRUNCATE TABLE `blacklist`;
 -- --------------------------------------------------------
 
 --
 -- 資料表結構 `employeeinfo`
---
--- 建立時間： 2023-08-31 05:46:48
 --
 
 CREATE TABLE `employeeinfo` (
@@ -81,13 +65,8 @@ CREATE TABLE `employeeinfo` (
   `goodid` int(1) NOT NULL,
   `racheck` int(1) NOT NULL,
   `cases` int(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- 資料表新增資料前，先清除舊資料 `employeeinfo`
---
-
-TRUNCATE TABLE `employeeinfo`;
 --
 -- 傾印資料表的資料 `employeeinfo`
 --
@@ -105,9 +84,6 @@ INSERT INTO `employeeinfo` (`employeeid`, `name`, `phone`, `email`, `photo`, `va
 --
 -- 資料表結構 `evaluate`
 --
--- 建立時間： 2023-08-31 06:11:44
--- 最後更新： 2023-08-31 06:11:44
---
 
 CREATE TABLE `evaluate` (
   `ornumber` varchar(10) NOT NULL,
@@ -117,25 +93,30 @@ CREATE TABLE `evaluate` (
   `careful` int(11) DEFAULT NULL,
   `manner` int(11) DEFAULT NULL,
   `reply` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- 資料表新增資料前，先清除舊資料 `evaluate`
+-- 傾印資料表的資料 `evaluate`
 --
 
-TRUNCATE TABLE `evaluate`;
+INSERT INTO `evaluate` (`ornumber`, `employeeid`, `efficiency`, `clean`, `careful`, `manner`, `reply`) VALUES
+('A000000001', 'RA001', 5, 5, 5, 5, '這家清潔公司的服務真的很棒，每次都能讓我的家焕然一新。'),
+('A000000002', 'RA002', 5, 3, 4, 1, '我對他們的工作不太滿意，有一些地方並沒有清潔得很徹底。'),
+('A000000003', 'RA003', 4, 4, 4, 4, '價格合理，服務一般，沒什麼特別的感覺。'),
+('A000000004', 'RA004', 0, 0, 0, 0, '曾經有一次他們損壞了我的家具，雖然後來賠償了，但還是有點不開心。'),
+('A000000005', 'RA005', 5, 5, 5, 5, '清潔人員總是非常準時，而且友好，他們的服務讓我感到很滿意。'),
+('A000000006', 'RA006', 3, 5, 4, 5, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- 資料表結構 `orderlist`
 --
--- 建立時間： 2023-08-31 08:06:35
---
 
 CREATE TABLE `orderlist` (
   `ornumber` varchar(10) NOT NULL,
   `phone` int(10) NOT NULL,
-  `email` varchar(20) NOT NULL,
+  `email` varchar(50) NOT NULL,
   `city` varchar(10) NOT NULL,
   `rural` varchar(10) NOT NULL,
   `address` varchar(50) NOT NULL,
@@ -143,22 +124,33 @@ CREATE TABLE `orderlist` (
   `name` varchar(20) NOT NULL,
   `money` int(7) NOT NULL,
   `pay` varchar(1) NOT NULL,
-  `ordertime` datetime NOT NULL,
-  `orderdone` datetime NOT NULL,
+  `ordertime` date NOT NULL,
+  `orderdone` date NOT NULL,
   `state` int(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- 資料表新增資料前，先清除舊資料 `orderlist`
+-- 傾印資料表的資料 `orderlist`
 --
 
-TRUNCATE TABLE `orderlist`;
+INSERT INTO `orderlist` (`ornumber`, `phone`, `email`, `city`, `rural`, `address`, `uid`, `name`, `money`, `pay`, `ordertime`, `orderdone`, `state`) VALUES
+('A000000001', 920589962, 'gomez8601@outlook.com', '臺中市', '西屯區', '河南東一街17號', 1, '李儀冬', 4000, '1', '2023-01-15', '2023-01-29', 2),
+('A000000002', 923230748, 'swift2607@icloud.com', '臺中市', '梧棲區', '緯五路26號', 3, '沈子成', 8000, '1', '2023-02-02', '2023-02-16', 2),
+('A000000003', 930398746, 'barry3965@hotmail.com', '臺中市', '太平區', '園區五路6號', 6, '李傑寒', 2000, '1', '2023-02-20', '2023-02-27', 2),
+('A000000004', 928958260, 'chantel6709@gmail.com', '臺中市', '大里區', '泉水街11號', 9, '蔣冉瑄', 12000, '1', '2023-03-10', '2023-04-21', 2),
+('A000000005', 955222092, 'campbell8610@gmail.com', '臺中市', '南區', '民興街1號', 16, '李叡業', 2000, '1', '2023-03-25', '2023-01-01', 2),
+('A000000006', 970341719, 'garrix7642@outlook.com', '臺中市', '南屯區', '益昌二街2號', 22, '劉嘉星', 6000, '1', '2023-04-05', '2023-04-26', 2),
+('A000000007', 918540495, 'long2043@gmail.com', '臺中市', '北區', '忠明八街11號', 25, '廖佩影', 8000, '1', '2023-05-12', '2023-06-09', 2),
+('A000000008', 937524906, 'sanders3662@gmail.com', '臺中市', '沙鹿區', '賢正街19號', 28, '劉奕漩', 8000, '1', '2023-05-28', '2023-06-25', 2),
+('A000000009', 921152383, 'kathleen7782@hotmail.com', '臺中市', '沙鹿區', '六路五街12號', 32, '巫安連', 12000, '1', '2023-07-08', '2023-08-19', 2),
+('A000000010', 914361087, 'shields454@gmail.com', '臺中市', '太平區', '振德街19號', 37, '吳佳涵', 8000, '1', '2023-08-15', '2023-09-12', 1),
+('A000000011', 932922539, 'bryce7029@hotmail.com', '臺中市', '大雅區', '中和七路25號', 40, '林思楷', 2000, '1', '2023-09-01', '2023-09-08', 1),
+('A000000012', 972514676, 'lena6305@gmail.com', '臺中市', '神岡區', '福成路7號', 43, '嚴夏洋', 8000, '1', '2023-09-02', '2023-09-30', 0);
+
 -- --------------------------------------------------------
 
 --
 -- 資料表結構 `userinfo`
---
--- 建立時間： 2023-08-31 08:03:02
 --
 
 CREATE TABLE `userinfo` (
@@ -174,13 +166,8 @@ CREATE TABLE `userinfo` (
   `address` varchar(50) NOT NULL,
   `admin` int(1) NOT NULL,
   `userid` varchar(8) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- 資料表新增資料前，先清除舊資料 `userinfo`
---
-
-TRUNCATE TABLE `userinfo`;
 --
 -- 傾印資料表的資料 `userinfo`
 --
@@ -242,8 +229,6 @@ INSERT INTO `userinfo` (`uid`, `name`, `birthday`, `phone`, `email`, `id`, `pass
 --
 -- 資料表結構 `userorder`
 --
--- 建立時間： 2023-08-31 07:57:50
---
 
 CREATE TABLE `userorder` (
   `ornumber` varchar(10) NOT NULL,
@@ -252,13 +237,8 @@ CREATE TABLE `userorder` (
   `date` date NOT NULL,
   `time` time NOT NULL,
   `weeks` int(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- 資料表新增資料前，先清除舊資料 `userorder`
---
-
-TRUNCATE TABLE `userorder`;
 --
 -- 已傾印資料表的索引
 --
