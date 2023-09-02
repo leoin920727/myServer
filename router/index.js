@@ -75,5 +75,18 @@ index.put("/AdminOrder/updata", function (req, res) {
   const requestData = req.body;
   res.json({ message: "Data received successfully", data: requestData });
 });
+// 會員評分更新
+index.put("/member/updata/:orderID", function (req, res) {
+  const requestData = req.body;
+  res.json({ message: "Data received successfully", data: requestData });
+});
+// 會員/員工表 //日期格式有問題
+index.get("/dashboard/memberInfo", function (req, res) {
+  var sql = `SELECT * FROM userinfo WHERE admin=?`;
+  var data = [0];
+  db.exec(sql, data, function (results, fields) {
+    res.send(results);
+  });
+});
 
 module.exports = index;
