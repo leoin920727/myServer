@@ -31,6 +31,7 @@ USE `cleaning_services`;
 -- 建立時間： 2023-08-31 05:52:25
 --
 
+
 CREATE TABLE `attendance` (
   `employeeid` varchar(5) NOT NULL,
   `mode` int(1) NOT NULL,
