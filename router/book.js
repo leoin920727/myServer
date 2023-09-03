@@ -21,7 +21,7 @@ myDBconn.connect(function (err) {
   }
 });
 // DB -----------------------------------
-bookRouter.get("/employee-info", async (req, res) => {
+bookRouter.get("/employee-info", (req, res) => {
   let data1;
   myDBconn.query(
     `
@@ -57,22 +57,20 @@ bookRouter.get("/employee-info", async (req, res) => {
         result.total_efficiency = result.total_efficiency.toFixed(1);
         return result;
       });
-      // console.log(data1);
       return res.json(data1);
     }
   );
 });
 
 bookRouter.get("/free-day", (req, res) => {
-  let data2;
-
+  console.log(req.query);
   myDBconn.query(
     `SET @EmployeeLimit = (SELECT COUNT(*) FROM employeeinfo);
-    SELECT A.week, A.time, A.date FROM
-    (SELECT \`week\`, \`time\`, \`date\`, COUNT(*) AS record_count
+    SELECT A.time, A.date FROM
+    (SELECT \`time\`, \`date\`, COUNT(*) AS record_count
     FROM attendance
     WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
-    GROUP BY \`week\`, \`time\`, \`date\`
+    GROUP BY \`time\`, \`date\`
     ORDER BY \`date\`) AS A
     WHERE A.record_count = @EmployeeLimit;
     `,
@@ -94,6 +92,13 @@ bookRouter.get("/free-day", (req, res) => {
       return res.json(availbaleDay);
     }
   );
+});
+
+bookRouter.get("/free-time", (req, res) => {
+  myDBconn.query(``, (err) => {
+    console.log("sql有錯");
+    console.log(err);
+  });
 });
 
 module.exports = bookRouter;

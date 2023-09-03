@@ -31,13 +31,11 @@ function updateFreeDays(notWorkDays) {
 }
 
 function getFreeDays(freeWeekDays) {
-  console.log(freeWeekDays);
   let d;
   // [7,1,2,3,4,5,6] 0:滿檔 1:有空擋
   const availableDay = [0, 0, 0, 0, 0, 0, 0];
   for (let date in freeWeekDays) {
     d = new Date(date);
-    console.log(d.getDay());
     if (freeWeekDays[date].length) {
       availableDay[d.getDay()] = 1;
     }
