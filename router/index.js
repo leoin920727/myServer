@@ -40,6 +40,7 @@ index.get("/orderlist", function (req, res) {
   ];
   res.send(data);
 });
+
 // 後台訂單資料(詳細)
 index.get("/AdminOrder/:order", function (req, res) {
   const orderNumber = req.params.orderNumber;
@@ -70,16 +71,19 @@ index.get("/AdminOrder/:order", function (req, res) {
   };
   res.send(data);
 });
+
 // 後台訂單更新
 index.put("/AdminOrder/updata", function (req, res) {
   const requestData = req.body;
   res.json({ message: "Data received successfully", data: requestData });
 });
+
 // 會員評分更新
 index.put("/member/updata/:orderID", function (req, res) {
   const requestData = req.body;
   res.json({ message: "Data received successfully", data: requestData });
 });
+
 // 會員資料表
 index.get("/dashboard/memberInfo", function (req, res) {
   var sql = `SELECT * FROM userinfo`;
@@ -88,6 +92,7 @@ index.get("/dashboard/memberInfo", function (req, res) {
     res.send(results);
   });
 });
+
 // 會員資料內容 //缺黑名單資料欄位
 index.get("/dashboard/PersonalInfo/:uid", function (req, res) {
   const uid = req.params.uid;
@@ -98,6 +103,34 @@ index.get("/dashboard/PersonalInfo/:uid", function (req, res) {
     db.exec(sql2, data, function (results, fields) {
       const len = number.length;
       res.send({ data: results, length: len });
+    });
+  });
+});
+
+// 員工資料表
+index.get("/dashboard/StaffList", function (req, res) {
+  var sql = `SELECT * FROM employeeinfo`;
+  var data = [];
+  db.exec(sql, data, function (results, fields) {
+    res.send(results);
+  });
+});
+
+// 員工資料內容 //需要員工的PK數字
+index.get("/dashboard/StaffList/:employeeid", function (req, res) {
+  const employeeid = req.params.employeeid;
+  var sql1 = `SELECT * FROM employeeinfo WHERE employeeid= ?`;
+  var sql2 = `SELECT COUNT(*) AS length FROM employeeinfo`;
+  var sql3 = `SELECT * FROM employeeinfo 
+  INNER JOIN evaluate ON employeeinfo.employeeid = evaluate.employeeid 
+  INNER JOIN orderlist ON evaluate.ornumber = orderlist.ornumber 
+  WHERE employeeinfo.employeeid= ?;`;
+  var data = [employeeid];
+  db.exec(sql1, data, function (results, fields) {
+    db.exec(sql2, data, function (length, fields) {
+      db.exec(sql3, data, function (list, fields) {
+        res.send({ data: results, length: length, list: list });
+      });
     });
   });
 });
