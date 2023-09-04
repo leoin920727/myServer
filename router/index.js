@@ -93,19 +93,61 @@ index.get("/dashboard/memberInfo", function (req, res) {
   });
 });
 
-// 會員資料內容 //缺黑名單資料欄位
+// 會員資料內容
 index.get("/dashboard/PersonalInfo/:uid", function (req, res) {
   const uid = req.params.uid;
   var sql1 = `SELECT * FROM userinfo`;
   var sql2 = `SELECT * FROM userinfo WHERE uid=?`;
+  var sql3 = `SELECT (whyblacklist) AS why FROM userinfo,blacklist WHERE userinfo.uid=blacklist.uid AND userinfo.uid=?`;
   var data = [uid];
   db.exec(sql1, [], function (number, fields) {
     db.exec(sql2, data, function (results, fields) {
-      const len = number.length;
-      res.send({ data: results, length: len });
+      db.exec(sql3, data, function (why, fields) {
+        const ban = why.length === 0 ? " " : why;
+        const len = number.length;
+        res.send({ data: results, length: len, why: ban });
+      });
     });
   });
 });
+
+// 新增黑名單
+index.put("/dashboard/PersonalInfo/blacklist/:uid", function (req, res) {
+  const uid = req.params.uid;
+  const why = req.body.why;
+  var sql1 = `UPDATE userinfo SET blacklist = 1 WHERE userinfo.uid = ?`;
+  var sql2 = `INSERT INTO blacklist (uid, whyblacklist) VALUES (?,?)`;
+  var data1 = [uid];
+  var data2 = [uid, why];
+  db.exec(sql1, data1, function (results2, fields) {
+    db.exec(sql2, data2, function (results, fields) {
+      res.send({ message: "success" });
+    });
+  });
+});
+
+// 更新黑名單
+index.put("/dashboard/PersonalInfo/removeblacklist/:uid", function (req, res) {
+  const uid = req.params.uid;
+  var sql = `UPDATE userinfo SET blacklist = 0 WHERE userinfo.uid =?`;
+  var data = [uid];
+  db.exec(sql, data, function (results, fields) {
+    res.send({ message: "success" });
+  });
+});
+
+// 刪除黑名單
+index.delete(
+  "/dashboard/PersonalInfo/removeblacklist/:uid",
+  function (req, res) {
+    const uid = req.params.uid;
+    var sql = `DELETE FROM blacklist WHERE blacklist.uid=?`;
+    var data = [uid];
+    db.exec(sql, data, function (results, fields) {
+      res.send({ message: "success" });
+    });
+  }
+);
 
 // 員工資料表
 index.get("/dashboard/StaffList", function (req, res) {
@@ -132,6 +174,15 @@ index.get("/dashboard/StaffList/:employeeid", function (req, res) {
         res.send({ data: results, length: length, list: list });
       });
     });
+  });
+});
+
+// 黑名單
+index.get("/dashboard/blacklist", function (req, res) {
+  var sql = `SELECT * FROM userinfo,blacklist WHERE userinfo.uid=blacklist.uid;`;
+  var data = [];
+  db.exec(sql, data, function (results, fields) {
+    res.send(results);
   });
 });
 
