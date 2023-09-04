@@ -2,7 +2,7 @@ let express = require("express");
 const bookRouter = express.Router();
 const utils = require("../utils/book");
 
-// DB -----------------------------------
+// -------- DB --------
 let mysql = require("mysql");
 let myDBconn = mysql.createConnection({
   host: "localhost",
@@ -20,7 +20,23 @@ myDBconn.connect(function (err) {
     console.log("DB OK");
   }
 });
-// DB -----------------------------------
+
+// -------- API --------
+bookRouter.get("/price", (req, res) => {
+  const week = req.query.week;
+  myDBconn.query(
+    `SELECT \`price\` FROM \`priceList\` WHERE weekNumber = ?;`,
+    [week],
+    (err, data) => {
+      if (err) {
+        console.log("sql有錯");
+        console.log(err);
+      }
+      return res.json(data);
+    }
+  );
+});
+// 服務人員
 bookRouter.get("/employee-info", (req, res) => {
   let data1;
   myDBconn.query(
@@ -62,43 +78,125 @@ bookRouter.get("/employee-info", (req, res) => {
   );
 });
 
-bookRouter.get("/free-day", (req, res) => {
-  console.log(req.query);
-  myDBconn.query(
-    `SET @EmployeeLimit = (SELECT COUNT(*) FROM employeeinfo);
-    SELECT A.time, A.date FROM
-    (SELECT \`time\`, \`date\`, COUNT(*) AS record_count
-    FROM attendance
-    WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
-    GROUP BY \`time\`, \`date\`
-    ORDER BY \`date\`) AS A
-    WHERE A.record_count = @EmployeeLimit;
-    `,
-    (err, rows) => {
-      if (err) {
-        console.log("sql有錯");
-        console.log(err);
-      }
+// 預約時間相關
+bookRouter.get("/free-time", (req, res) => {
+  let sqlStr;
+  const { employeeid, weekDay, timespan } = req.query;
 
-      let notWorkDays = rows[1];
-      notWorkDays.forEach((element) => {
-        element.date.setHours(element.date.getHours() + 8);
-      });
+  if (!employeeid || employeeid == "null") {
+    sqlStr = `
+      SELECT A.time, A.date FROM 
+        (SELECT \`time\`, \`date\`, COUNT(*) AS record_count
+        FROM attendance
+        WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
+        GROUP BY \`time\`, \`date\`
+        ORDER BY \`date\`) AS A
+      WHERE A.record_count = (SELECT COUNT(*) FROM employeeinfo);
+    `;
+  } else {
+    sqlStr = `
+      SELECT A.time, A.date FROM 
+      (SELECT \`time\`, \`date\`
+      FROM attendance
+      WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
+      AND employeeid = ?
+      ORDER BY \`date\`) AS A
+    `;
+  }
 
-      notWorkDays[0].date.toISOString().split("T")[0];
-
-      const freeDays = utils.updateFreeDays(notWorkDays);
-      const availbaleDay = utils.getFreeDays(freeDays);
-      return res.json(availbaleDay);
+  myDBconn.query(sqlStr, [employeeid], (err, rows) => {
+    if (err) {
+      console.log("sql有錯");
+      console.log(err);
+      return res.json([]);
     }
-  );
+
+    let notWorkDays = rows;
+    notWorkDays.forEach((element) => {
+      element.date.setHours(element.date.getHours() + 8);
+    });
+
+    const freeDays = utils.updateFreeDays(notWorkDays);
+
+    if (weekDay) {
+      if (timespan) {
+        return res.json(utils.getFreeDate(freeDays, weekDay, timespan));
+      }
+      return res.json(utils.getFreeTime(freeDays, weekDay));
+    }
+    return res.json(utils.getFreeDays(freeDays));
+  });
 });
 
-bookRouter.get("/free-time", (req, res) => {
-  myDBconn.query(``, (err) => {
-    console.log("sql有錯");
-    console.log(err);
+// uid取得會員資料
+bookRouter.get("/member-info/:uid", (req, res) => {
+  const { uid } = req.params;
+  let sqlStr = `
+    SELECT * FROM userinfo WHERE uid = ?;
+  `;
+  myDBconn.query(sqlStr, [uid], (err, rows) => {
+    return res.json(rows);
   });
+});
+
+bookRouter.post("/order", (req, res) => {
+  console.log(req.body);
+  const {
+    uid,
+    employeeid,
+    date,
+    time,
+    weeks,
+    phone,
+    email,
+    city,
+    rural,
+    address,
+    name,
+  } = req.body;
+  const orderId = utils.getRandomOrderId();
+  let price;
+
+  sqlStr = `
+    INSERT INTO userorder (ornumber, employeeid, date, time, weeks)
+    VALUES (?, ?, ?, ?, ?);
+  `;
+  myDBconn.query(
+    sqlStr,
+    [orderId, employeeid, date, time, weeks],
+    (err, rows) => {
+      if (err) {
+        console.log(err);
+        return res.json(err);
+      }
+    }
+  );
+  sqlStr = `
+    SELECT price FROM priceList WHERE weekNumber = ?;
+  `;
+  myDBconn.query(sqlStr, [weeks], (err, rows) => {
+    if (err) {
+      return res.json(err);
+    }
+    console.log(rows);
+    price = rows;
+  });
+
+  sqlStr = `
+    INSERT INTO orderlist (ornumber, phone, email, city, rural, address, uid, name, money, pay, ordertime, state)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'c', NOW(), 1);
+  `;
+  myDBconn.query(
+    sqlStr,
+    [orderId, phone, email, city, rural, address, uid, name, price],
+    (err, rows) => {
+      if (err) {
+        console.log(err);
+        return res.json(err);
+      }
+    }
+  );
+  return res.json(orderId);
 });
 
 module.exports = bookRouter;

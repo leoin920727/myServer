@@ -45,4 +45,58 @@ function getFreeDays(freeWeekDays) {
   return availableDay;
 }
 
-module.exports = { getTwoMonDate, updateFreeDays, getFreeDays };
+function getFreeTime(freeWeekDays, weekDay) {
+  const availableTime = [0, 0, 0];
+  for (let date in freeWeekDays) {
+    d = new Date(date);
+    if (d.getDay() == weekDay) {
+      freeWeekDays[date].forEach((elm) => {
+        availableTime[elm] = 1;
+      });
+    }
+  }
+  return availableTime;
+}
+
+function getFreeDate(freeWeekDays, weekDay, timespan) {
+  const availableDate = [];
+  for (let date in freeWeekDays) {
+    d = new Date(date);
+    if (d.getDay() == weekDay) {
+      freeWeekDays[date].forEach((elm) => {
+        if (elm == timespan) {
+          availableDate.push(date);
+        }
+      });
+    }
+  }
+  return availableDate;
+}
+
+function getRandomOrderId() {
+  // 獲取當前日期和時間
+  const now = new Date();
+
+  // 從當前日期和時間獲取年、月、日、時
+  const year = now.getFullYear().toString().slice(-2); // 只取年份的最後兩位
+  const month = String(now.getMonth() + 1).padStart(2, "0"); // 月份需要補零
+  const day = String(now.getDate()).padStart(2, "0");
+  const hour = String(now.getHours()).padStart(2, "0");
+
+  // 生成兩位隨機碼
+  const randomCode =
+    String.fromCharCode(65 + Math.floor(Math.random() * 26)) +
+    String.fromCharCode(65 + Math.floor(Math.random() * 26));
+
+  // 組合成訂單編號
+  return `${year}${month}${day}${hour}${randomCode}`;
+}
+
+module.exports = {
+  getTwoMonDate,
+  updateFreeDays,
+  getFreeDays,
+  getFreeTime,
+  getFreeDate,
+  getRandomOrderId,
+};
