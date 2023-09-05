@@ -1,23 +1,55 @@
+-- DB修改
+CREATE TABLE `attendance` (
+  `id` int(11) PRIMARY KEY AUTO_INCREMENT,
+  `employeeid` varchar(5) NOT NULL,
+  `mode` int(1) DEFAULT NULL,
+  `time` int(1) NOT NULL,
+  `date` date NOT NULL,
+  `week` int(1) NOT NULL
+)
+
+CREATE TABLE `priceList` (
+  `weekNumber` int(11) NOT NULL PRIMARY KEY,
+  `price` int(11) NOT NULL
+)
+
+CREATE TABLE `orderlist` (
+  `ornumber` varchar(10) NOT NULL PRIMARY KEY,
+  `phone` int(10) NOT NULL,
+  `email` varchar(20) NOT NULL,
+  `city` varchar(10) NOT NULL,
+  `rural` varchar(10) NOT NULL,
+  `address` varchar(50) NOT NULL,
+  `uid` int(10) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `money` int(7) NOT NULL,
+  `pay` varchar(1) NOT NULL,
+  `ordertime` datetime NOT NULL,
+  `orderdone` datetime NOT NULL,
+  `state` int(2) NOT NULL
+  `note` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- 評價假資料
 INSERT INTO evaluate (ornumber ,employeeid, efficiency, clean, careful, manner) VALUES 
-('426' ,'RA001', 5, 5, 3, 4),
-('436' ,'RA001', 3, 4, 5, 4),
-('786' ,'RA001', 4, 4, 3, 5),
-('326' ,'RA002', 5, 2, 4, 3),
-('226' ,'RA002', 5, 5, 5, 4),
-('266' ,'RA002', 5, 3, 2, 3),
-('223' ,'RA003', 5, 3, 4, 5),
-('434' ,'RA003', 5, 5, 3, 3),
-('452' ,'RA003', 4, 2, 5, 4),
-('236' ,'RA003', 2, 4, 3, 4),
-('442' ,'RA004', 5, 5, 3, 5),
-('132' ,'RA004', 2, 3, 4, 4),
-('116' ,'RA005', 4, 5, 3, 4),
-('126' ,'RA005', 3, 3, 5, 3),
-('146' ,'RA006', 5, 2, 4, 4),
-('163' ,'RA006', 3, 5, 5, 4),
-('168' ,'RA006', 3, 4, 5, 5),
-('221' ,'RA006', 2, 4, 3, 5);
+('23091215QA' ,'RA001', 5, 5, 3, 4),
+('23090914BV' ,'RA001', 3, 4, 5, 4),
+('23092308RG' ,'RA001', 4, 4, 3, 5),
+('23091106SA' ,'RA002', 5, 2, 4, 3),
+('23092018OP' ,'RA002', 5, 5, 5, 4),
+('23092018AD' ,'RA002', 5, 3, 2, 3),
+('23091112PK' ,'RA003', 5, 3, 4, 5),
+('23091212LO' ,'RA003', 5, 5, 3, 3),
+('23091517KU' ,'RA003', 4, 2, 5, 4),
+('23090913KI' ,'RA003', 2, 4, 3, 4),
+('23091616RF' ,'RA004', 5, 5, 3, 5),
+('23091609PM' ,'RA004', 2, 3, 4, 4),
+('23091614MK' ,'RA005', 4, 5, 3, 4),
+('23091612HD' ,'RA005', 3, 3, 5, 3),
+('23090919HS' ,'RA006', 5, 2, 4, 4),
+('23090919SC' ,'RA006', 3, 5, 5, 4),
+('23091615CE' ,'RA006', 3, 4, 5, 5),
+('23091008YJ' ,'RA006', 2, 4, 3, 5);
 
 -- 員工出勤狀態假資料
 INSERT INTO attendance (`employeeid`, `time`, `date`) VALUES 
@@ -124,12 +156,6 @@ INSERT INTO attendance (`employeeid`, `time`, `date`) VALUES
 ('RA004', 0, '2023-09-19'),
 ('RA006', 2, '2023-09-19');
 
--- 價目表
-CREATE TABLE `priceList` (
-  `weekNumber` int(11) NOT NULL,
-  `price` int(11) NOT NULL
-)
-
 -- 價目表資料
 INSERT INTO `priceList` (`weekNumber`, `price`) VALUES 
 (4, 8000),
@@ -203,7 +229,7 @@ WHERE `date` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND `date` < DATE_ADD(CURDAT
 GROUP BY `time`, `date`
 ORDER BY `date`;
 
--- 查詢滿檔的日期時段(不指定人員)
+-- 查詢滿檔的日期時段
 SET @EmployeeLimit = (SELECT COUNT(*) FROM employeeinfo);
 SELECT A.time, A.date FROM
 (SELECT `time`, `date`, COUNT(*) AS record_count
@@ -212,3 +238,10 @@ WHERE `date` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND `date` < DATE_ADD(CURDAT
 GROUP BY `time`, `date`
 ORDER BY `date`) AS A
 WHERE A.record_count = @EmployeeLimit;
+
+SELECT A.time, A.date FROM 
+(SELECT `time`, `date`
+FROM attendance
+WHERE `date` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND `date` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
+AND employeeid = ?
+ORDER BY `date`) AS A`
