@@ -173,7 +173,7 @@ CREATE TABLE `userinfo` (
 --
 
 INSERT INTO `userinfo` (`uid`, `name`, `birthday`, `phone`, `email`, `id`, `password`, `city`, `rural`, `address`, `admin`, `userid`) VALUES
-(1, '熊貓管家', '1963-06-27', 920589962, 'raccoon@gmail.com', 'A236173460', 'raccoon55688', '臺中市', '西屯區', '河南東一街17號', 1, 'RA000001'),
+(1, '浣熊管家', '1963-06-27', 920589962, 'raccoon@gmail.com', 'A236173460', 'raccoon55688', '臺中市', '西屯區', '河南東一街17號', 1, 'RA000001'),
 (2, '孫博國', '1979-03-08', 936025896, 'johnson1848@gmail.com', 'V176777368', 'Un42ev4D', '臺中市', '后里區', '甲后路32號', 0, 'RA000002'),
 (3, '沈子成', '2013-02-15', 923230748, 'swift2607@icloud.com', 'H137147389', 'UbY9Z9kP', '臺中市', '梧棲區', '緯五路26號', 0, 'RA000003'),
 (4, '劉星鋭', '1981-08-19', 914009711, 'shelley5034@outlook.com', 'Q194326971', 'khC266QL', '臺中市', '沙鹿區', '民族路6號', 0, 'RA000004'),
