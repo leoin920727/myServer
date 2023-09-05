@@ -159,12 +159,12 @@ CREATE TABLE `employeeinfo` (
 --
 
 INSERT INTO `employeeinfo` (`employeeid`, `employeename`, `employeephone`, `employeeemail`, `photo`, `vaccine`, `goodid`, `racheck`, `cases`) VALUES
-('RA001', '鄒琦筑', 958237879, 'sophia1207@hotmail.com', NULL, 1, 1, 1, 0),
-('RA002', '鍾圖陽', 912175001, 'jeffrey8325@outlook.com', NULL, 1, 1, 1, 0),
-('RA003', '曹克毓', 970724731, 'jane5953@yahoo.com', NULL, 1, 1, 1, 0),
-('RA004', '沈芮莘', 960800071, 'fawcett9476@outlook.com', NULL, 1, 1, 1, 0),
-('RA005', '洪之寶', 920012384, 'samantha1849@gmail.com', NULL, 1, 1, 1, 0),
-('RA006', '楊年瀚', 930036786, 'dupont882@gmail.com', NULL, 1, 1, 1, 0);
+('RA001', '鄒琦筑', 958237879, 'sophia1207@hotmail.com', './images/cleaner1.jpg', 1, 1, 1, 0),
+('RA002', '鍾圖陽', 912175001, 'jeffrey8325@outlook.com', './images/cleaner2.jpg', 1, 1, 1, 0),
+('RA003', '曹克毓', 970724731, 'jane5953@yahoo.com','./images/cleaner3.jpg', 1, 1, 1, 0),
+('RA004', '沈芮莘', 960800071, 'fawcett9476@outlook.com', './images/staffInfo-staff.png', 1, 1, 1, 0),
+('RA005', '洪之寶', 920012384, 'samantha1849@gmail.com', './images/case-002.png', 1, 1, 1, 0),
+('RA006', '楊年瀚', 930036786, 'dupont882@gmail.com', './images/cleaner4.jpg', 1, 1, 1, 0);
 
 -- --------------------------------------------------------
 

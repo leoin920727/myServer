@@ -118,13 +118,15 @@ bookRouter.get("/free-time", (req, res) => {
 
     const freeDays = utils.updateFreeDays(notWorkDays);
 
-    if (weekDay) {
-      if (timespan) {
+    if (weekDay == "null" || !weekDay) {
+      return res.json(utils.getFreeDays(freeDays));
+    } else {
+      if (timespan == "null" || !timespan) {
+        return res.json(utils.getFreeTime(freeDays, weekDay));
+      } else {
         return res.json(utils.getFreeDate(freeDays, weekDay, timespan));
       }
-      return res.json(utils.getFreeTime(freeDays, weekDay));
     }
-    return res.json(utils.getFreeDays(freeDays));
   });
 });
 
