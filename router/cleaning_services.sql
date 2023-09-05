@@ -29,6 +29,7 @@ USE `cleaning_services`;
 -- 資料表結構 `attendance`
 --
 
+
 CREATE TABLE `attendance` (
   `employeeid` varchar(5) NOT NULL,
   `mode` int(1) NOT NULL,
