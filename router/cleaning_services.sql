@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-09-05 07:52:18
+-- 產生時間： 2023-09-05 08:57:48
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -241,21 +241,33 @@ INSERT INTO `userinfo` (`uid`, `name`, `birthday`, `phone`, `email`, `id`, `pass
 CREATE TABLE `userorder` (
   `ornumber` varchar(10) NOT NULL,
   `employeeid` varchar(5) NOT NULL,
-  `week` int(1) NOT NULL,
+  `oneweek` int(1) NOT NULL,
   `date` date NOT NULL,
   `time` time NOT NULL,
   `weeks` int(2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- 已傾印資料表的索引
+-- 傾印資料表的資料 `userorder`
 --
 
+INSERT INTO `userorder` (`ornumber`, `employeeid`, `oneweek`, `date`, `time`, `weeks`) VALUES
+('A000000001', 'RA001', 1, '2023-01-22', '08:00:00', 2),
+('A000000002', 'RA002', 2, '2023-02-09', '13:00:00', 2),
+('A000000003', 'RA003', 1, '2023-02-27', '18:00:00', 1),
+('A000000004', 'RA004', 1, '2023-03-17', '18:00:00', 6),
+('A000000005', 'RA005', 1, '2023-04-01', '13:00:00', 1),
+('A000000006', 'RA006', 1, '2023-04-12', '08:00:00', 3),
+('A000000007', 'RA001', 1, '2023-05-19', '18:00:00', 4),
+('A000000008', 'RA002', 1, '2023-06-04', '08:00:00', 4),
+('A000000009', 'RA003', 1, '2023-07-15', '13:00:00', 6),
+('A000000010', 'RA004', 1, '2023-08-22', '13:00:00', 4),
+('A000000011', 'RA005', 1, '2023-09-08', '18:00:00', 1),
+('A000000012', 'RA006', 1, '2023-09-09', '08:00:00', 4);
+
 --
--- 資料表索引 `attendance`
+-- 已傾印資料表的索引
 --
-ALTER TABLE `attendance`
-  ADD PRIMARY KEY (`employeeid`);
 
 --
 -- 資料表索引 `blacklist`
