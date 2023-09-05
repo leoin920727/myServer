@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-09-05 08:57:48
+-- 產生時間： 2023-09-05 09:36:12
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- 資料庫： `cleaning_services`
 --
-CREATE DATABASE IF NOT EXISTS `cleaning_services` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `cleaning_services`;
 
 -- --------------------------------------------------------
 
@@ -99,20 +97,21 @@ CREATE TABLE `evaluate` (
   `clean` int(11) DEFAULT NULL,
   `careful` int(11) DEFAULT NULL,
   `manner` int(11) DEFAULT NULL,
-  `reply` varchar(100) DEFAULT NULL
+  `reply` varchar(100) DEFAULT NULL,
+  `state` int(2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 傾印資料表的資料 `evaluate`
 --
 
-INSERT INTO `evaluate` (`ornumber`, `employeeid`, `efficiency`, `clean`, `careful`, `manner`, `reply`) VALUES
-('A000000001', 'RA001', 5, 5, 5, 5, '這家清潔公司的服務真的很棒，每次都能讓我的家焕然一新。'),
-('A000000002', 'RA002', 5, 3, 4, 1, '我對他們的工作不太滿意，有一些地方並沒有清潔得很徹底。'),
-('A000000003', 'RA003', 4, 4, 4, 4, '價格合理，服務一般，沒什麼特別的感覺。'),
-('A000000004', 'RA004', 0, 0, 0, 0, '曾經有一次他們損壞了我的家具，雖然後來賠償了，但還是有點不開心。'),
-('A000000005', 'RA005', 5, 5, 5, 5, '清潔人員總是非常準時，而且友好，他們的服務讓我感到很滿意。'),
-('A000000006', 'RA006', 3, 5, 4, 5, NULL);
+INSERT INTO `evaluate` (`ornumber`, `employeeid`, `efficiency`, `clean`, `careful`, `manner`, `reply`, `state`) VALUES
+('A000000001', 'RA001', 5, 5, 5, 5, '這家清潔公司的服務真的很棒，每次都能讓我的家焕然一新。', 2),
+('A000000002', 'RA002', 5, 3, 4, 1, '我對他們的工作不太滿意，有一些地方並沒有清潔得很徹底。', 2),
+('A000000003', 'RA003', 4, 4, 4, 4, '價格合理，服務一般，沒什麼特別的感覺。', 2),
+('A000000004', 'RA004', 0, 0, 0, 0, '曾經有一次他們損壞了我的家具，雖然後來賠償了，但還是有點不開心。', 2),
+('A000000005', 'RA005', 5, 5, 5, 5, '清潔人員總是非常準時，而且友好，他們的服務讓我感到很滿意。', 2),
+('A000000006', 'RA006', 3, 5, 4, 5, NULL, 2);
 
 -- --------------------------------------------------------
 
