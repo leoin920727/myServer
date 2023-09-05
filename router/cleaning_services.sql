@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.1.2
 -- https://www.phpmyadmin.net/
 --
--- 主機： 127.0.0.1
--- 產生時間： 2023-09-05 09:36:12
--- 伺服器版本： 10.4.28-MariaDB
--- PHP 版本： 8.2.4
+-- 主機： localhost:3306
+-- 產生時間： 2023-09-05 10:07:46
+-- 伺服器版本： 5.7.24
+-- PHP 版本： 8.0.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,8 +18,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 資料庫： `cleaning_services`
+-- 資料庫: `cleaning_services`
 --
+CREATE DATABASE IF NOT EXISTS `cleaning_services` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `cleaning_services`;
 
 -- --------------------------------------------------------
 
@@ -33,7 +35,7 @@ CREATE TABLE `attendance` (
   `time` time DEFAULT NULL,
   `date` date DEFAULT NULL,
   `week` int(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -44,7 +46,7 @@ CREATE TABLE `attendance` (
 CREATE TABLE `blacklist` (
   `uid` int(10) NOT NULL,
   `whyblacklist` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `blacklist`
@@ -70,7 +72,7 @@ CREATE TABLE `employeeinfo` (
   `goodid` int(1) NOT NULL,
   `racheck` int(1) NOT NULL,
   `cases` int(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `employeeinfo`
@@ -99,7 +101,7 @@ CREATE TABLE `evaluate` (
   `manner` int(11) DEFAULT NULL,
   `reply` varchar(100) DEFAULT NULL,
   `state` int(2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `evaluate`
@@ -133,7 +135,7 @@ CREATE TABLE `orderlist` (
   `ordertime` date NOT NULL,
   `orderdone` date NOT NULL,
   `state` int(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `orderlist`
@@ -173,7 +175,7 @@ CREATE TABLE `userinfo` (
   `admin` int(1) NOT NULL,
   `userid` varchar(8) NOT NULL,
   `blacklist` int(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- 傾印資料表的資料 `userinfo`
@@ -244,7 +246,7 @@ CREATE TABLE `userorder` (
   `date` date NOT NULL,
   `time` time NOT NULL,
   `weeks` int(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `userorder`
