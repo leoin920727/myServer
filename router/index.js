@@ -102,4 +102,38 @@ index.get("/dashboard/PersonalInfo/:uid", function (req, res) {
   });
 });
 
+
+
+index.post('/login', function (req, res) {
+  var sql = `SELECT email,password FROM userinfo`
+  var data = [];
+  db.exec(sql, data, function (results, fields) {
+    res.send(results);
+  })
+})
+
+// index.post("/login", function (req, res) {
+//   var sql = `UPDATE userinfo SET updated_at=NOW() WHERE emails=? and password=?;
+//   SELECT * FROM userinfo WHERE email=? and password=?;`
+//   var data = [req.body.email, req.body.password]
+//   db.exec(sql, data, function (results, fields) {
+//     if (results[1].length == 1) {
+//       req.session.user = {
+//         id: results[1].id,
+//         account: results[1].email,
+//         rights: results[1].rights,
+//         updated_at: results[1].updated_at
+//       }
+//       res.end(
+//         JSON.stringify(new Success('login success'))
+//       )
+//     } else {
+//       res.end(
+//         JSON.stringify(new Error('login failed'))
+//       )
+//     }
+//   })
+
+// })
+
 module.exports = index;
