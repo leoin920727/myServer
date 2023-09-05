@@ -6,7 +6,9 @@ exports.exec = (sql, data, callback) => {
         user: 'root',
         password: 'root',
         database: "cleaning_services",
-        multipleStatements: true
+        multipleStatements: true,
+      
+
     })
     myDBconn.connect();
 

@@ -6,7 +6,9 @@ const utils = require("../utils/book");
 let mysql = require("mysql");
 let myDBconn = mysql.createConnection({
   host: "localhost",
-  port: "8889",
+  // 原本Port 8889 
+  port:'8889',
+  port: "3306",
   user: "root",
   password: "root",
   database: "cleaning_services",
