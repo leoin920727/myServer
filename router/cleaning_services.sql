@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- 主機： localhost:3306
--- 產生時間： 2023-09-05 10:44:39
--- 伺服器版本： 5.7.24
--- PHP 版本： 8.0.1
+-- 主機： 127.0.0.1
+-- 產生時間： 2023-09-06 03:26:15
+-- 伺服器版本： 10.4.28-MariaDB
+-- PHP 版本： 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 資料庫: `cleaning_services`
+-- 資料庫： `cleaning_services`
 --
 CREATE DATABASE IF NOT EXISTS `cleaning_services` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `cleaning_services`;
@@ -29,14 +29,13 @@ USE `cleaning_services`;
 -- 資料表結構 `attendance`
 --
 
-
 CREATE TABLE `attendance` (
   `employeeid` varchar(5) NOT NULL,
   `mode` int(1) NOT NULL,
   `time` time DEFAULT NULL,
   `date` date DEFAULT NULL,
   `week` int(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 傾印資料表的資料 `attendance`
@@ -126,7 +125,7 @@ INSERT INTO `attendance` (`employeeid`, `mode`, `time`, `date`, `week`) VALUES
 CREATE TABLE `blacklist` (
   `uid` int(10) NOT NULL,
   `whyblacklist` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 傾印資料表的資料 `blacklist`
@@ -152,7 +151,7 @@ CREATE TABLE `employeeinfo` (
   `goodid` int(1) NOT NULL,
   `racheck` int(1) NOT NULL,
   `cases` int(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 傾印資料表的資料 `employeeinfo`
@@ -181,7 +180,7 @@ CREATE TABLE `evaluate` (
   `manner` int(11) DEFAULT NULL,
   `reply` varchar(100) DEFAULT NULL,
   `state` int(2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 傾印資料表的資料 `evaluate`
@@ -214,26 +213,27 @@ CREATE TABLE `orderlist` (
   `pay` varchar(1) NOT NULL,
   `ordertime` date NOT NULL,
   `orderdone` date NOT NULL,
-  `state` int(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `state` int(2) NOT NULL,
+  `note` varchar(150) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 傾印資料表的資料 `orderlist`
 --
 
-INSERT INTO `orderlist` (`ornumber`, `orphone`, `oremail`, `orcity`, `orrural`, `oraddress`, `uid`, `orname`, `money`, `pay`, `ordertime`, `orderdone`, `state`) VALUES
-('A000000001', 920589962, 'gomez8601@outlook.com', '臺中市', '西屯區', '河南東一街17號', 1, '李儀冬', 4000, '1', '2023-01-15', '2023-01-29', 2),
-('A000000002', 923230748, 'swift2607@icloud.com', '臺中市', '梧棲區', '緯五路26號', 3, '沈子成', 8000, '1', '2023-02-02', '2023-02-16', 2),
-('A000000003', 930398746, 'barry3965@hotmail.com', '臺中市', '太平區', '園區五路6號', 6, '李傑寒', 2000, '1', '2023-02-20', '2023-02-27', 2),
-('A000000004', 928958260, 'chantel6709@gmail.com', '臺中市', '大里區', '泉水街11號', 9, '蔣冉瑄', 12000, '1', '2023-03-10', '2023-04-21', 2),
-('A000000005', 955222092, 'campbell8610@gmail.com', '臺中市', '南區', '民興街1號', 16, '李叡業', 2000, '1', '2023-03-25', '2023-01-01', 2),
-('A000000006', 970341719, 'garrix7642@outlook.com', '臺中市', '南屯區', '益昌二街2號', 22, '劉嘉星', 6000, '1', '2023-04-05', '2023-04-26', 2),
-('A000000007', 918540495, 'long2043@gmail.com', '臺中市', '北區', '忠明八街11號', 25, '廖佩影', 8000, '1', '2023-05-12', '2023-06-09', 2),
-('A000000008', 937524906, 'sanders3662@gmail.com', '臺中市', '沙鹿區', '賢正街19號', 28, '劉奕漩', 8000, '1', '2023-05-28', '2023-06-25', 2),
-('A000000009', 921152383, 'kathleen7782@hotmail.com', '臺中市', '沙鹿區', '六路五街12號', 32, '巫安連', 12000, '1', '2023-07-08', '2023-08-19', 2),
-('A000000010', 914361087, 'shields454@gmail.com', '臺中市', '太平區', '振德街19號', 37, '吳佳涵', 8000, '1', '2023-08-15', '2023-09-12', 1),
-('A000000011', 932922539, 'bryce7029@hotmail.com', '臺中市', '大雅區', '中和七路25號', 40, '林思楷', 2000, '1', '2023-09-01', '2023-09-08', 1),
-('A000000012', 972514676, 'lena6305@gmail.com', '臺中市', '神岡區', '福成路7號', 43, '嚴夏洋', 8000, '1', '2023-09-02', '2023-09-30', 0);
+INSERT INTO `orderlist` (`ornumber`, `orphone`, `oremail`, `orcity`, `orrural`, `oraddress`, `uid`, `orname`, `money`, `pay`, `ordertime`, `orderdone`, `state`, `note`) VALUES
+('A000000001', 920589962, 'gomez8601@outlook.com', '臺中市', '西屯區', '河南東一街17號', 1, '李儀冬', 4000, '1', '2023-01-15', '2023-01-29', 2, NULL),
+('A000000002', 923230748, 'swift2607@icloud.com', '臺中市', '梧棲區', '緯五路26號', 3, '沈子成', 8000, '1', '2023-02-02', '2023-02-16', 2, NULL),
+('A000000003', 930398746, 'barry3965@hotmail.com', '臺中市', '太平區', '園區五路6號', 6, '李傑寒', 2000, '1', '2023-02-20', '2023-02-27', 2, NULL),
+('A000000004', 928958260, 'chantel6709@gmail.com', '臺中市', '大里區', '泉水街11號', 9, '蔣冉瑄', 12000, '1', '2023-03-10', '2023-04-21', 2, NULL),
+('A000000005', 955222092, 'campbell8610@gmail.com', '臺中市', '南區', '民興街1號', 16, '李叡業', 2000, '1', '2023-03-25', '2023-01-01', 2, NULL),
+('A000000006', 970341719, 'garrix7642@outlook.com', '臺中市', '南屯區', '益昌二街2號', 22, '劉嘉星', 6000, '1', '2023-04-05', '2023-04-26', 2, NULL),
+('A000000007', 918540495, 'long2043@gmail.com', '臺中市', '北區', '忠明八街11號', 25, '廖佩影', 8000, '1', '2023-05-12', '2023-06-09', 2, NULL),
+('A000000008', 937524906, 'sanders3662@gmail.com', '臺中市', '沙鹿區', '賢正街19號', 28, '劉奕漩', 8000, '1', '2023-05-28', '2023-06-25', 2, NULL),
+('A000000009', 921152383, 'kathleen7782@hotmail.com', '臺中市', '沙鹿區', '六路五街12號', 32, '巫安連', 12000, '1', '2023-07-08', '2023-08-19', 2, NULL),
+('A000000010', 914361087, 'shields454@gmail.com', '臺中市', '太平區', '振德街19號', 37, '吳佳涵', 8000, '1', '2023-08-15', '2023-09-12', 1, NULL),
+('A000000011', 932922539, 'bryce7029@hotmail.com', '臺中市', '大雅區', '中和七路25號', 40, '林思楷', 2000, '1', '2023-09-01', '2023-09-08', 1, NULL),
+('A000000012', 972514676, 'lena6305@gmail.com', '臺中市', '神岡區', '福成路7號', 43, '嚴夏洋', 8000, '1', '2023-09-02', '2023-09-30', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -255,7 +255,7 @@ CREATE TABLE `userinfo` (
   `admin` int(1) NOT NULL,
   `userid` varchar(8) NOT NULL,
   `blacklist` int(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- 傾印資料表的資料 `userinfo`
@@ -325,26 +325,27 @@ CREATE TABLE `userorder` (
   `oneweek` int(1) NOT NULL,
   `date` date NOT NULL,
   `time` time NOT NULL,
-  `weeks` int(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `weeks` int(2) NOT NULL,
+  `frequency` int(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 傾印資料表的資料 `userorder`
 --
 
-INSERT INTO `userorder` (`ornumber`, `employeeid`, `oneweek`, `date`, `time`, `weeks`) VALUES
-('A000000001', 'RA001', 1, '2023-01-22', '08:00:00', 2),
-('A000000002', 'RA002', 2, '2023-02-09', '13:00:00', 2),
-('A000000003', 'RA003', 1, '2023-02-27', '18:00:00', 1),
-('A000000004', 'RA004', 1, '2023-03-17', '18:00:00', 6),
-('A000000005', 'RA005', 1, '2023-04-01', '13:00:00', 1),
-('A000000006', 'RA006', 1, '2023-04-12', '08:00:00', 3),
-('A000000007', 'RA001', 1, '2023-05-19', '18:00:00', 4),
-('A000000008', 'RA002', 1, '2023-06-04', '08:00:00', 4),
-('A000000009', 'RA003', 1, '2023-07-15', '13:00:00', 6),
-('A000000010', 'RA004', 1, '2023-08-22', '13:00:00', 4),
-('A000000011', 'RA005', 1, '2023-09-08', '18:00:00', 1),
-('A000000012', 'RA006', 1, '2023-09-09', '08:00:00', 4);
+INSERT INTO `userorder` (`ornumber`, `employeeid`, `oneweek`, `date`, `time`, `weeks`, `frequency`) VALUES
+('A000000001', 'RA001', 1, '2023-01-22', '08:00:00', 2, 2),
+('A000000002', 'RA002', 2, '2023-02-09', '13:00:00', 2, 4),
+('A000000003', 'RA003', 1, '2023-02-27', '18:00:00', 1, 1),
+('A000000004', 'RA004', 1, '2023-03-17', '18:00:00', 6, 6),
+('A000000005', 'RA005', 1, '2023-04-01', '13:00:00', 1, 1),
+('A000000006', 'RA006', 1, '2023-04-12', '08:00:00', 3, 3),
+('A000000007', 'RA001', 1, '2023-05-19', '18:00:00', 4, 4),
+('A000000008', 'RA002', 1, '2023-06-04', '08:00:00', 4, 4),
+('A000000009', 'RA003', 1, '2023-07-15', '13:00:00', 6, 6),
+('A000000010', 'RA004', 1, '2023-08-22', '13:00:00', 4, 4),
+('A000000011', 'RA005', 1, '2023-09-08', '18:00:00', 1, 1),
+('A000000012', 'RA006', 1, '2023-09-09', '08:00:00', 4, 4);
 
 --
 -- 已傾印資料表的索引
