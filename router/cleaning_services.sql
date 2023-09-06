@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-09-06 03:26:15
+-- 產生時間： 2023-09-06 03:46:16
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -158,12 +158,12 @@ CREATE TABLE `employeeinfo` (
 --
 
 INSERT INTO `employeeinfo` (`employeeid`, `employeename`, `employeephone`, `employeeemail`, `photo`, `vaccine`, `goodid`, `racheck`, `cases`) VALUES
-('RA001', '鄒琦筑', 958237879, 'sophia1207@hotmail.com', NULL, 1, 1, 1, 0),
-('RA002', '鍾圖陽', 912175001, 'jeffrey8325@outlook.com', NULL, 1, 1, 1, 0),
-('RA003', '曹克毓', 970724731, 'jane5953@yahoo.com', NULL, 1, 1, 1, 0),
-('RA004', '沈芮莘', 960800071, 'fawcett9476@outlook.com', NULL, 1, 1, 1, 0),
-('RA005', '洪之寶', 920012384, 'samantha1849@gmail.com', NULL, 1, 1, 1, 0),
-('RA006', '楊年瀚', 930036786, 'dupont882@gmail.com', NULL, 1, 1, 1, 0);
+('RA001', '鄒琦筑', 958237879, 'sophia1207@hotmail.com', '/images/cleaner1.png', 1, 1, 1, 0),
+('RA002', '鍾圖陽', 912175001, 'jeffrey8325@outlook.com', '/images/cleaner2.png', 1, 1, 1, 0),
+('RA003', '曹克毓', 970724731, 'jane5953@yahoo.com', '/images/case-002.png', 1, 1, 1, 0),
+('RA004', '沈芮莘', 960800071, 'fawcett9476@outlook.com', '/images/case-001.png', 1, 1, 1, 0),
+('RA005', '洪之寶', 920012384, 'samantha1849@gmail.com', '/images/orderStaff.png', 1, 1, 1, 0),
+('RA006', '楊年瀚', 930036786, 'dupont882@gmail.com', '/images/cleaner4.png', 1, 1, 1, 0);
 
 -- --------------------------------------------------------
 
