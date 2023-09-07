@@ -1,70 +1,32 @@
 const express = require("express");
 var db = require("../db");
+const crypto = require('crypto');
 const dashboard = express.Router();
 
 // 後台訂單資料
 dashboard.get("/orderlist", function (req, res) {
-  const data = [
-    {
-      orderNumber: "C0021",
-      memberId: "M351",
-      orderDate: "13/08/23",
-      weekOfTimes: "2",
-      weekOfAmount: "62",
-      price: "1200",
-      orderStatus: "0",
-    },
-    {
-      orderNumber: "C0020",
-      memberId: "M0121",
-      orderDate: "13/08/23",
-      weekOfTimes: "2",
-      weekOfAmount: "62",
-      price: "1200",
-      orderStatus: "1",
-    },
-    {
-      orderNumber: "C0020",
-      memberId: "M0124",
-      orderDate: "13/08/23",
-      weekOfTimes: "2",
-      weekOfAmount: "62",
-      price: "1200",
-      orderStatus: "2",
-    },
-  ];
-  res.send(data);
+  var sql = `SELECT UO.ornumber,UO.employeeid,UO.weeks,UO.weeknumber,OL.money,OL.state,OL.ordertime
+  FROM userorder AS UO
+  INNER JOIN orderlist AS OL ON OL.ornumber=UO.ornumber`;
+  var data = [];
+  db.exec(sql, data, function (result, fields) {
+    res.send(result)
+  })
 });
 
 // 後台訂單資料(詳細)
-dashboard.get("/AdminOrder/:order", function (req, res) {
-  const orderNumber = req.params.orderNumber;
-  const data = {
-    IDnum: "TXXXXXXXXX",
-    staffName: "王阿花", //指定人員
-    staffId: "M0020", //員工編號
-    time_W: "星期三", //服務星期
-    time_T: "1300", //服務時段
-    memberName: "鍾秋節", //姓名
-    memberId: "M351", //會員編號
-    phone: "0912345667", //手機
-    email: "123@gmail", //電子信箱
-    city: "台中市",
-    adreess: "黎明路二段658號", //清掃地址 區域
-    common: "客廳的花瓶不要移動，那花瓶要十二萬，清理時要小心點。", //訂單備註
-    pay: "VISA", //付款方式
-    weekOfTimes: 2, //選擇服務週數
-    orderDate: "13/08/23", //服務開始日期
-    orderNumber: "C0021", //訂單編號
-    orderStatus: 0, //訂單狀態
-    weekOfAmount: 6, //服務次數
-    finish: 2, //完成次數
-    price: 1200, //訂單金額
-    imgUrl: "/images/vase.png",
-    staffPhone: "0912345678",
-    staffEmail: "123@gmail.com",
-  };
-  res.send(data);
+dashboard.get("/AdminOrder/:ornumber", function (req, res) {
+  const ornumber = req.params.ornumber;
+  var data = [ornumber];
+  var sql = `SELECT *
+  FROM orderlist AS OL
+  INNER JOIN userorder AS UO ON OL.ornumber=UO.ornumber
+  INNER JOIN employeeinfo AS EI ON UO.employeeid=EI.employeeid
+  WHERE OL.ornumber=?`
+  db.exec(sql, data, function (result, fields) {
+    res.send(result)
+  })
+
 });
 
 // 後台訂單更新
@@ -183,5 +145,33 @@ dashboard.get("/dashboard/blacklist", function (req, res) {
     res.send(results);
   });
 });
+
+// 更新會員資料
+dashboard.put("/dashboard/PersonalInfo/update/:uid", function (req, res) {
+  const uid = req.params.uid;
+  const { upName, upId, upPhone, upRural, upAddress, upEmail, upPassWord, upAdmin, upBirthDay } = req.body
+
+  var sql = `UPDATE userinfo
+ SET name=?,birthday=?,phone=?,email=?,id=?,
+ password=?,rural=?,address=?,admin=?
+ WHERE uid=?`
+
+  // 密碼加密
+  const algorithm = 'aes-256-cbc';
+  const key = crypto.randomBytes(32);
+  const iv = crypto.randomBytes(16);
+  let cipher = crypto.createCipheriv(algorithm, key, iv);
+  let encrypted = cipher.update(upPassWord, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+
+  var data = [upName, upBirthDay, upPhone, upEmail, upId, encrypted, upRural, upAddress, upAdmin, uid]
+  db.exec(sql, data, function (results, fields) {
+    res.send({ message: "success", data: results });
+  });
+
+
+})
+
+
 
 module.exports = dashboard;
