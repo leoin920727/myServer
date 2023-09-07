@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-09-07 10:27:10
+-- 產生時間： 2023-09-07 10:37:17
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -31,33 +31,32 @@ USE `cleaning_services`;
 
 CREATE TABLE `adreessdist` (
   `dist` varchar(5) NOT NULL,
-  `v` varchar(30) NOT NULL,
-  `uid` int(11) NOT NULL
+  `A_I` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- 傾印資料表的資料 `adreessdist`
 --
 
-INSERT INTO `adreessdist` (`dist`, `v`, `uid`) VALUES
-('中區', 'Central', 1),
-('北區', 'North', 2),
-('南區', 'South', 3),
-('西區', 'West', 4),
-('東區', 'Eastern', 5),
-('北屯區', 'Beitun', 6),
-('南屯區', 'Nantun', 7),
-('西屯區', 'Xitun', 8),
-('豐原區', 'Fengyuan', 9),
-('大里區', 'Dali', 10),
-('太平區', 'Taiping', 11),
-('烏日區', 'Uri', 12),
-('大雅區', 'Daya', 13),
-('潭子區', 'Tanzi', 14),
-('新社區', 'Xinshe', 15),
-('神岡區', 'Shengang', 16),
-('龍井區', 'Longjing', 17),
-('沙鹿區', 'Shalu', 18);
+INSERT INTO `adreessdist` (`dist`, `A_I`) VALUES
+('中區', 1),
+('北區', 2),
+('南區', 3),
+('西區', 4),
+('東區', 5),
+('北屯區', 6),
+('南屯區', 7),
+('西屯區', 8),
+('豐原區', 9),
+('大里區', 10),
+('太平區', 11),
+('烏日區', 12),
+('大雅區', 13),
+('潭子區', 14),
+('新社區', 15),
+('神岡區', 16),
+('龍井區', 17),
+('沙鹿區', 18);
 
 -- --------------------------------------------------------
 
@@ -429,7 +428,7 @@ INSERT INTO `userorder` (`ornumber`, `employeeid`, `date`, `time`, `weeks`, `don
 -- 資料表索引 `adreessdist`
 --
 ALTER TABLE `adreessdist`
-  ADD PRIMARY KEY (`uid`);
+  ADD PRIMARY KEY (`A_I`);
 
 --
 -- 資料表索引 `blacklist`
@@ -472,6 +471,22 @@ ALTER TABLE `userinfo`
 --
 ALTER TABLE `userorder`
   ADD PRIMARY KEY (`ornumber`);
+
+--
+-- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
+--
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `adreessdist`
+--
+ALTER TABLE `adreessdist`
+  MODIFY `A_I` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `userinfo`
+--
+ALTER TABLE `userinfo`
+  MODIFY `uid` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
