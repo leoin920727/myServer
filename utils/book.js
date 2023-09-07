@@ -5,8 +5,7 @@ function getTwoMonDate() {
 
   // 設置未來日期的上限為兩個月後
   const futureDate = new Date();
-  futureDate.setMonth(currentDate.getMonth() + 1);
-  //   futureDate.setMonth(currentDate.getMonth() + 2);
+  futureDate.setMonth(currentDate.getMonth() + 2);
 
   // 遍歷日期並列出
   let d;

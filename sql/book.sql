@@ -154,7 +154,19 @@ INSERT INTO attendance (`employeeid`, `time`, `date`) VALUES
 ('RA003', 2, '2023-09-19'),
 ('RA001', 0, '2023-09-19'),
 ('RA004', 0, '2023-09-19'),
-('RA006', 2, '2023-09-19');
+('RA006', 2, '2023-10-19'),
+('RA001', 2, '2023-10-04'),
+('RA002', 2, '2023-10-04'),
+('RA003', 2, '2023-10-04'),
+('RA004', 2, '2023-10-04'),
+('RA005', 2, '2023-10-04'),
+('RA006', 2, '2023-10-04');
+('RA001', 1, '2023-09-11'),
+('RA001', 1, '2023-09-18'),
+('RA001', 1, '2023-09-25'),
+('RA001', 1, '2023-10-02'),
+('RA001', 0, '2023-09-18'),
+
 
 -- 價目表資料
 INSERT INTO `priceList` (`weekNumber`, `price`) VALUES 
@@ -244,4 +256,4 @@ SELECT A.time, A.date FROM
 FROM attendance
 WHERE `date` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND `date` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
 AND employeeid = ?
-ORDER BY `date`) AS A`
+ORDER BY `date`) AS A   

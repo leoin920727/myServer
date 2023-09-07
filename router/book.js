@@ -6,9 +6,8 @@ const utils = require("../utils/book");
 let mysql = require("mysql");
 let myDBconn = mysql.createConnection({
   host: "localhost",
-  // 原本Port 8889 
-  port:'8889',
-  port: "3306",
+  port: "8889",
+  // port: "3306",
   user: "root",
   password: "root",
   database: "cleaning_services",
@@ -38,13 +37,23 @@ bookRouter.get("/price", (req, res) => {
     }
   );
 });
+bookRouter.get("/dist", (req, res) => {
+  const distId = req.query.dist;
+  myDBconn.query(`SELECT dist FROM WHERE uid = ?;`, [distId], (err, data) => {
+    if (err) {
+      console.log("sql有錯");
+      console.log(err);
+    }
+    return res.json(data);
+  });
+});
 // 服務人員
 bookRouter.get("/employee-info", (req, res) => {
   let data1;
   myDBconn.query(
     `
     SELECT
-        info.name,
+        info.employeename,
         info.photo,
         ROUND((score.e1 + score.e2 + score.e3 + score.e4) / 4, 1) AS total_efficiency
     FROM
@@ -90,7 +99,7 @@ bookRouter.get("/free-time", (req, res) => {
       SELECT A.time, A.date FROM 
         (SELECT \`time\`, \`date\`, COUNT(*) AS record_count
         FROM attendance
-        WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
+        WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH) 
         GROUP BY \`time\`, \`date\`
         ORDER BY \`date\`) AS A
       WHERE A.record_count = (SELECT COUNT(*) FROM employeeinfo);
@@ -100,7 +109,7 @@ bookRouter.get("/free-time", (req, res) => {
       SELECT A.time, A.date FROM 
       (SELECT \`time\`, \`date\`
       FROM attendance
-      WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
+      WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH) 
       AND employeeid = ?
       ORDER BY \`date\`) AS A
     `;
@@ -114,19 +123,23 @@ bookRouter.get("/free-time", (req, res) => {
     }
 
     let notWorkDays = rows;
+    console.log(notWorkDays);
     notWorkDays.forEach((element) => {
       element.date.setHours(element.date.getHours() + 8);
     });
 
     const freeDays = utils.updateFreeDays(notWorkDays);
 
-    if (weekDay) {
-      if (timespan) {
+    if (weekDay == "null" || !weekDay) {
+      console.log(utils.getFreeDays(freeDays));
+      return res.json(utils.getFreeDays(freeDays));
+    } else {
+      if (timespan == "null" || !timespan) {
+        return res.json(utils.getFreeTime(freeDays, weekDay));
+      } else {
         return res.json(utils.getFreeDate(freeDays, weekDay, timespan));
       }
-      return res.json(utils.getFreeTime(freeDays, weekDay));
     }
-    return res.json(utils.getFreeDays(freeDays));
   });
 });
 
@@ -155,17 +168,19 @@ bookRouter.post("/order", (req, res) => {
     rural,
     address,
     name,
+    note,
   } = req.body;
   const orderId = utils.getRandomOrderId();
   let price;
+  let sqlStr;
 
   sqlStr = `
-    INSERT INTO userorder (ornumber, employeeid, date, time, weeks)
-    VALUES (?, ?, ?, ?, ?);
+    INSERT INTO userorder (ornumber, employeeid, date, time, weeks, donetime)
+    VALUES (?, ?, ?, ?, ?, ?);
   `;
   myDBconn.query(
     sqlStr,
-    [orderId, employeeid, date, time, weeks],
+    [orderId, employeeid, date, time, weeks, 0],
     (err, rows) => {
       if (err) {
         console.log(err);
@@ -185,12 +200,25 @@ bookRouter.post("/order", (req, res) => {
   });
 
   sqlStr = `
-    INSERT INTO orderlist (ornumber, phone, email, city, rural, address, uid, name, money, pay, ordertime, state)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'c', NOW(), 1);
+    INSERT INTO orderlist (ornumber, orphone, oremail, orcity, orrural, oraddress, userid, orname, money, pay, state, note)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `;
   myDBconn.query(
     sqlStr,
-    [orderId, phone, email, city, rural, address, uid, name, price],
+    [
+      orderId,
+      phone,
+      email,
+      city,
+      rural,
+      address,
+      uid,
+      name,
+      price,
+      "1",
+      "0",
+      note,
+    ],
     (err, rows) => {
       if (err) {
         console.log(err);
@@ -200,5 +228,4 @@ bookRouter.post("/order", (req, res) => {
   );
   return res.json(orderId);
 });
-
 module.exports = bookRouter;
