@@ -6,9 +6,8 @@ const utils = require("../utils/book");
 let mysql = require("mysql");
 let myDBconn = mysql.createConnection({
   host: "localhost",
-  // 原本Port 8889 
-  port:'8889',
-  port: "3306",
+  port: "8889",
+  // port: "3306",
   user: "root",
   password: "root",
   database: "cleaning_services",
@@ -100,7 +99,7 @@ bookRouter.get("/free-time", (req, res) => {
       SELECT A.time, A.date FROM 
         (SELECT \`time\`, \`date\`, COUNT(*) AS record_count
         FROM attendance
-        WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
+        WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH) 
         GROUP BY \`time\`, \`date\`
         ORDER BY \`date\`) AS A
       WHERE A.record_count = (SELECT COUNT(*) FROM employeeinfo);
@@ -110,7 +109,7 @@ bookRouter.get("/free-time", (req, res) => {
       SELECT A.time, A.date FROM 
       (SELECT \`time\`, \`date\`
       FROM attendance
-      WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
+      WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH) 
       AND employeeid = ?
       ORDER BY \`date\`) AS A
     `;
@@ -124,6 +123,7 @@ bookRouter.get("/free-time", (req, res) => {
     }
 
     let notWorkDays = rows;
+    console.log(notWorkDays);
     notWorkDays.forEach((element) => {
       element.date.setHours(element.date.getHours() + 8);
     });
@@ -131,6 +131,7 @@ bookRouter.get("/free-time", (req, res) => {
     const freeDays = utils.updateFreeDays(notWorkDays);
 
     if (weekDay == "null" || !weekDay) {
+      console.log(utils.getFreeDays(freeDays));
       return res.json(utils.getFreeDays(freeDays));
     } else {
       if (timespan == "null" || !timespan) {
