@@ -200,6 +200,7 @@ INSERT INTO `employeeinfo` (`employeeid`, `employeename`, `employeephone`, `empl
 ('RA005', '洪之寶', '0920012384', 'samantha1849@gmail.com', '/images/orderStaff.png', 1, 1, 1, 0),
 ('RA006', '楊年瀚', '0930036786', 'dupont882@gmail.com', '/images/cleaner4.jpg', 1, 1, 1, 0);
 
+
 -- --------------------------------------------------------
 
 --

@@ -38,13 +38,23 @@ bookRouter.get("/price", (req, res) => {
     }
   );
 });
+bookRouter.get("/dist", (req, res) => {
+  const distId = req.query.dist;
+  myDBconn.query(`SELECT dist FROM WHERE uid = ?;`, [distId], (err, data) => {
+    if (err) {
+      console.log("sql有錯");
+      console.log(err);
+    }
+    return res.json(data);
+  });
+});
 // 服務人員
 bookRouter.get("/employee-info", (req, res) => {
   let data1;
   myDBconn.query(
     `
     SELECT
-        info.name,
+        info.employeename,
         info.photo,
         ROUND((score.e1 + score.e2 + score.e3 + score.e4) / 4, 1) AS total_efficiency
     FROM
@@ -120,13 +130,15 @@ bookRouter.get("/free-time", (req, res) => {
 
     const freeDays = utils.updateFreeDays(notWorkDays);
 
-    if (weekDay) {
-      if (timespan) {
+    if (weekDay == "null" || !weekDay) {
+      return res.json(utils.getFreeDays(freeDays));
+    } else {
+      if (timespan == "null" || !timespan) {
+        return res.json(utils.getFreeTime(freeDays, weekDay));
+      } else {
         return res.json(utils.getFreeDate(freeDays, weekDay, timespan));
       }
-      return res.json(utils.getFreeTime(freeDays, weekDay));
     }
-    return res.json(utils.getFreeDays(freeDays));
   });
 });
 
@@ -155,17 +167,19 @@ bookRouter.post("/order", (req, res) => {
     rural,
     address,
     name,
+    note,
   } = req.body;
   const orderId = utils.getRandomOrderId();
   let price;
+  let sqlStr;
 
   sqlStr = `
-    INSERT INTO userorder (ornumber, employeeid, date, time, weeks)
-    VALUES (?, ?, ?, ?, ?);
+    INSERT INTO userorder (ornumber, employeeid, date, time, weeks, donetime)
+    VALUES (?, ?, ?, ?, ?, ?);
   `;
   myDBconn.query(
     sqlStr,
-    [orderId, employeeid, date, time, weeks],
+    [orderId, employeeid, date, time, weeks, 0],
     (err, rows) => {
       if (err) {
         console.log(err);
@@ -185,12 +199,25 @@ bookRouter.post("/order", (req, res) => {
   });
 
   sqlStr = `
-    INSERT INTO orderlist (ornumber, phone, email, city, rural, address, uid, name, money, pay, ordertime, state)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'c', NOW(), 1);
+    INSERT INTO orderlist (ornumber, orphone, oremail, orcity, orrural, oraddress, userid, orname, money, pay, state, note)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `;
   myDBconn.query(
     sqlStr,
-    [orderId, phone, email, city, rural, address, uid, name, price],
+    [
+      orderId,
+      phone,
+      email,
+      city,
+      rural,
+      address,
+      uid,
+      name,
+      price,
+      "1",
+      "0",
+      note,
+    ],
     (err, rows) => {
       if (err) {
         console.log(err);
@@ -200,5 +227,4 @@ bookRouter.post("/order", (req, res) => {
   );
   return res.json(orderId);
 });
-
 module.exports = bookRouter;
