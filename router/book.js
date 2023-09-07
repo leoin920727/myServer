@@ -39,7 +39,7 @@ bookRouter.get("/price", (req, res) => {
 });
 bookRouter.get("/dist", (req, res) => {
   const distId = req.query.dist;
-  myDBconn.query(`SELECT dist FROM WHERE uid = ?;`, [distId], (err, data) => {
+  myDBconn.query(`SELECT * FROM adreessdist;`, [distId], (err, data) => {
     if (err) {
       console.log("sql有錯");
       console.log(err);
@@ -123,7 +123,6 @@ bookRouter.get("/free-time", (req, res) => {
     }
 
     let notWorkDays = rows;
-    console.log(notWorkDays);
     notWorkDays.forEach((element) => {
       element.date.setHours(element.date.getHours() + 8);
     });
@@ -131,7 +130,6 @@ bookRouter.get("/free-time", (req, res) => {
     const freeDays = utils.updateFreeDays(notWorkDays);
 
     if (weekDay == "null" || !weekDay) {
-      console.log(utils.getFreeDays(freeDays));
       return res.json(utils.getFreeDays(freeDays));
     } else {
       if (timespan == "null" || !timespan) {
