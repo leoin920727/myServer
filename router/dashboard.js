@@ -29,18 +29,6 @@ dashboard.get("/AdminOrder/:ornumber", function (req, res) {
 
 });
 
-// 後台訂單更新
-dashboard.put("/AdminOrder/updata", function (req, res) {
-  const requestData = req.body;
-  res.json({ message: "Data received successfully", data: requestData });
-});
-
-// 會員評分更新
-dashboard.put("/member/updata/:orderID", function (req, res) {
-  const requestData = req.body;
-  res.json({ message: "Data received successfully", data: requestData });
-});
-
 // 會員資料表
 dashboard.get("/dashboard/memberInfo", function (req, res) {
   var sql = `SELECT * FROM userinfo`;

@@ -4,56 +4,11 @@ var cors = require("cors");
 var index = express.Router();
 const bookRouter = require("./book");
 
-
-
-
-
 index.use("/book", bookRouter);
 
 index.get("/", function (req, res) {
   res.send("可以用了");
 });
-
-
-// 後台訂單更新
-index.put("/AdminOrder/updata", function (req, res) {
-  const requestData = req.body;
-  res.json({ message: "Data received successfully", data: requestData });
-});
-// 會員評分更新
-index.put("/member/updata/:orderID", function (req, res) {
-  const requestData = req.body;
-  res.json({ message: "Data received successfully", data: requestData });
-});
-// 會員資料表
-index.get("/dashboard/memberInfo", function (req, res) {
-  var sql = `SELECT * FROM userinfo`;
-  var data = [];
-  db.exec(sql, data, function (results, fields) {
-    res.send(results);
-  });
-});
-// 會員資料內容 //缺黑名單資料欄位
-index.get("/dashboard/PersonalInfo/:uid", function (req, res) {
-  const uid = req.params.uid;
-  var sql1 = `SELECT * FROM userinfo`;
-  var sql2 = `SELECT * FROM userinfo WHERE uid=?`;
-  var data = [uid];
-  db.exec(sql1, [], function (number, fields) {
-    db.exec(sql2, data, function (results, fields) {
-      const len = number.length;
-      res.send({ data: results, length: len });
-    });
-  });
-});
-
-
-
-
-
-
-
-
 
 index.post('/login', function (req, res) {
   var sql1 = `SELECT * FROM userinfo`;
