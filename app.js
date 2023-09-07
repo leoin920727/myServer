@@ -5,10 +5,38 @@ const bodyParser = require("body-parser");
 var cors = require("cors");
 var app = express();
 
+
+
+
+
+//----允許此網域可跨域存取 
+const allowedOrigins = ['http://localhost:3000'];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin) || !origin) {
+
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+//--------------
+
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+// app.use(cors());
+
+
+
+
 
 app.use("/", dashboard);
 
