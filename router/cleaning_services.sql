@@ -286,7 +286,7 @@ CREATE TABLE `userinfo` (
   `phone` varchar(10) NOT NULL,
   `email` varchar(50) NOT NULL,
   `id` varchar(10) NOT NULL,
-  `password` varchar(12) NOT NULL,
+  `password` varchar(100) NOT NULL,
   `city` varchar(10) NOT NULL,
   `rural` varchar(10) NOT NULL,
   `address` varchar(50) NOT NULL,
