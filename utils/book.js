@@ -24,7 +24,11 @@ function updateFreeDays(notWorkDays) {
   const freeDays = getTwoMonDate();
   notWorkDays.forEach((elm) => {
     elm.date = elm.date.toISOString().split("T")[0];
-    freeDays[elm.date] = freeDays[elm.date].filter((item) => item != elm.time);
+    if (freeDays[elm.date]) {
+      freeDays[elm.date] = freeDays[elm.date].filter(
+        (item) => item != elm.time
+      );
+    }
   });
   return freeDays;
 }
