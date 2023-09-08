@@ -126,7 +126,6 @@ bookRouter.get("/free-time", (req, res) => {
     notWorkDays.forEach((element) => {
       element.date.setHours(element.date.getHours() + 8);
     });
-    console.log(notWorkDays);
     const freeDays = utils.updateFreeDays(notWorkDays);
 
     if (weekDay == "null" || !weekDay) {
@@ -193,7 +192,6 @@ bookRouter.post("/order", (req, res) => {
     if (err) {
       return res.json(err);
     }
-    console.log(rows);
     price = rows;
   });
 
