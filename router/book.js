@@ -99,7 +99,7 @@ bookRouter.get("/free-time", (req, res) => {
       SELECT A.time, A.date FROM 
         (SELECT \`time\`, \`date\`, COUNT(*) AS record_count
         FROM attendance
-        WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH) 
+        WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
         GROUP BY \`time\`, \`date\`
         ORDER BY \`date\`) AS A
       WHERE A.record_count = (SELECT COUNT(*) FROM employeeinfo);
@@ -109,7 +109,7 @@ bookRouter.get("/free-time", (req, res) => {
       SELECT A.time, A.date FROM 
       (SELECT \`time\`, \`date\`
       FROM attendance
-      WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH) 
+      WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
       AND employeeid = ?
       ORDER BY \`date\`) AS A
     `;
@@ -126,7 +126,7 @@ bookRouter.get("/free-time", (req, res) => {
     notWorkDays.forEach((element) => {
       element.date.setHours(element.date.getHours() + 8);
     });
-
+    console.log(notWorkDays);
     const freeDays = utils.updateFreeDays(notWorkDays);
 
     if (weekDay == "null" || !weekDay) {
