@@ -4,7 +4,8 @@ var dashboard = require("./router/dashboard");
 const bodyParser = require("body-parser");
 var cors = require("cors");
 var app = express();
-
+app.use(bodyParser.json({ limit: '5000mb' }));
+app.use(bodyParser.urlencoded({ limit: '5000mb', extended: true }));
 
 
 
