@@ -14,6 +14,7 @@ login.use(session({
     secret: 'raccoonncleaning',
     resave: false, // 固定寫法
     saveUninitialized: true,// 固定寫法
+
     cookie: {
         // 目前設定五分鐘
         maxAge: 60 * 1000 * 5
@@ -54,7 +55,6 @@ login.post('/login', function (req, res) {
 
                     req.session.user = results; // 將使用者資料存到 session 中
                     req.session.isLogin = true; // 將使用者的登入狀態存到 session 中
-
                     res.send({ status: 0, msg: '登入成功', data: req.session.user });
 
                     // 密碼匹配，允許登入
@@ -65,6 +65,7 @@ login.post('/login', function (req, res) {
     });
 });
 
+// 登出用
 login.post("/logout", (req, res) => {
     req.session.destroy(); // 清空 session 訊息
     res.send({
