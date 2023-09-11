@@ -188,8 +188,10 @@ dashboard.post("/dashboard/addstaff/upload",upload.single("photo"),function (req
   db.exec(sql, data, function (results, fields){
     if(!results){
       res.send({ message: "failed", data: results });
+      console.log(results)
     }else{
       res.send({ message: "success", data: results });
+      console.log(results)
     }
   });
 });
