@@ -20,3 +20,4 @@ exports.exec = (sql, data, callback) => {
     })
     myDBconn.end();
 }
+

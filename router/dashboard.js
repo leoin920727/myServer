@@ -160,6 +160,28 @@ dashboard.put("/dashboard/PersonalInfo/update/:uid", function (req, res) {
 
 })
 
+// 刪除會員資料
+dashboard.delete('/dashboard/PersonalInfo/delete/:uid', function (req, res) {
+  const uid = req.params.uid;
+
+  const sql = `
+  DELETE userinfo, blacklist
+  FROM userinfo
+  LEFT JOIN blacklist ON userinfo.uid = blacklist.uid
+  WHERE userinfo.uid = ?;
+`;
+
+  db.exec(sql, [uid], (error, results) => {
+    if (error) {
+      console.error('Error deleting data:', error);
+      res.status(500).json({ error: 'Error deleting data' });
+      return;
+    }
+
+    res.status(200).json({ message: 'Data deleted successfully' });
+  });
+});
+
 // 更新員工資料
 dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
   const employeeid = req.params.employeeid;
@@ -186,5 +208,23 @@ dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
   });
 
 });
+
+// 刪除員工資料
+dashboard.delete('/dashboard/StaffList/delete/:employeeid', function (req, res) {
+  const employeeid = req.params.employeeid;
+
+  const sql = 'DELETE FROM employeeinfo WHERE employeeid = ?';
+
+  db.exec(sql, [employeeid], (error, results) => {
+    if (error) {
+      console.error('Error deleting data:', error);
+      res.status(500).json({ error: 'Error deleting data' });
+      return;
+    }
+
+    res.status(200).json({ message: 'Data deleted successfully' });
+  });
+});
+
 
 module.exports = dashboard;
