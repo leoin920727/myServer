@@ -6,8 +6,8 @@ const utils = require("../utils/book");
 let mysql = require("mysql");
 let myDBconn = mysql.createConnection({
   host: "localhost",
-  port: "8889",
-  // port: "3306",
+  // port: "8889",
+  port: "3306",
   user: "root",
   password: "root",
   database: "cleaning_services",
@@ -30,7 +30,6 @@ bookRouter.get("/price", (req, res) => {
     [week],
     (err, data) => {
       if (err) {
-        console.log("sql有錯");
         console.log(err);
       }
       return res.json(data);
@@ -41,7 +40,6 @@ bookRouter.get("/dist", (req, res) => {
   const distId = req.query.dist;
   myDBconn.query(`SELECT * FROM adreessdist;`, [distId], (err, data) => {
     if (err) {
-      console.log("sql有錯");
       console.log(err);
     }
     return res.json(data);
@@ -50,8 +48,7 @@ bookRouter.get("/dist", (req, res) => {
 // 服務人員
 bookRouter.get("/employee-info", (req, res) => {
   let data1;
-  myDBconn.query(
-    `
+  let sql = `
     SELECT
         info.employeename,
         info.photo,
@@ -74,10 +71,10 @@ bookRouter.get("/employee-info", (req, res) => {
                 p.employeeid
         ) AS score
     ON
-        score.employeeid = info.employeeid;`,
+        score.employeeid = info.employeeid;`;
+  myDBconn.query(sql,
     (err, rows) => {
       if (err) {
-        console.log("sql有錯");
         console.log(err);
       }
       data1 = rows.map((result) => {
@@ -102,7 +99,7 @@ bookRouter.get("/free-time", (req, res) => {
         WHERE \`date\` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND \`date\` < DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
         GROUP BY \`time\`, \`date\`
         ORDER BY \`date\`) AS A
-      WHERE A.record_count = (SELECT COUNT(*) FROM employeeinfo);
+      WHERE A.record_count >= (SELECT COUNT(*) FROM employeeinfo);
     `;
   } else {
     sqlStr = `
@@ -114,14 +111,11 @@ bookRouter.get("/free-time", (req, res) => {
       ORDER BY \`date\`) AS A
     `;
   }
-
   myDBconn.query(sqlStr, [employeeid], (err, rows) => {
     if (err) {
-      console.log("sql有錯");
       console.log(err);
       return res.json([]);
     }
-
     let notWorkDays = rows;
     notWorkDays.forEach((element) => {
       element.date.setHours(element.date.getHours() + 8);
@@ -151,7 +145,7 @@ bookRouter.get("/member-info/:uid", (req, res) => {
   });
 });
 // 新增訂單至資料庫
-bookRouter.post("/order", (req, res) => {
+bookRouter.post("/new-order", (req, res) => {
   console.log(req.body);
   const {
     uid,
@@ -171,6 +165,7 @@ bookRouter.post("/order", (req, res) => {
   let price;
   let sqlStr;
 
+  // userorder
   sqlStr = `
     INSERT INTO userorder (ornumber, employeeid, date, time, weeks, donetime)
     VALUES (?, ?, ?, ?, ?, ?);
@@ -185,6 +180,7 @@ bookRouter.post("/order", (req, res) => {
       }
     }
   );
+
   sqlStr = `
     SELECT price FROM priceList WHERE weekNumber = ?;
   `;
@@ -195,6 +191,7 @@ bookRouter.post("/order", (req, res) => {
     price = rows;
   });
 
+  // orderlist
   sqlStr = `
     INSERT INTO orderlist (ornumber, orphone, oremail, orcity, orrural, oraddress, userid, orname, money, pay, state, note)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
@@ -222,6 +219,35 @@ bookRouter.post("/order", (req, res) => {
       }
     }
   );
+
+  // employeeinfo.cases
+  sqlStr = `UPDATE employeeinfo AS i SET i.cases = (
+    SELECT COUNT(employeeid) FROM userorder AS u WHERE u.employeeid=i.employeeid);`;
+  myDBconn.query(sqlStr, (err, rows) => {
+    if (err) {
+      console.log(err);
+      return res.json(err);
+    }
+  })
+
+  // attendance
+  let d = new Date(date);
+  for (let i = 0; i < weeks; i++) {
+    sqlStr = `INSERT INTO attendance (employeeid, \`mode\`, \`time\`,\`date\`) VALUES (?,?,?,?);`;
+    myDBconn.query(sqlStr, [employeeid, 0, time, d], (err, rows) => {
+      if (err) {
+        console.log(err);
+        return res.json(err);
+      }
+      d.setDate(d.getDate() + 7);
+    })
+  }
+
+
+
   return res.json(orderId);
 });
 module.exports = bookRouter;
+
+
+
