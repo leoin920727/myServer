@@ -183,18 +183,28 @@ dashboard.post("/dashboard/addstaff/upload", function (req, res) {
 // 更新員工資料
 dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
   const employeeid = req.params.employeeid;
-  const { upName, upPhone, upEmail, upVaccine, upGoodid, upRacheck, upCases } = req.body;
+  const { upName, upPhone, upEmail, upVaccine, upGoodid, upRacheck, upCases, upIdnumber, upBirthday, upRural, upAddress, upPassWord } = req.body;
 
   var sql = `UPDATE employeeinfo
- SET employeename=?, employeephone=?, employeeemail=?, vaccine=?, goodid=?,
- racheck=?, cases=?
- WHERE employeeid=?`;
+  SET employeename=?, employeephone=?, employeeemail=?, vaccine=?, goodid=?,
+  racheck=?, cases=?, employeeidnumber=?, employeebirthday=?, emprural=?, empaddress=?, employeepw=?
+  WHERE employeeid=?`;
 
 
-  var data = [upName, upPhone, upEmail, upVaccine, upGoodid, upRacheck, upCases, employeeid]
+  // 密碼加密
+  const algorithm = 'aes-256-cbc';
+  const key = crypto.randomBytes(32);
+  const iv = crypto.randomBytes(16);
+  let cipher = crypto.createCipheriv(algorithm, key, iv);
+  let encrypted = cipher.update(upPassWord, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+
+
+  var data = [upName, upPhone, upEmail, upVaccine, upGoodid, upRacheck, upCases, upIdnumber, upBirthday, upRural, upAddress, encrypted, employeeid];
   db.exec(sql, data, function (results, fields) {
     res.send({ message: "success", data: results });
   });
+
 });
 
 module.exports = dashboard;
