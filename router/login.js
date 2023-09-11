@@ -14,6 +14,10 @@ login.use(session({
     secret: 'raccoonncleaning',
     resave: false, // 固定寫法
     saveUninitialized: true,// 固定寫法
+    cookie: {
+        // 目前設定五分鐘
+        maxAge: 60 * 1000 * 5
+    }
 
 }));
 
@@ -47,7 +51,7 @@ login.post('/login', function (req, res) {
                     // 密碼不匹配，拒絕登入請求
                     res.status(401).json({ message: '密碼不正確' });
                 } else {
-                 
+
                     req.session.user = results; // 將使用者資料存到 session 中
                     req.session.isLogin = true; // 將使用者的登入狀態存到 session 中
 
