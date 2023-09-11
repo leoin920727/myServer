@@ -147,7 +147,7 @@ dashboard.put("/dashboard/PersonalInfo/update/:uid", function (req, res) {
  SET name =?, birthday =?, phone =?, email =?, id =?,
     password =?, rural =?, address =?, admin =?
       WHERE uid =? `
-      
+
   const encrypted =Encrypted(upPassWord)
 
 
@@ -168,12 +168,13 @@ dashboard.get("/dashboard/addstaff", function (req, res) {
 
 // 員工註冊資料+圖片
 dashboard.post("/dashboard/addstaff/upload",upload.single("photo"),function (req, res) {
-  
-  const {employeeId,employeeName, employeePhone,employeeMail,employeePW,
+
+  const {empLength,employeeName, employeePhone,employeeMail,employeePW,
   employeeIdNumber,employeeBirthDay, empRural,empAddress, vaccine, goodId, racheck}=JSON.parse(req.body.data)
   
   const filePath=req.file.destination.slice(27)+req.file.filename
   const encrypted =Encrypted(employeePW)
+  const employeeId=`RA${String(empLength+1).padStart(3,"0")}`
 
   const sql=`INSERT INTO employeeinfo
    (employeeid,employeename,employeephone,employeemail,employeepw,employeeidnumber,employeebirthday,
@@ -186,9 +187,9 @@ dashboard.post("/dashboard/addstaff/upload",upload.single("photo"),function (req
 
   db.exec(sql, data, function (results, fields){
     if(!results){
-      res.status(500).send({ message: "failed", data: results });
+      res.send({ message: "failed", data: results });
     }else{
-      res.status(200).send({ message: "success", data: results });
+      res.send({ message: "success", data: results });
     }
   });
 });
