@@ -1,10 +1,9 @@
 const express = require("express");
 var db = require("../db");
-const crypto = require('crypto');
 const dashboard = express.Router();
-const fs = require('fs');
-const path = require('path');
-const { v4: uuidv4 } = require('uuid');
+const upload =require("../middleware/multer")
+const Encrypted=require("../middleware/Encrypted")
+
 
 // 後台訂單資料
 dashboard.get("/orderlist", function (req, res) {
@@ -149,13 +148,8 @@ dashboard.put("/dashboard/PersonalInfo/update/:uid", function (req, res) {
     password =?, rural =?, address =?, admin =?
       WHERE uid =? `
 
-  // 密碼加密
-  const algorithm = 'aes-256-cbc';
-  const key = crypto.randomBytes(32);
-  const iv = crypto.randomBytes(16);
-  let cipher = crypto.createCipheriv(algorithm, key, iv);
-  let encrypted = cipher.update(upPassWord, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
+  const encrypted =Encrypted(upPassWord)
+
 
   var data = [upName, upBirthDay, upPhone, upEmail, upId, encrypted, upRural, upAddress, upAdmin, uid]
   db.exec(sql, data, function (results, fields) {
@@ -172,13 +166,35 @@ dashboard.get("/dashboard/addstaff", function (req, res) {
   });
 })
 
-// 上傳圖片
-dashboard.post("/dashboard/addstaff/upload", function (req, res) {
+// 員工註冊資料+圖片
+dashboard.post("/dashboard/addstaff/upload",upload.single("photo"),function (req, res) {
 
-  console.log(req.body)
+  const {empLength,employeeName, employeePhone,employeeMail,employeePW,
+  employeeIdNumber,employeeBirthDay, empRural,empAddress, vaccine, goodId, racheck}=JSON.parse(req.body.data)
+  
+  const filePath=req.file.destination.slice(27)+req.file.filename
+  const encrypted =Encrypted(employeePW)
+  const employeeId=`RA${String(empLength+1).padStart(3,"0")}`
 
+  const sql=`INSERT INTO employeeinfo
+   (employeeid,employeename,employeephone,employeemail,employeepw,employeeidnumber,employeebirthday,
+    emprural,empaddress,photo,vaccine,goodid,racheck)  
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
-})
+  var data=[employeeId,employeeName,employeePhone,employeeMail,
+    encrypted,employeeIdNumber,employeeBirthDay,empRural,
+    empAddress,filePath,vaccine,goodId,racheck]
+
+  db.exec(sql, data, function (results, fields){
+    if(!results){
+      res.send({ message: "failed", data: results });
+      console.log(results)
+    }else{
+      res.send({ message: "success", data: results });
+      console.log(results)
+    }
+  });
+});
 
 // 更新員工資料
 dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
