@@ -4,6 +4,7 @@ const utils = require("../utils/book");
 
 // -------- DB --------
 let mysql = require("mysql");
+const { json } = require("body-parser");
 let myDBconn = mysql.createConnection({
   host: "localhost",
   port: "8889",
@@ -21,6 +22,18 @@ myDBconn.connect(function (err) {
     console.log("DB OK");
   }
 });
+
+function queryPromise(sql, params) {
+  return new Promise((resolve, reject) => {
+    myDBconn.query(sql, params, (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
 
 // -------- API --------
 bookRouter.get("/price", (req, res) => {
@@ -151,57 +164,73 @@ bookRouter.get("/member-info/:uid", (req, res) => {
   });
 });
 // 新增訂單至資料庫
-bookRouter.post("/order", (req, res) => {
-  console.log(req.body);
-  const {
-    uid,
-    employeeid,
-    date,
-    time,
-    weeks,
-    phone,
-    email,
-    city,
-    rural,
-    address,
-    name,
-    note,
-  } = req.body;
-  const orderId = utils.getRandomOrderId();
-  let price;
-  let sqlStr;
+bookRouter.post("/order", async (req, res) => {
+  try {
+    console.log(req.body);
+    let {
+      uid,
+      employeeid,
+      date,
+      time,
+      weeks,
+      phone,
+      email,
+      city,
+      rural,
+      address,
+      name,
+      note,
+    } = req.body;
+    const orderId = utils.getRandomOrderId();
+    let price;
+    let sqlStr;
 
-  sqlStr = `
-    INSERT INTO userorder (ornumber, employeeid, date, time, weeks, donetime)
-    VALUES (?, ?, ?, ?, ?, ?);
-  `;
-  myDBconn.query(
-    sqlStr,
-    [orderId, employeeid, date, time, weeks, 0],
-    (err, rows) => {
-      if (err) {
-        console.log(err);
-        return res.json(err);
+    // attendance
+    // 若無指派人，先看誰工作時數最少，再找當天誰有空
+    if (employeeid === "null") {
+      sqlStr = `
+        SELECT employeeid, COUNT(*) AS worktime FROM attendance
+        WHERE employeeid NOT IN (
+          SELECT employeeid FROM attendance 
+            WHERE \`time\` = ? AND \`date\` = ?
+        )
+        GROUP BY employeeid 
+        ORDER BY worktime
+        LIMIT 1;
+      `;
+      employeeid = (await queryPromise(sqlStr, [time, date]))[0].employeeid;
+      if (!employeeid) {
+        return res.json("have no employee to work");
       }
     }
-  );
-  sqlStr = `
-    SELECT price FROM priceList WHERE weekNumber = ?;
-  `;
-  myDBconn.query(sqlStr, [weeks], (err, rows) => {
-    if (err) {
-      return res.json(err);
-    }
-    price = rows;
-  });
 
-  sqlStr = `
-    INSERT INTO orderlist (ornumber, orphone, oremail, orcity, orrural, oraddress, userid, orname, money, pay, state, note)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-  `;
-  myDBconn.query(
-    sqlStr,
-    [
+    // add attendance data
+    for (let i = 0; i < weeks; i++) {
+      sqlStr = `INSERT INTO attendance (employeeid, mode, time, date) VALUES (?, ?, ?, DATE_ADD(?, INTERVAL ? DAY))`;
+      await queryPromise(sqlStr, [employeeid, 0, time, date, i * 7]);
+    }
+
+    // update employee cases count
+    sqlStr = `UPDATE employeeinfo SET cases = cases + 1 WHERE employeeid = ?`;
+    await queryPromise(sqlStr, [employeeid]);
+
+    // userorder
+    sqlStr = `
+      INSERT INTO userorder (ornumber, employeeid, date, time, weeks, donetime)
+      VALUES (?, ?, ?, ?, ?, ?);
+    `;
+    await queryPromise(sqlStr, [orderId, employeeid, date, time, weeks, 0]);
+
+    // orderlist
+    sqlStr = `
+      SELECT price FROM priceList WHERE weekNumber = ?;
+    `;
+    price = (await queryPromise(sqlStr, [weeks]))[0].price;
+    sqlStr = `
+      INSERT INTO orderlist (ornumber, orphone, oremail, orcity, orrural, oraddress, userid, orname, money, pay, state, note)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    `;
+    await queryPromise(sqlStr, [
       orderId,
       phone,
       email,
@@ -214,14 +243,10 @@ bookRouter.post("/order", (req, res) => {
       "1",
       "0",
       note,
-    ],
-    (err, rows) => {
-      if (err) {
-        console.log(err);
-        return res.json(err);
-      }
-    }
-  );
-  return res.json(orderId);
+    ]);
+    return res.json(orderId);
+  } catch (err) {
+    res.json(err);
+  }
 });
 module.exports = bookRouter;
