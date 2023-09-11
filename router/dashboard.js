@@ -207,13 +207,7 @@ dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
   WHERE employeeid=?`;
 
 
-  // 密碼加密
-  const algorithm = 'aes-256-cbc';
-  const key = crypto.randomBytes(32);
-  const iv = crypto.randomBytes(16);
-  let cipher = crypto.createCipheriv(algorithm, key, iv);
-  let encrypted = cipher.update(upPassWord, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
+  const encrypted =Encrypted(upPassWord)
 
 
   var data = [upName, upPhone, upEmail, upVaccine, upGoodid, upRacheck, upCases, upIdnumber, upBirthday, upRural, upAddress, encrypted, employeeid];
