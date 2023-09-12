@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.1.2
 -- https://www.phpmyadmin.net/
 --
--- 主機： 127.0.0.1
--- 產生時間： 2023-09-11 10:45:17
--- 伺服器版本： 10.4.28-MariaDB
--- PHP 版本： 8.2.4
+-- 主機： localhost:3306
+-- 產生時間： 2023-09-12 09:35:21
+-- 伺服器版本： 5.7.24
+-- PHP 版本： 8.0.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 資料庫： `cleaning_services`
+-- 資料庫: `cleaning_services`
 --
 CREATE DATABASE IF NOT EXISTS `cleaning_services` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `cleaning_services`;
@@ -33,7 +33,7 @@ CREATE TABLE `adreessdist` (
   `dist` varchar(5) NOT NULL,
   `v` varchar(30) NOT NULL,
   `A_I` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `adreessdist`
@@ -70,7 +70,7 @@ CREATE TABLE `attendance` (
   `mode` int(1) NOT NULL,
   `time` int(1) NOT NULL,
   `date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `attendance`
@@ -160,8 +160,8 @@ INSERT INTO `attendance` (`employeeid`, `mode`, `time`, `date`) VALUES
 CREATE TABLE `blacklist` (
   `uid` int(10) NOT NULL,
   `whyblacklist` varchar(100) NOT NULL DEFAULT '未說明',
-  `blacktime` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `blacktime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `blacklist`
@@ -193,20 +193,21 @@ CREATE TABLE `employeeinfo` (
   `empcity` varchar(10) NOT NULL DEFAULT '臺中市',
   `emprural` varchar(10) NOT NULL,
   `empaddress` varchar(50) NOT NULL,
-  `employeetime` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `admin` int(1) NOT NULL DEFAULT '1',
+  `employeetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `employeeinfo`
 --
 
-INSERT INTO `employeeinfo` (`employeeid`, `employeename`, `employeephone`, `employeeemail`, `photo`, `vaccine`, `goodid`, `racheck`, `cases`, `employeepw`, `employeeidnumber`, `employeebirthday`, `empcity`, `emprural`, `empaddress`, `employeetime`) VALUES
-('RA001', '鄒琦筑', '0958237879', 'sophia1207@hotmail.com', '/images/cleaner1.jpg', 1, 1, 1, 0, 'TdYzz2m3', 'K113760435', '1966-12-28', '台中市', '中區', '中山路一段123號', '2023-09-09 11:30:23'),
-('RA002', '鍾圖陽', '0912175001', 'jeffrey8325@outlook.com', '/images/cleaner2.jpg', 1, 1, 1, 0, 'kDyS45z3', 'Y220164801', '1998-02-22', '台中市', '西屯區', '文心路二段456號', '2023-09-09 11:30:23'),
-('RA003', '曹克毓', '0970724731', 'jane5953@yahoo.com', '/images/case-002.png', 1, 1, 1, 0, 'V68823d7', 'H170488816', '1993-02-15', '台中市', '北區', '三民路一段789號', '2023-09-09 11:30:23'),
-('RA004', '沈芮莘', '0960800071', 'fawcett9476@outlook.com', '/images/case-001.png', 1, 1, 1, 0, '9x94d49v', 'O282848786', '1978-11-24', '台中市', '南區', '建國南路十二段101號', '2023-09-09 11:30:23'),
-('RA005', '洪之寶', '0920012384', 'samantha1849@gmail.com', '/images/orderStaff.png', 1, 1, 1, 0, '8Q7Aw32W', 'M294543748', '2018-11-03', '台中市', '東區', '東光路三段234號', '2023-09-09 11:30:23'),
-('RA006', '楊年瀚', '0930036786', 'dupont882@gmail.com', '/images/cleaner4.jpg', 1, 1, 1, 0, '6sLv8KUM', 'E185269204', '1969-08-01', '台中市', '西區', '美村路四段567號', '2023-09-09 11:30:23');
+INSERT INTO `employeeinfo` (`employeeid`, `employeename`, `employeephone`, `employeeemail`, `photo`, `vaccine`, `goodid`, `racheck`, `cases`, `employeepw`, `employeeidnumber`, `employeebirthday`, `empcity`, `emprural`, `empaddress`, `admin`, `employeetime`) VALUES
+('RA001', '鄒琦筑', '0958237879', 'sophia1207@hotmail.com', '/images/cleaner1.jpg', 1, 1, 1, 0, 'TdYzz2m3', 'K113760435', '1966-12-28', '台中市', '中區', '中山路一段123號', 1, '2023-09-09 11:30:23'),
+('RA002', '鍾圖陽', '0912175001', 'jeffrey8325@outlook.com', '/images/cleaner2.jpg', 1, 1, 1, 0, 'kDyS45z3', 'Y220164801', '1998-02-22', '台中市', '西屯區', '文心路二段456號', 1, '2023-09-09 11:30:23'),
+('RA003', '曹克毓', '0970724731', 'jane5953@yahoo.com', '/images/case-002.png', 1, 1, 1, 0, 'V68823d7', 'H170488816', '1993-02-15', '台中市', '北區', '三民路一段789號', 1, '2023-09-09 11:30:23'),
+('RA004', '沈芮莘', '0960800071', 'fawcett9476@outlook.com', '/images/case-001.png', 1, 1, 1, 0, '9x94d49v', 'O282848786', '1978-11-24', '台中市', '南區', '建國南路十二段101號', 1, '2023-09-09 11:30:23'),
+('RA005', '洪之寶', '0920012384', 'samantha1849@gmail.com', '/images/orderStaff.png', 1, 1, 1, 0, '8Q7Aw32W', 'M294543748', '2018-11-03', '台中市', '東區', '東光路三段234號', 1, '2023-09-09 11:30:23'),
+('RA006', '楊年瀚', '0930036786', 'dupont882@gmail.com', '/images/cleaner4.jpg', 1, 1, 1, 0, '6sLv8KUM', 'E185269204', '1969-08-01', '台中市', '西區', '美村路四段567號', 1, '2023-09-09 11:30:23');
 
 -- --------------------------------------------------------
 
@@ -223,7 +224,7 @@ CREATE TABLE `evaluate` (
   `manner` int(11) DEFAULT NULL,
   `reply` varchar(100) DEFAULT NULL,
   `state` int(2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `evaluate`
@@ -254,11 +255,11 @@ CREATE TABLE `orderlist` (
   `orname` varchar(20) NOT NULL,
   `money` int(7) NOT NULL,
   `pay` varchar(1) NOT NULL,
-  `ordertime` timestamp NOT NULL DEFAULT current_timestamp(),
+  `ordertime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `orderdone` date DEFAULT NULL,
   `state` int(2) NOT NULL,
   `note` varchar(150) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `orderlist`
@@ -287,7 +288,7 @@ INSERT INTO `orderlist` (`ornumber`, `orphone`, `oremail`, `orcity`, `orrural`, 
 CREATE TABLE `pricelist` (
   `weeknumber` int(4) NOT NULL,
   `price` int(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `pricelist`
@@ -335,9 +336,9 @@ CREATE TABLE `userinfo` (
   `address` varchar(50) NOT NULL,
   `admin` int(1) NOT NULL,
   `userid` varchar(8) NOT NULL,
-  `jointime` timestamp NOT NULL DEFAULT current_timestamp(),
+  `jointime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `blacklist` int(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- 傾印資料表的資料 `userinfo`
@@ -408,7 +409,7 @@ CREATE TABLE `userorder` (
   `time` int(2) NOT NULL,
   `weeks` int(2) NOT NULL,
   `donetime` int(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `userorder`
