@@ -9,7 +9,7 @@ let myDBconn = mysql.createConnection({
   // port: "8889",
   port: "3306",
   user: "root",
-  password: "",
+  password: "root",
   database: "cleaning_services",
   multipleStatements: true,
 });
