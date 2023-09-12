@@ -1,14 +1,15 @@
 let express = require("express");
 const bookRouter = express.Router();
 const utils = require("../utils/book");
+const session = require("express-session");
 
 // -------- DB --------
 let mysql = require("mysql");
 const { json } = require("body-parser");
 let myDBconn = mysql.createConnection({
   host: "localhost",
-  // port: "8889",
-  port: "3306",
+  port: "8889",
+  // port: "3306",
   user: "root",
   password: "root",
   database: "cleaning_services",
@@ -36,6 +37,14 @@ function queryPromise(sql, params) {
 }
 
 // -------- API --------
+// login check
+bookRouter.use((req, res, next) => {
+  if (!req.session.isLogin) {
+    return res.status(403).send({ status: 1, msg: "無權進行此操作" });
+  }
+  next();
+});
+
 bookRouter.get("/price", (req, res) => {
   const week = req.query.week;
   myDBconn.query(
@@ -85,18 +94,16 @@ bookRouter.get("/employee-info", (req, res) => {
         ) AS score
     ON
         score.employeeid = info.employeeid;`;
-  myDBconn.query(sql,
-    (err, rows) => {
-      if (err) {
-        console.log(err);
-      }
-      data1 = rows.map((result) => {
-        result.total_efficiency = result.total_efficiency.toFixed(1);
-        return result;
-      });
-      return res.json(data1);
+  myDBconn.query(sql, (err, rows) => {
+    if (err) {
+      console.log(err);
     }
-  );
+    data1 = rows.map((result) => {
+      result.total_efficiency = result.total_efficiency.toFixed(1);
+      return result;
+    });
+    return res.json(data1);
+  });
 });
 
 // 預約時間相關
@@ -246,9 +253,7 @@ bookRouter.post("/new-order", async (req, res) => {
     return res.json(orderId);
   } catch (err) {
     res.json(err);
+    console.log(err);
   }
 });
 module.exports = bookRouter;
-
-
-
