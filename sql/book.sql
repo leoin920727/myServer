@@ -62,3 +62,16 @@ FROM attendance
 WHERE `date` >= DATE_ADD(CURDATE(), INTERVAL 1 day) AND `date` < DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
 AND employeeid = ?
 ORDER BY `date`) AS A   
+
+-- 查詢有空檔的所有員工及其手上的工作天數
+SELECT i.employeeid, IFNULL(b.worktime, 0) AS worktime
+FROM employeeinfo AS i
+LEFT JOIN (
+    SELECT employeeid, COUNT(*) AS worktime FROM attendance
+    GROUP BY employeeid
+) AS b ON i.employeeid = b.employeeid
+WHERE i.employeeid NOT IN (
+    SELECT employeeid FROM attendance 
+    WHERE `time` = 2 AND `date` = '2023-09-20'
+)
+ORDER BY IFNULL(b.worktime, 0)  LIMIT 1;

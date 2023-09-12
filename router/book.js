@@ -184,15 +184,19 @@ bookRouter.post("/new-order", async (req, res) => {
     // 若無指派人，先看誰工作時數最少，再找當天誰有空
     if (employeeid === "null") {
       sqlStr = `
-        SELECT employeeid, COUNT(*) AS worktime FROM attendance
-        WHERE employeeid NOT IN (
-          SELECT employeeid FROM attendance 
-            WHERE \`time\` = ? AND \`date\` = ?
-        )
-        GROUP BY employeeid 
-        ORDER BY worktime
-        LIMIT 1;
-      `;
+      SELECT i.employeeid, IFNULL(b.worktime, 0) AS worktime
+      FROM employeeinfo AS i
+      LEFT JOIN (
+          SELECT employeeid, COUNT(*) AS worktime
+          FROM attendance
+          GROUP BY employeeid
+      ) AS b ON i.employeeid = b.employeeid
+      WHERE i.employeeid NOT IN (
+          SELECT employeeid
+          FROM attendance 
+          WHERE \`time\` = ? AND \`date\` = ?
+      )
+      ORDER BY IFNULL(b.worktime, 0)  LIMIT 1;`;
       employeeid = (await queryPromise(sqlStr, [time, date]))[0].employeeid;
       if (!employeeid) {
         return res.json("have no employee to work");
