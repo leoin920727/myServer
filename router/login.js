@@ -6,10 +6,6 @@ const cookieParser = require('cookie-parser');
 var login = express.Router();
 
 
-// 設定 CORS 中間件
-//----允許此網域可跨域存取 
-login.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
-login.use(cookieParser());
 login.use(session({
     secret: 'raccoonncleaning',
     resave: false, // 固定寫法
@@ -17,10 +13,16 @@ login.use(session({
 
     cookie: {
         // 目前設定五分鐘
+        secure: false,
+        httpOnly: true,
         maxAge: 60 * 1000 * 5
     }
 
 }));
+// 設定 CORS 中間件
+//----允許此網域可跨域存取 
+login.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+login.use(cookieParser());
 
 
 // 登入後使用此API獲得資料
@@ -31,6 +33,7 @@ login.get("/user", (req, res) => {
     }
     res.send({ status: 0, msg: "獲取成功", username: req.session.user.email, data: req.session });
 });
+
 
 
 
@@ -55,19 +58,21 @@ login.post('/login', function (req, res) {
 
                     req.session.user = results; // 將使用者資料存到 session 中
                     req.session.isLogin = true; // 將使用者的登入狀態存到 session 中
+
+                    //  data: req.session.user  這是使用者的資料
                     res.send({ status: 0, msg: '登入成功', data: req.session.user });
 
-                    // 密碼匹配，允許登入
-                    // res.status(200).json({ message: '登入成功' });
+
                 }
             });
         }
     });
 });
 
-// 登出用
-login.post("/logout", (req, res) => {
+// 登出清空 session用
+login.get("/logout", (req, res) => {
     req.session.destroy(); // 清空 session 訊息
+    res.clearCookie('connect.sid', { path: '/' });
     res.send({
         status: 0,
         msg: "登出成功"
