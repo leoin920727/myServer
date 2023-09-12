@@ -169,7 +169,7 @@ dashboard.get("/dashboard/addstaff", function (req, res) {
 // 員工註冊資料+圖片
 dashboard.post("/dashboard/addstaff/upload",upload.single("photo"),function (req, res) {
 
-  const {empLength,employeeName, employeePhone,employeeMail,employeePW,
+  const {empLength,employeeName, employeePhone,employeeeMail,employeePW,
   employeeIdNumber,employeeBirthDay, empRural,empAddress, vaccine, goodId, racheck}=JSON.parse(req.body.data)
   
   const filePath=req.file.destination.slice(27)+req.file.filename
@@ -177,11 +177,11 @@ dashboard.post("/dashboard/addstaff/upload",upload.single("photo"),function (req
   const employeeId=`RA${String(empLength+1).padStart(3,"0")}`
 
   const sql=`INSERT INTO employeeinfo
-   (employeeid,employeename,employeephone,employeemail,employeepw,employeeidnumber,employeebirthday,
+   (employeeid,employeename,employeephone,employeeemail,employeepw,employeeidnumber,employeebirthday,
     emprural,empaddress,photo,vaccine,goodid,racheck)  
     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
-  var data=[employeeId,employeeName,employeePhone,employeeMail,
+  var data=[employeeId,employeeName,employeePhone,employeeeMail,
     encrypted,employeeIdNumber,employeeBirthDay,empRural,
     empAddress,filePath,vaccine,goodId,racheck]
 
@@ -206,14 +206,8 @@ dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
   racheck=?, cases=?, employeeidnumber=?, employeebirthday=?, emprural=?, empaddress=?, employeepw=?
   WHERE employeeid=?`;
 
-
-  // 密碼加密
-  const algorithm = 'aes-256-cbc';
-  const key = crypto.randomBytes(32);
-  const iv = crypto.randomBytes(16);
-  let cipher = crypto.createCipheriv(algorithm, key, iv);
-  let encrypted = cipher.update(upPassWord, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
+  const encrypted= Encrypted(upPassWord)
+ 
 
 
   var data = [upName, upPhone, upEmail, upVaccine, upGoodid, upRacheck, upCases, upIdnumber, upBirthday, upRural, upAddress, encrypted, employeeid];
