@@ -3,6 +3,7 @@ var db = require("../db");
 const dashboard = express.Router();
 const upload =require("../middleware/multer")
 const Encrypted=require("../middleware/Encrypted")
+const Decrypt=require("../middleware/Decrypt")
 
 
 // 後台訂單資料
@@ -41,20 +42,20 @@ dashboard.get("/dashboard/memberInfo", function (req, res) {
 });
 
 // 會員資料內容
-dashboard.get("/dashboard/PersonalInfo/:uid", function (req, res) {
-  const uid = req.params.uid;
+dashboard.get("/dashboard/PersonalInfo/:userid", function (req, res) {
+  const userid = req.params.userid;
   var sql1 = `SELECT * FROM userinfo`;
-  var sql2 = `SELECT * FROM userinfo WHERE uid =? `;
-  var sql3 = `SELECT(whyblacklist) AS why FROM userinfo, blacklist WHERE userinfo.uid = blacklist.uid AND userinfo.uid =? `;
+  var sql2 = `SELECT * FROM userinfo WHERE userid =?`;
+  var sql3 = `SELECT(whyblacklist) AS why FROM userinfo, blacklist WHERE userinfo.uid = blacklist.uid AND userinfo.userid =? `;
   var sql4 = `SELECT * FROM adreessdist`
-  var data = [uid];
+  var data = [userid];
   db.exec(sql1, [], function (number, fields) {
     db.exec(sql2, data, function (results, fields) {
       db.exec(sql3, data, function (why, fields) {
         db.exec(sql4, data, function (address, fields) {
           const ban = why.length === 0 ? " " : why;
-          const len = number.length;
-          res.send({ data: results, length: len, why: ban, address: address });
+          const len = number;
+          res.send({ data: results, len: len, why: ban, address: address });
         });
       });
     });
@@ -62,13 +63,13 @@ dashboard.get("/dashboard/PersonalInfo/:uid", function (req, res) {
 });
 
 // 新增黑名單
-dashboard.put("/dashboard/PersonalInfo/blacklist/:uid", function (req, res) {
-  const uid = req.params.uid;
+dashboard.put("/dashboard/PersonalInfo/blacklist/:userid", function (req, res) {
+  const userid = req.params.userid;
   const why = req.body.why;
-  var sql1 = `UPDATE userinfo SET blacklist = 1 WHERE userinfo.uid = ? `;
-  var sql2 = `INSERT INTO blacklist(uid, whyblacklist) VALUES(?,?)`;
-  var data1 = [uid];
-  var data2 = [uid, why];
+  var sql1 = `UPDATE userinfo SET blacklist = 1 WHERE userinfo.userid = ? `;
+  var sql2 = `INSERT INTO blacklist(userid, whyblacklist) VALUES(?,?)`;
+  var data1 = [userid];
+  var data2 = [userid, why];
   db.exec(sql1, data1, function (results2, fields) {
     db.exec(sql2, data2, function (results, fields) {
       res.send({ message: "success" });
@@ -78,11 +79,11 @@ dashboard.put("/dashboard/PersonalInfo/blacklist/:uid", function (req, res) {
 
 // 更新黑名單
 dashboard.put(
-  "/dashboard/PersonalInfo/removeblacklist/:uid",
+  "/dashboard/PersonalInfo/removeblacklist/:userid",
   function (req, res) {
-    const uid = req.params.uid;
-    var sql = `UPDATE userinfo SET blacklist = 0 WHERE userinfo.uid =? `;
-    var data = [uid];
+    const userid = req.params.userid;
+    var sql = `UPDATE userinfo SET blacklist = 0 WHERE userinfo.userid =? `;
+    var data = [userid];
     db.exec(sql, data, function (results, fields) {
       res.send({ message: "success" });
     });
@@ -91,11 +92,11 @@ dashboard.put(
 
 // 刪除黑名單
 dashboard.delete(
-  "/dashboard/PersonalInfo/removeblacklist/:uid",
+  "/dashboard/PersonalInfo/removeblacklist/:userid",
   function (req, res) {
-    const uid = req.params.uid;
-    var sql = `DELETE FROM blacklist WHERE blacklist.uid =? `;
-    var data = [uid];
+    const userid = req.params.userid;
+    var sql = `DELETE FROM blacklist WHERE blacklist.userid =? `;
+    var data = [userid];
     db.exec(sql, data, function (results, fields) {
       res.send({ message: "success" });
     });
@@ -111,20 +112,20 @@ dashboard.get("/dashboard/StaffList", function (req, res) {
   });
 });
 
-// 員工資料內容 //需要員工的PK數字
+// 員工資料內容
 dashboard.get("/dashboard/StaffList/:employeeid", function (req, res) {
   const employeeid = req.params.employeeid;
   var sql1 = `SELECT * FROM employeeinfo WHERE employeeid = ? `;
-  var sql2 = `SELECT COUNT(*) AS length FROM employeeinfo`;
+  var sql2 = `SELECT employeeid FROM employeeinfo ORDER BY employeeinfo.employeeid ASC`;
   var sql3 = `SELECT * FROM employeeinfo 
     INNER JOIN evaluate ON employeeinfo.employeeid = evaluate.employeeid 
     INNER JOIN orderlist ON evaluate.ornumber = orderlist.ornumber 
     WHERE employeeinfo.employeeid = ?; `;
   var data = [employeeid];
   db.exec(sql1, data, function (results, fields) {
-    db.exec(sql2, data, function (length, fields) {
+    db.exec(sql2, data, function (useridarr, fields) {
       db.exec(sql3, data, function (list, fields) {
-        res.send({ data: results, length: length, list: list });
+        res.send({ data: results, useridarr: useridarr, list: list });
       });
     });
   });
@@ -140,32 +141,32 @@ dashboard.get("/dashboard/blacklist", function (req, res) {
 });
 
 // 更新會員資料
-dashboard.put("/dashboard/PersonalInfo/update/:uid", function (req, res) {
-  const uid = req.params.uid;
+dashboard.put("/dashboard/PersonalInfo/update/:userid", function (req, res) {
+  const userid = req.params.userid;
   const { upName, upId, upPhone, upRural, upAddress, upEmail, upPassWord, upAdmin, upBirthDay } = req.body
   var sql = `UPDATE userinfo
  SET name =?, birthday =?, phone =?, email =?, id =?,
     password =?, rural =?, address =?, admin =?
-      WHERE uid =? `
+      WHERE userid =? `
 
   const encrypted =Encrypted(upPassWord)
+  console.log(Decrypt(encrypted))
 
-
-  var data = [upName, upBirthDay, upPhone, upEmail, upId, encrypted, upRural, upAddress, upAdmin, uid]
+  var data = [upName, upBirthDay, upPhone, upEmail, upId, encrypted, upRural, upAddress, upAdmin, userid]
   db.exec(sql, data, function (results, fields) {
     res.send({ message: "success", data: results });
   });
 })
 
 // 刪除會員資料
-dashboard.delete('/dashboard/PersonalInfo/delete/:uid', function (req, res) {
-  const uid = req.params.uid;
+dashboard.delete('/dashboard/PersonalInfo/delete/:userid', function (req, res) {
+  const userid = req.params.userid;
 
   const sql = `
   DELETE userinfo, blacklist
   FROM userinfo
-  LEFT JOIN blacklist ON userinfo.uid = blacklist.uid
-  WHERE userinfo.uid = ?;
+  LEFT JOIN blacklist ON userinfo.userid = blacklist.userid
+  WHERE userinfo.userid = ?;
 `;
 
   db.exec(sql, [uid], (error, results) => {
