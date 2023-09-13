@@ -7,10 +7,10 @@ const Decrypt = require("../middleware/Decrypt");
 // 
 
 
-var cors = require("cors");
-signup.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 
 
+
+// 會員資料表   
 signup.get('/signup/userinfo', function (req, res) {
     var data = []
     var sql = `SELECT * FROM userinfo `
@@ -23,24 +23,39 @@ signup.get('/signup/userinfo', function (req, res) {
 // 
 signup.post('/signup', function (req, res) {
 
-    console.log('Received data:', req.body.data);
-    const { username, birthday, phone, email, id, password, rural, address } = JSON.parse(req.body.data)
 
-    const userid = `RA${String(sqllength + 1).padStart(8, "0")}`;
-    var sqllength = `SELECT COUNT(*) FROM userinfo`
-    var sql = `INSERT INTO userinfo(username,birthday,phone,email,id,password,rural,address,userid) 
-    VALUES(?,?,?,?,?,?,?,?,?)`
+    const { username, birthday, email, phone, id, rural, address, password } = req.body
     // 加密
-    const encrypted = Encrypted(password);
-    var data = [username, birthday, phone, email, id, encrypted, rural, address, userid]
+    // const encrypted = Encrypted(password);
+    var sqllength = `SELECT COUNT(*) as count FROM userinfo;`
 
-    db.exec(sql, data, function (results, fields) {
-        if (!results) {
-            res.send({ message: 'failed', data: results });
-        } else {
-            res.send({ message: 'success', data: results });
-        }
-    });
+
+
+
+    db.exec(sqllength, [], function (result, failed) {
+        console.log(result[0].count);
+        const userid = `RA${String(result[0].count + 1).padStart(6, "0")}`;
+        var sql = `INSERT INTO userinfo(username,birthday,phone,email,id,rural,address,admin,userid,password) 
+        VALUES(?,?,?,?,?,?,?,?,?,?)`
+
+        var admin = 0;
+
+
+        // 加密的
+        // var data = [username, birthday, phone, email, id, rural, address, admin, userid, encrypted]
+        
+        // 未加密
+        var data = [username, birthday, phone, email, id, rural, address, admin, userid, password]
+
+        db.exec(sql, data, function (results, fields) {
+            if (!results) {
+                res.send({ message: 'failed', data: results });
+            } else {
+                res.send({ message: 'success', data: results });
+            }
+        });
+
+    })
 });
 
 module.exports = signup;
