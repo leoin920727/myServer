@@ -44,9 +44,9 @@ dashboard.get("/dashboard/memberInfo", function (req, res) {
 // 會員資料內容
 dashboard.get("/dashboard/PersonalInfo/:userid", function (req, res) {
   const userid = req.params.userid;
-  var sql1 = `SELECT * FROM userinfo`;
+  var sql1 = `SELECT userid FROM userinfo`;
   var sql2 = `SELECT * FROM userinfo WHERE userid =?`;
-  var sql3 = `SELECT(whyblacklist) AS why FROM userinfo, blacklist WHERE userinfo.uid = blacklist.uid AND userinfo.userid =? `;
+  var sql3 = `SELECT(whyblacklist) AS why FROM userinfo, blacklist WHERE userinfo.userid = blacklist.userid AND userinfo.userid =? `;
   var sql4 = `SELECT * FROM adreessdist`
   var data = [userid];
   db.exec(sql1, [], function (number, fields) {
@@ -55,7 +55,9 @@ dashboard.get("/dashboard/PersonalInfo/:userid", function (req, res) {
         db.exec(sql4, data, function (address, fields) {
           const ban = why.length === 0 ? " " : why;
           const len = number;
-          res.send({ data: results, len: len, why: ban, address: address });
+          // const newPW=Decrypt(results[0].password)//正式上線再開
+          // console.log(len)
+          res.send({ data: results , len: len, why: ban, address: address });
         });
       });
     });
@@ -121,11 +123,14 @@ dashboard.get("/dashboard/StaffList/:employeeid", function (req, res) {
     INNER JOIN evaluate ON employeeinfo.employeeid = evaluate.employeeid 
     INNER JOIN orderlist ON evaluate.ornumber = orderlist.ornumber 
     WHERE employeeinfo.employeeid = ?; `;
+  var sql4 = `SELECT * FROM adreessdist`
   var data = [employeeid];
   db.exec(sql1, data, function (results, fields) {
     db.exec(sql2, data, function (useridarr, fields) {
       db.exec(sql3, data, function (list, fields) {
-        res.send({ data: results, useridarr: useridarr, list: list });
+        db.exec(sql4, data, function (address, fields) {
+        res.send({ data: results, useridarr: useridarr, list: list,address:address });
+        });
       });
     });
   });
@@ -149,8 +154,8 @@ dashboard.put("/dashboard/PersonalInfo/update/:userid", function (req, res) {
     password =?, rural =?, address =?, admin =?
       WHERE userid =? `
 
-  const encrypted =Encrypted(upPassWord)
-  console.log(Decrypt(encrypted))
+  // const encrypted =Encrypted(upPassWord)//正式上線再開
+  const encrypted =upPassWord
 
   var data = [upName, upBirthDay, upPhone, upEmail, upId, encrypted, upRural, upAddress, upAdmin, userid]
   db.exec(sql, data, function (results, fields) {
@@ -196,7 +201,8 @@ dashboard.post("/dashboard/addstaff/upload",upload.single("photo"),function (req
   employeeIdNumber,employeeBirthDay, empRural,empAddress, vaccine, goodId, racheck}=JSON.parse(req.body.data)
   
   const filePath=req.file.destination.slice(27)+req.file.filename
-  const encrypted =Encrypted(employeePW)
+  // const encrypted =Encrypted(employeePW)//正式上線再開
+  const encrypted =employeePW
   const employeeId=`RA${String(empLength+1).padStart(3,"0")}`
 
   const sql=`INSERT INTO employeeinfo
@@ -222,18 +228,18 @@ dashboard.post("/dashboard/addstaff/upload",upload.single("photo"),function (req
 // 更新員工資料
 dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
   const employeeid = req.params.employeeid;
-  const { upName, upPhone, upEmail, upVaccine, upGoodid, upRacheck, upCases, upIdnumber, upBirthday, upRural, upAddress, upPassWord } = req.body;
+  const { upName, upPhone, upEmail, upVaccine, upGoodid, upRacheck, upIdnumber, upBirthday, upRural, upAddress, upPassWord } = req.body;
 
   var sql = `UPDATE employeeinfo
   SET employeename=?, employeephone=?, employeeemail=?, vaccine=?, goodid=?,
-  racheck=?, cases=?, employeeidnumber=?, employeebirthday=?, emprural=?, empaddress=?, employeepw=?
+  racheck=?, employeeidnumber=?, employeebirthday=?, emprural=?, empaddress=?, employeepw=?
   WHERE employeeid=?`;
 
 
-  const encrypted =Encrypted(upPassWord)
+  // const encrypted =Encrypted(upPassWord)//正式上線再開
+  const encrypted =upPassWord
 
-
-  var data = [upName, upPhone, upEmail, upVaccine, upGoodid, upRacheck, upCases, upIdnumber, upBirthday, upRural, upAddress, encrypted, employeeid];
+  var data = [upName, upPhone, upEmail, upVaccine, upGoodid, upRacheck, upIdnumber, upBirthday, upRural, upAddress, encrypted, employeeid];
   db.exec(sql, data, function (results, fields) {
     res.send({ message: "success", data: results });
   });
