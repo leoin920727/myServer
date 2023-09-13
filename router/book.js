@@ -8,8 +8,8 @@ let mysql = require("mysql");
 const { json } = require("body-parser");
 let myDBconn = mysql.createConnection({
   host: "localhost",
-  port: "8889",
-  // port: "3306",
+  // port: "8889",
+  port: "3306",
   user: "root",
   password: "root",
   database: "cleaning_services",

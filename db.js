@@ -3,7 +3,6 @@ var mysql = require("mysql");
 exports.exec = (sql, data, callback) => {
   var myDBconn = mysql.createConnection({
     host: "localhost",
-    port: "8889",
     user: "root",
     password: "root",
     database: "cleaning_services",
