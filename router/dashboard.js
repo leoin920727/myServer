@@ -1,8 +1,8 @@
 const express = require("express");
 var db = require("../db");
 const dashboard = express.Router();
-const upload =require("../middleware/multer")
-const Encrypted=require("../middleware/Encrypted")
+const upload = require("../middleware/multer")
+const Encrypted = require("../middleware/Encrypted")
 
 
 // 後台訂單資料
@@ -148,7 +148,7 @@ dashboard.put("/dashboard/PersonalInfo/update/:uid", function (req, res) {
     password =?, rural =?, address =?, admin =?
       WHERE uid =? `
 
-  const encrypted =Encrypted(upPassWord)
+  const encrypted = Encrypted(upPassWord)
 
 
   var data = [upName, upBirthDay, upPhone, upEmail, upId, encrypted, upRural, upAddress, upAdmin, uid]
@@ -189,29 +189,29 @@ dashboard.get("/dashboard/addstaff", function (req, res) {
 })
 
 // 員工註冊資料+圖片
-dashboard.post("/dashboard/addstaff/upload",upload.single("photo"),function (req, res) {
+dashboard.post("/dashboard/addstaff/upload", upload.single("photo"), function (req, res) {
 
-  const {empLength,employeeName, employeePhone,employeeMail,employeePW,
-  employeeIdNumber,employeeBirthDay, empRural,empAddress, vaccine, goodId, racheck}=JSON.parse(req.body.data)
-  
-  const filePath=req.file.destination.slice(27)+req.file.filename
-  const encrypted =Encrypted(employeePW)
-  const employeeId=`RA${String(empLength+1).padStart(3,"0")}`
+  const { empLength, employeeName, employeePhone, employeeMail, employeePW,
+    employeeIdNumber, employeeBirthDay, empRural, empAddress, vaccine, goodId, racheck } = JSON.parse(req.body.data)
 
-  const sql=`INSERT INTO employeeinfo
+  const filePath = req.file.destination.slice(27) + req.file.filename
+  const encrypted = Encrypted(employeePW)
+  const employeeId = `RA${String(empLength + 1).padStart(3, "0")}`
+
+  const sql = `INSERT INTO employeeinfo
    (employeeid,employeename,employeephone,employeemail,employeepw,employeeidnumber,employeebirthday,
     emprural,empaddress,photo,vaccine,goodid,racheck)  
     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
-  var data=[employeeId,employeeName,employeePhone,employeeMail,
-    encrypted,employeeIdNumber,employeeBirthDay,empRural,
-    empAddress,filePath,vaccine,goodId,racheck]
+  var data = [employeeId, employeeName, employeePhone, employeeMail,
+    encrypted, employeeIdNumber, employeeBirthDay, empRural,
+    empAddress, filePath, vaccine, goodId, racheck]
 
-  db.exec(sql, data, function (results, fields){
-    if(!results){
+  db.exec(sql, data, function (results, fields) {
+    if (!results) {
       res.send({ message: "failed", data: results });
       console.log(results)
-    }else{
+    } else {
       res.send({ message: "success", data: results });
       console.log(results)
     }
@@ -229,7 +229,7 @@ dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
   WHERE employeeid=?`;
 
 
-  const encrypted =Encrypted(upPassWord)
+  const encrypted = Encrypted(upPassWord)
 
 
   var data = [upName, upPhone, upEmail, upVaccine, upGoodid, upRacheck, upCases, upIdnumber, upBirthday, upRural, upAddress, encrypted, employeeid];
@@ -255,5 +255,38 @@ dashboard.delete('/dashboard/StaffList/delete/:employeeid', function (req, res) 
     res.status(200).json({ message: 'Data deleted successfully' });
   });
 });
+
+// 會員專區資料
+dashboard.get("/member/memberinfo/:userid", function (req, res) {
+  const userid = req.params.userid;
+  var sql1 = `SELECT * FROM userinfo`;
+  var sql2 = `SELECT * FROM userinfo WHERE userid =? `;
+  var sql3 = `SELECT * FROM adreessdist`
+  var data = [userid];
+  db.exec(sql1, [], function (number, fields) {
+    db.exec(sql2, data, function (results, fields) {
+      db.exec(sql3, data, function (address, fields) {
+        const len = number.length;
+        res.send({ data: results, length: len, address: address });
+      });
+    });
+  });
+});
+
+// 會員專區修改個人資料
+dashboard.put("/member/memberinfo/update/:userid", function (req, res) {
+  const userid = req.params.userid;
+  const { upPhone, upRural, upAddress} = req.body
+  var sql = `UPDATE userinfo
+ SET phone =?, rural =?, address =? WHERE userid =? `
+    
+
+
+  var data = [upPhone, upRural, upAddress, userid]
+  db.exec(sql, data, function (results, fields) {
+    res.send({ message: "success", data: results });
+  });
+})
+
 
 module.exports = dashboard;
