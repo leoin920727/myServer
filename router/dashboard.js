@@ -263,4 +263,63 @@ dashboard.delete('/dashboard/StaffList/delete/:employeeid', function (req, res) 
   });
 });
 
+// 會員專區資料
+dashboard.get("/member/memberinfo/:userid", function (req, res) {
+  const userid = req.params.userid;
+  var sql1 = `SELECT * FROM userinfo`;
+  var sql2 = `SELECT * FROM userinfo WHERE userid =? `;
+  var sql3 = `SELECT * FROM adreessdist`
+  var data = [userid];
+  db.exec(sql1, [], function (number, fields) {
+    db.exec(sql2, data, function (results, fields) {
+      db.exec(sql3, data, function (address, fields) {
+        const len = number.length;
+        res.send({ data: results, length: len, address: address });
+      });
+    });
+  });
+});
+
+// 會員專區修改個人資料
+dashboard.put("/member/memberinfo/update/:userid", function (req, res) {
+  const userid = req.params.userid;
+  const { upPhone, upRural, upAddress } = req.body
+  var sql = `UPDATE userinfo
+ SET phone =?, rural =?, address =? WHERE userid =? `
+
+
+
+  var data = [upPhone, upRural, upAddress, userid]
+  db.exec(sql, data, function (results, fields) {
+    res.send({ message: "success", data: results });
+  });
+})
+
+// 會員專區密碼
+dashboard.get("/member/changepwd/:userid", function (req, res) {
+  const userid = req.params.userid;
+  var sql = `SELECT password FROM userinfo WHERE userid = ?`;
+  var data = [userid];
+
+  db.exec(sql, data, function (results, fields) {
+    res.send(results);
+  });
+})
+
+
+// 會員專區修改密碼
+dashboard.put("/member/changepwd/update/:userid", function (req, res) {
+  const userid = req.params.userid;
+  const { uppassword } = req.body
+  var sql = `UPDATE userinfo
+ SET 	password =? WHERE userid =? `
+
+//  const encrypted = Encrypted(uppassword)
+
+  var data = [uppassword, userid]
+  db.exec(sql, data, function (results, fields) {
+    res.send({ message: "success", data: results });
+  });
+})
+
 module.exports = dashboard;
