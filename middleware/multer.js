@@ -10,8 +10,7 @@ const createFolder = function (folder) {
     fs.mkdirSync(folder);
   }
 };
-// const uploadFolder = '../cleaning-services/public/images/uploads';
-const uploadFolder = "./public/images/uploads";
+const uploadFolder = '../cleaning-services/public/images/uploads';
 createFolder(uploadFolder);
 
 // 設定 storage
