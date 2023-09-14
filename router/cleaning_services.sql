@@ -99,7 +99,7 @@ CREATE TABLE `employeeinfo` (
   `vaccine` int(1) NOT NULL,
   `goodid` int(1) NOT NULL,
   `racheck` int(1) NOT NULL,
-  `cases` int(5) NOT NULL,
+  `cases` int(5) NOT NULL DEFAULT 0,
   `employeepw` varchar(50) NOT NULL,
   `employeeidnumber` varchar(10) NOT NULL,
   `employeebirthday` date NOT NULL,
