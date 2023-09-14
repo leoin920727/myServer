@@ -322,4 +322,18 @@ dashboard.put("/member/changepwd/update/", function (req, res) {
   });
 })
 
+// 會員訂單資料表
+dashboard.get("/member", function (req, res) {
+  const userid = req.session.user[0].userid;
+  var sql = `SELECT UO.ornumber, UO.employeeid, UO.weeks, UO.donetime, OL.money, OL.state, OL.ordertime
+  FROM userorder AS UO
+  INNER JOIN orderlist AS OL ON OL.ornumber = UO.ornumber
+  WHERE OL.userid = ?; `;
+  console.log(data);
+  var data = [userid];
+  db.exec(sql, data, function (results, fields) {
+    res.send(results);
+  });
+});
+
 module.exports = dashboard;
