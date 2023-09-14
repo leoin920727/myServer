@@ -13,7 +13,7 @@ const cookieParser = require("cookie-parser");
 app.use(
   session({
     secret: "raccoonncleaning",
-    
+
     resave: false, // 固定寫法
     saveUninitialized: true, // 固定寫法
 
@@ -22,7 +22,7 @@ app.use(
       // 目前設定五分鐘
       secure: false,
       // 當httpOnly設定為false時會有安全問題 會使網頁可以使用JS存取cookie
-      httpOnly: false,
+      httpOnly: true,
       // httpOnly: true,
       maxAge: 60 * 1000 * 5,
     },

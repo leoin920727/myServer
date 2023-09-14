@@ -24,7 +24,7 @@ signup.get('/signup/userinfo', function (req, res) {
 signup.post('/signup', function (req, res) {
 
 
-    const { username, birthday, email, phone, id, rural, address, password } = req.body
+    const { name, birthday, email, phone, id, rural, address, password } = req.body
     // 加密
     // const encrypted = Encrypted(password);
     var sqllength = `SELECT COUNT(*) as count FROM userinfo;`
@@ -33,7 +33,7 @@ signup.post('/signup', function (req, res) {
     db.exec(sqllength, [], function (result, failed) {
         console.log(result[0].count);
         const userid = `RA${String(result[0].count + 1).padStart(6, "0")}`;
-        var sql = `INSERT INTO userinfo(username,birthday,phone,email,id,rural,address,admin,userid,password) 
+        var sql = `INSERT INTO userinfo(name,birthday,phone,email,id,rural,address,admin,userid,password) 
         VALUES(?,?,?,?,?,?,?,?,?,?)`
 
         var admin = 0;
@@ -43,7 +43,7 @@ signup.post('/signup', function (req, res) {
         // var data = [username, birthday, phone, email, id, rural, address, admin, userid, encrypted]
 
         // 未加密
-        var data = [username, birthday, phone, email, id, rural, address, admin, userid, password]
+        var data = [name, birthday, phone, email, id, rural, address, admin, userid, password]
 
         db.exec(sql, data, function (results, fields) {
             if (!results) {
