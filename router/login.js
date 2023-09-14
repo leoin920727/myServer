@@ -47,7 +47,6 @@ login.post('/login', function (req, res) {
         // 使用者或員工存在於其中一個資料表中，進行相應的處理
         if (results1.length > 0) {
           // 將使用者資料存到 session 中
-
           req.session.username = "Test";
           req.session.user = results1;
         } else {
