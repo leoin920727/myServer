@@ -18,7 +18,7 @@ app.use(
       // 目前設定五分鐘
       secure: false,
       httpOnly: true,
-      maxAge: 60 * 1000 * 5,
+      maxAge: 60 * 1000 * 60,
     },
   })
 );
