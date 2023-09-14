@@ -30,8 +30,6 @@ signup.post('/signup', function (req, res) {
     var sqllength = `SELECT COUNT(*) as count FROM userinfo;`
 
 
-
-
     db.exec(sqllength, [], function (result, failed) {
         console.log(result[0].count);
         const userid = `RA${String(result[0].count + 1).padStart(6, "0")}`;
@@ -43,7 +41,7 @@ signup.post('/signup', function (req, res) {
 
         // 加密的
         // var data = [username, birthday, phone, email, id, rural, address, admin, userid, encrypted]
-        
+
         // 未加密
         var data = [username, birthday, phone, email, id, rural, address, admin, userid, password]
 

@@ -24,28 +24,45 @@ login.get("/user", (req, res) => {
   });
 });
 
-login.post("/login", function (req, res) {
-  var sql1 = `SELECT * FROM userinfo`;
-  var sql2 = `SELECT * FROM userinfo where email=? and password=?`;
-  var data = [req.body.email, req.body.password];
+// 登入API
+login.post('/login', function (req, res) {
+  var email = req.body.email;
+  var password = req.body.password;
 
-  db.exec(sql1, [], function (results, fields) {
-    if (results.length === 0) {
-      res.status(401).json({ message: "用戶不存在" });
-    } else {
-      db.exec(sql2, data, function (results, fields) {
-        if (results.length === 0) {
-          // 密碼不匹配，拒絕登入請求
-          res.status(401).json({ message: "密碼不正確" });
+  // userinfo資料表
+  var sql1 = 'SELECT * FROM userinfo WHERE email=? AND password=?';
+  var data1 = [email, password];
+
+  // employeeinfo資料表
+  var sql2 = 'SELECT * FROM employeeinfo WHERE employeeemail=? AND employeepw=?';
+  var data2 = [email, password];
+
+  db.exec(sql1, data1, function (results1, fields1) {
+    db.exec(sql2, data2, function (results2, fields2) {
+      // 檢查兩個查詢結果
+      if (results1.length === 0 && results2.length === 0) {
+        // 使用者不存在或密碼不符，拒絕登入請求
+        res.status(401).json({ message: '密碼不正確' });
+      } else {
+        // 使用者或員工存在於其中一個資料表中，進行相應的處理
+        if (results1.length > 0) {
+          // 將使用者資料存到 session 中
+
+          req.session.username = "Test";
+          req.session.user = results1;
         } else {
-          req.session.user = results; // 將使用者資料存到 session 中
-          req.session.isLogin = true; // 將使用者的登入狀態存到 session 中
-
-          //  data: req.session.user  這是使用者的資料
-          res.send({ status: 0, msg: "登入成功", data: req.session.user });
+          // 將員工資料存到 session 中
+          req.session.username = "Test2";
+          req.session.user = results2;
         }
-      });
-    }
+        // 將登入狀態存到 session 中
+        req.session.isLogin = true;
+
+
+        // data: req.session.user 這是使用者或員工的資料
+        res.send({ status: 0, msg: '登入成功', data: req.session.user });
+      }
+    });
   });
 });
 
