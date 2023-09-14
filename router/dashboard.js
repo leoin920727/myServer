@@ -1,9 +1,9 @@
 const express = require("express");
 var db = require("../db");
 const dashboard = express.Router();
-const upload =require("../middleware/multer")
-const Encrypted=require("../middleware/Encrypted")
-const Decrypt=require("../middleware/Decrypt")
+const upload = require("../middleware/multer")
+const Encrypted = require("../middleware/Encrypted")
+const Decrypt = require("../middleware/Decrypt")
 
 
 // 後台訂單資料
@@ -57,7 +57,7 @@ dashboard.get("/dashboard/PersonalInfo/:userid", function (req, res) {
           const len = number;
           // const newPW=Decrypt(results[0].password)//正式上線再開
           // console.log(len)
-          res.send({ data: results , len: len, why: ban, address: address });
+          res.send({ data: results, len: len, why: ban, address: address });
         });
       });
     });
@@ -129,7 +129,7 @@ dashboard.get("/dashboard/StaffList/:employeeid", function (req, res) {
     db.exec(sql2, data, function (useridarr, fields) {
       db.exec(sql3, data, function (list, fields) {
         db.exec(sql4, data, function (address, fields) {
-        res.send({ data: results, useridarr: useridarr, list: list,address:address });
+          res.send({ data: results, useridarr: useridarr, list: list, address: address });
         });
       });
     });
@@ -155,7 +155,7 @@ dashboard.put("/dashboard/PersonalInfo/update/:userid", function (req, res) {
       WHERE userid =? `
 
   // const encrypted =Encrypted(upPassWord)//正式上線再開
-  const encrypted =upPassWord
+  const encrypted = upPassWord
 
   var data = [upName, upBirthDay, upPhone, upEmail, upId, encrypted, upRural, upAddress, upAdmin, userid]
   db.exec(sql, data, function (results, fields) {
@@ -195,30 +195,30 @@ dashboard.get("/dashboard/addstaff", function (req, res) {
 })
 
 // 員工註冊資料+圖片
-dashboard.post("/dashboard/addstaff/upload",upload.single("photo"),function (req, res) {
+dashboard.post("/dashboard/addstaff/upload", upload.single("photo"), function (req, res) {
 
-  const {empLength,employeeName, employeePhone,employeeeMail,employeePW,
-  employeeIdNumber,employeeBirthDay, empRural,empAddress, vaccine, goodId, racheck}=JSON.parse(req.body.data)
-  
-  const filePath=req.file.destination.slice(27)+req.file.filename
+  const { empLength, employeeName, employeePhone, employeeeMail, employeePW,
+    employeeIdNumber, employeeBirthDay, empRural, empAddress, vaccine, goodId, racheck } = JSON.parse(req.body.data)
+
+  const filePath = req.file.destination.slice(27) + req.file.filename
   // const encrypted =Encrypted(employeePW)//正式上線再開
-  const encrypted =employeePW
-  const employeeId=`RA${String(empLength+1).padStart(3,"0")}`
+  const encrypted = employeePW
+  const employeeId = `RA${String(empLength + 1).padStart(3, "0")}`
 
-  const sql=`INSERT INTO employeeinfo
+  const sql = `INSERT INTO employeeinfo
    (employeeid,employeename,employeephone,employeeemail,employeepw,employeeidnumber,employeebirthday,
     emprural,empaddress,photo,vaccine,goodid,racheck)  
     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
-  var data=[employeeId,employeeName,employeePhone,employeeeMail,
-    encrypted,employeeIdNumber,employeeBirthDay,empRural,
-    empAddress,filePath,vaccine,goodId,racheck]
+  var data = [employeeId, employeeName, employeePhone, employeeeMail,
+    encrypted, employeeIdNumber, employeeBirthDay, empRural,
+    empAddress, filePath, vaccine, goodId, racheck]
 
-  db.exec(sql, data, function (results, fields){
-    if(!results){
+  db.exec(sql, data, function (results, fields) {
+    if (!results) {
       res.send({ message: "failed", data: results });
       console.log(results)
-    }else{
+    } else {
       res.send({ message: "success", data: results });
       console.log(results)
     }
@@ -237,7 +237,7 @@ dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
 
 
   // const encrypted =Encrypted(upPassWord)//正式上線再開
-  const encrypted =upPassWord
+  const encrypted = upPassWord
 
   var data = [upName, upPhone, upEmail, upVaccine, upGoodid, upRacheck, upIdnumber, upBirthday, upRural, upAddress, encrypted, employeeid];
   db.exec(sql, data, function (results, fields) {
@@ -264,8 +264,9 @@ dashboard.delete('/dashboard/StaffList/delete/:employeeid', function (req, res) 
 });
 
 // 會員專區資料
-dashboard.get("/member/memberinfo/:userid", function (req, res) {
-  const userid = req.params.userid;
+dashboard.get("/member/memberinfo/", function (req, res) {
+  const userid = req.session.user[0].userid;
+  console.log(userid);
   var sql1 = `SELECT * FROM userinfo`;
   var sql2 = `SELECT * FROM userinfo WHERE userid =? `;
   var sql3 = `SELECT * FROM adreessdist`
@@ -281,13 +282,11 @@ dashboard.get("/member/memberinfo/:userid", function (req, res) {
 });
 
 // 會員專區修改個人資料
-dashboard.put("/member/memberinfo/update/:userid", function (req, res) {
-  const userid = req.params.userid;
+dashboard.put("/member/memberinfo/update/", function (req, res) {
+  const userid = req.session.user[0].userid;
   const { upPhone, upRural, upAddress } = req.body
   var sql = `UPDATE userinfo
  SET phone =?, rural =?, address =? WHERE userid =? `
-
-
 
   var data = [upPhone, upRural, upAddress, userid]
   db.exec(sql, data, function (results, fields) {
@@ -296,8 +295,8 @@ dashboard.put("/member/memberinfo/update/:userid", function (req, res) {
 })
 
 // 會員專區密碼
-dashboard.get("/member/changepwd/:userid", function (req, res) {
-  const userid = req.params.userid;
+dashboard.get("/member/changepwd/", function (req, res) {
+  const userid = req.session.user[0].userid;
   var sql = `SELECT password FROM userinfo WHERE userid = ?`;
   var data = [userid];
 
@@ -308,15 +307,16 @@ dashboard.get("/member/changepwd/:userid", function (req, res) {
 
 
 // 會員專區修改密碼
-dashboard.put("/member/changepwd/update/:userid", function (req, res) {
-  const userid = req.params.userid;
+dashboard.put("/member/changepwd/update/", function (req, res) {
+  const userid = req.session.user[0].userid;
   const { uppassword } = req.body
   var sql = `UPDATE userinfo
  SET 	password =? WHERE userid =? `
 
-//  const encrypted = Encrypted(uppassword)
+  //  const encrypted = Encrypted(uppassword)
+  const encrypted = uppassword
 
-  var data = [uppassword, userid]
+  var data = [encrypted, userid]
   db.exec(sql, data, function (results, fields) {
     res.send({ message: "success", data: results });
   });
