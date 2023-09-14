@@ -178,17 +178,14 @@ dashboard.put("/dashboard/PersonalInfo/update/:userid", function (req, res) {
     upRural,
     upAddress,
     upEmail,
-    upPassWord,
     upAdmin,
     upBirthDay,
   } = req.body;
-  const sql = `UPDATE userinfo
- SET name =?, birthday =?, phone =?, email =?, id =?,
-    password =?, rural =?, address =?, admin =?
-      WHERE userid =? `;
-
-  // const encrypted =Encrypted(upPassWord)//正式上線再開
-  const encrypted = upPassWord;
+  const newPW = req.body.upPassWord;
+  const sql = `UPDATE userinfo 
+  SET name =?, birthday =?, phone =?, email =?, id =?, rural =?, address =?, admin =?
+  WHERE userid =? `;
+  const sql2 = `UPDATE userinfo SET password =? WHERE userid =? `;
 
   const data = [
     upName,
@@ -196,13 +193,16 @@ dashboard.put("/dashboard/PersonalInfo/update/:userid", function (req, res) {
     upPhone,
     upEmail,
     upId,
-    encrypted,
     upRural,
     upAddress,
     upAdmin,
     userid,
   ];
+  console.log(data);
   db.exec(sql, data, function (results, fields) {
+    if (newPW) {
+      db.exec(sql2, [Encrypted(newPW), userid], function (results, fields) {});
+    }
     res.send({ message: "success", data: results });
   });
 });
@@ -287,10 +287,8 @@ dashboard.post(
     db.exec(sql, data, function (results, fields) {
       if (!results) {
         res.send({ message: "failed", data: results });
-        console.log(results);
       } else {
         res.send({ message: "success", data: results });
-        console.log(results);
       }
     });
   }
