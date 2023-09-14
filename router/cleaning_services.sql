@@ -208,7 +208,7 @@ CREATE TABLE `userinfo` (
   `admin` int(1) DEFAULT 0,
   `userid` varchar(8) NOT NULL,
   `jointime` timestamp NOT NULL DEFAULT current_timestamp(),
-  `blacklist` int(1) DEFAULT NULL
+  `blacklist` int(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
