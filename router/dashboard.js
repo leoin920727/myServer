@@ -5,6 +5,11 @@ const upload = require("../middleware/multer")
 const Encrypted = require("../middleware/Encrypted")
 const Decrypt = require("../middleware/Decrypt")
 
+// 員工驗證
+dashboard.get("/staffAdmin",function (req, res) { 
+  console.log(req.session)
+  if(req.session.user[0].uid==1)return res.send({isAuthorised:true}) 
+})  
 
 // 後台訂單資料
 dashboard.get("/orderlist", function (req, res) {
@@ -30,6 +35,20 @@ dashboard.get("/AdminOrder/:ornumber", function (req, res) {
     res.send(result)
   })
 
+});
+// 後台訂單資料(更新)
+dashboard.put("/AdminOrder/updata/:ornumber", function (req, res) {
+  const ornumber = req.params.ornumber;
+  const {donetime,state}=req.body.data
+  var data1 = [donetime,ornumber];
+  var data2 = [state,ornumber];
+  var sql1 = `UPDATE userorder SET donetime=? WHERE ornumber=?`
+  var sql2 = `UPDATE orderlist SET orderdone=NOW() , state=? WHERE ornumber=?`
+  db.exec(sql1, data1, function (result, fields) {
+    db.exec(sql2, data2, function (result, fields) {
+      res.send({data:result,message: "success"})
+    })
+  });
 });
 
 // 會員資料表
@@ -268,7 +287,7 @@ dashboard.get("/member/memberinfo/", function (req, res) {
   const userid = req.session.user[0].userid;
   console.log(userid);
   var sql1 = `SELECT * FROM userinfo`;
-  var sql2 = `SELECT * FROM userinfo WHERE userid =? `;
+  var sql2 = `SELECT * FROM userinfo WHERE userid =?`;
   var sql3 = `SELECT * FROM adreessdist`
   var data = [userid];
   db.exec(sql1, [], function (number, fields) {
