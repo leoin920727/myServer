@@ -427,7 +427,6 @@ dashboard.get("/member", function (req, res) {
   FROM userorder AS UO
   INNER JOIN orderlist AS OL ON OL.ornumber = UO.ornumber
   WHERE OL.userid = ?; `;
-  console.log(data);
   const data = [userid];
   db.exec(sql, data, function (results, fields) {
     res.send(results);
