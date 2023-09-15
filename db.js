@@ -4,7 +4,7 @@ exports.exec = (sql, data, callback) => {
   var myDBconn = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "",
+    password: "root",
     database: "cleaning_services",
     multipleStatements: true,
   });
