@@ -47,12 +47,12 @@ login.post('/login', function (req, res) {
   // 帳號密碼確認
   function checkAccount(sql,data,res){
     db.exec(sql, data, function (results1, fields1) {
-  if(results1 && results1[0].email === data && Decrypt(results1[0].password) === password){
+  if(results1 && results1[0]?.email === data && Decrypt(results1[0].password) === password){
     req.session.username = "Member";
     req.session.user = results1;
     req.session.isLogin = true;
     res.send({ status: 0, msg: '登入成功', data: req.session.user });
-  }else if(results1 && results1[0].employeeemail === data && password === Decrypt(results1[0].employeepw)){
+  }else if(results1 && results1[0]?.employeeemail === data && password === Decrypt(results1[0].employeepw)){
     req.session.username = "Employee";
     req.session.user = results1;
     req.session.isLogin = true;
