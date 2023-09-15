@@ -8,7 +8,7 @@ const Decrypt = require("../middleware/Decrypt");
 // 員工驗證
 dashboard.get("/staffAdmin", function (req, res) {
   if (req.session) return res.send({ isAuthorised: true });
-  res.send({ isAuthorised: true });
+  res.send({ isAuthorised: false });
 });
 
 // 後台訂單資料
@@ -198,7 +198,7 @@ dashboard.put("/dashboard/PersonalInfo/update/:userid", function (req, res) {
     upAdmin,
     userid,
   ];
-  console.log(data);
+  
   db.exec(sql, data, function (results, fields) {
     if (newPW) {
       db.exec(sql2, [Encrypted(newPW), userid], function (results, fields) {});
@@ -317,7 +317,7 @@ dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
   WHERE employeeid=?`;
   const sql2 = `UPDATE employeeinfo SET employeepw=? WHERE employeeid=?`;
 
-  // const encrypted = upPassWord;
+  
 
   const data1 = [
     upName,
@@ -332,11 +332,10 @@ dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
     upAddress,
     employeeid,
   ];
-
+  
   db.exec(sql1, data1, function (results, fields) {
-    const encrypted = Encrypted(newPassWord); //正式上線再開
-    const data2 = [encrypted, employeeid];
     if (newPassWord) {
+      const data2 = [Encrypted(newPassWord), employeeid];
       db.exec(sql2, data2, function (results, fields) {});
     }
     res.send({ message: "success", data: results });
@@ -411,10 +410,9 @@ dashboard.put("/member/changepwd/update/", function (req, res) {
   const sql = `UPDATE userinfo
  SET 	password =? WHERE userid =? `;
 
-  const encrypted = Encrypted(uppassword);
-  // const encrypted = uppassword;
 
-  const data = [encrypted, userid];
+
+  const data = [Encrypted(uppassword), userid];
   db.exec(sql, data, function (results, fields) {
     res.send({ message: "success", data: results });
   });
@@ -427,7 +425,6 @@ dashboard.get("/member", function (req, res) {
   FROM userorder AS UO
   INNER JOIN orderlist AS OL ON OL.ornumber = UO.ornumber
   WHERE OL.userid = ?; `;
-  console.log(data);
   const data = [userid];
   db.exec(sql, data, function (results, fields) {
     res.send(results);
