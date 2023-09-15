@@ -3,7 +3,6 @@ const db = require("../db");
 const dashboard = express.Router();
 const upload = require("../middleware/multer");
 const Encrypted = require("../middleware/Encrypted");
-const Decrypt = require("../middleware/Decrypt");
 
 // 員工驗證
 dashboard.get("/staffAdmin", function (req, res) {
@@ -317,7 +316,7 @@ dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
   WHERE employeeid=?`;
   const sql2 = `UPDATE employeeinfo SET employeepw=? WHERE employeeid=?`;
 
-  
+
 
   const data1 = [
     upName,
