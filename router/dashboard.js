@@ -9,6 +9,11 @@ dashboard.get("/staffAdmin", function (req, res) {
   if (req.session.user[0].admin === 1) return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
 });
+// 會員驗證
+dashboard.get("/memberAdmin", function (req, res) {
+  if (req.session.user[0]?.admin === 0) return res.send({ isAuthorised: true });
+  res.send({ isAuthorised: false });
+});
 
 // 後台訂單資料
 dashboard.get("/orderlist", function (req, res) {
