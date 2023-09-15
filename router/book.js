@@ -73,7 +73,7 @@ bookRouter.get("/employee-info", (req, res) => {
     SELECT
         info.employeename,
         info.photo,
-        ROUND((score.e1 + score.e2 + score.e3 + score.e4) / 4, 1) AS total_efficiency
+        IFNULL(ROUND((score.e1 + score.e2 + score.e3 + score.e4) / 4, 1), 0) AS total_efficiency
     FROM
         employeeinfo AS info
     LEFT JOIN
