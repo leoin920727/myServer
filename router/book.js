@@ -8,7 +8,6 @@ let mysql = require("mysql");
 const { json } = require("body-parser");
 let myDBconn = mysql.createConnection({
   host: "localhost",
-  // port: "8889",
   port: "3306",
   user: "root",
   password: "root",
@@ -17,10 +16,10 @@ let myDBconn = mysql.createConnection({
 });
 myDBconn.connect(function (err) {
   if (err) {
-    console.log("DB有錯");
+    console.log("Book DB有錯");
     console.log(err);
   } else {
-    console.log("DB OK");
+    console.log("Book DB OK");
   }
 });
 
@@ -74,7 +73,7 @@ bookRouter.get("/employee-info", (req, res) => {
     SELECT
         info.employeename,
         info.photo,
-        ROUND((score.e1 + score.e2 + score.e3 + score.e4) / 4, 1) AS total_efficiency
+        IFNULL(ROUND((score.e1 + score.e2 + score.e3 + score.e4) / 4, 1), 0) AS total_efficiency
     FROM
         employeeinfo AS info
     LEFT JOIN
