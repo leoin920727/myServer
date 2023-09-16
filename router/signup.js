@@ -26,7 +26,7 @@ signup.post('/signup', function (req, res) {
 
     const { name, birthday, email, phone, id, rural, address, password } = req.body
     // 加密
-    // const encrypted = Encrypted(password);
+    const encrypted = Encrypted(password);
     var sqllength = `SELECT COUNT(*) as count FROM userinfo;`
 
 
@@ -39,10 +39,10 @@ signup.post('/signup', function (req, res) {
 
 
         // 加密的
-        // var data = [username, birthday, phone, email, id, rural, address, admin, userid, encrypted]
+        var data = [name, birthday, phone, email, id, rural, address, admin, userid, encrypted]
 
         // 未加密
-        var data = [name, birthday, phone, email, id, rural, address, admin, userid, password]
+        // var data = [name, birthday, phone, email, id, rural, address, admin, userid, password]
 
         db.exec(sql, data, function (results, fields) {
             if (!results) {
