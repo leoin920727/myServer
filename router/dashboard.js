@@ -366,7 +366,7 @@ dashboard.delete(
 
 // 會員專區資料
 dashboard.get("/member/memberinfo/", function (req, res) {
-  const userid = req.session.user[0].userid;
+  const userid = req.session?.user[0]?.userid;
   const sql1 = `SELECT * FROM userinfo`;
   const sql2 = `SELECT * FROM userinfo WHERE userid =?`;
   const sql3 = `SELECT * FROM adreessdist`;
@@ -422,7 +422,7 @@ dashboard.put("/member/changepwd/update/", function (req, res) {
 
 // 會員訂單資料表
 dashboard.get("/member", function (req, res) {
-  const userid = req.session.user[0].userid;
+  const userid = req.session?.user[0]?.userid;
   const sql = `SELECT UO.ornumber, UO.employeeid, UO.weeks, UO.donetime, OL.money, OL.state, OL.ordertime
   FROM userorder AS UO
   INNER JOIN orderlist AS OL ON OL.ornumber = UO.ornumber
