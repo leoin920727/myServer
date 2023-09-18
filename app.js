@@ -13,7 +13,6 @@ const cookieParser = require("cookie-parser");
 app.use(
   session({
     secret: "raccoonncleaning",
-
     resave: false, // 固定寫法
     saveUninitialized: true, // 固定寫法
 

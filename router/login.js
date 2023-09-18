@@ -29,6 +29,7 @@ login.post('/login', function (req, res) {
   var email = req.body.email;
   var password = req.body.password;
 
+
   // userinfo資料表
   var sql1 = 'SELECT * FROM userinfo WHERE email=? AND password=?';
   var data1 = [email, password];
@@ -37,32 +38,36 @@ login.post('/login', function (req, res) {
   var sql2 = 'SELECT * FROM employeeinfo WHERE employeeemail=? AND employeepw=?';
   var data2 = [email, password];
 
-  db.exec(sql1, data1, function (results1, fields1) {
-    db.exec(sql2, data2, function (results2, fields2) {
-      // 檢查兩個查詢結果
-      if (results1.length === 0 && results2.length === 0) {
-        // 使用者不存在或密碼不符，拒絕登入請求
-        res.status(401).json({ message: '密碼不正確' });
-      } else {
-        // 使用者或員工存在於其中一個資料表中，進行相應的處理
-        if (results1.length > 0) {
-          // 將使用者資料存到 session 中
-          req.session.username = "Test";
-          req.session.user = results1;
-        } else {
-          // 將員工資料存到 session 中
-          req.session.username = "Test2";
-          req.session.user = results2;
-        }
-        // 將登入狀態存到 session 中
-        req.session.isLogin = true;
-
-
-        // data: req.session.user 這是使用者或員工的資料
-        res.send({ status: 0, msg: '登入成功', data: req.session.user });
-      }
-    });
+  //判斷會員帳號是否存在
+  db.exec(sql1, email, function (results1, fields1) {
+    if (results1 && results1[0]?.email === email) {
+      if (results1[0].blacklist == 0) {
+        checkAccount(sql1, email, res) //跑會員表 
+      } 
+    } else {
+      checkAccount(sql2, email, res) //跑員工表
+    }
   });
+
+
+  // 帳號密碼確認
+  function checkAccount(sql, data, res) {
+    db.exec(sql, data, function (results1, fields1) {
+      if (results1 && results1[0].email === data && Decrypt(results1[0].password) === password) {
+        req.session.username = "Member";
+        req.session.user = results1;
+        req.session.isLogin = true;
+        res.send({ status: 0, msg: '登入成功', data: req.session.user });
+      } else if (results1 && results1[0].employeeemail === data && password === Decrypt(results1[0].employeepw)) {
+        req.session.username = "Employee";
+        req.session.user = results1;
+        req.session.isLogin = true;
+        res.send({ status: 0, msg: '登入成功', data: req.session.user });
+      } else {
+        res.status(401).json({ message: '密碼不正確' });
+      }
+    })
+  }
 });
 
 
