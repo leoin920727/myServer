@@ -176,7 +176,9 @@ total.get("/modal", (req, res) => {
       score.employeeid = info.employeeid) AS t1 
       LEFT JOIN (SELECT employeeid, reply,ornumber FROM evaluate) AS t2
       ON t1.employeeid = t2.employeeid
-      WHERE t2.reply IS NOT null) AS new LEFT JOIN (SELECT ornumber,orname FROM orderlist) AS new2 ON new.ornumber = new2.ornumber
+     ) AS new LEFT JOIN (SELECT ornumber,orname FROM orderlist) AS new2 ON new.ornumber = new2.ornumber
+      ORDER BY
+    new.employeename ASC;
    ;
   `,
     (err, data) => {
