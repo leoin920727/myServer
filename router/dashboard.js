@@ -202,10 +202,10 @@ dashboard.put("/dashboard/PersonalInfo/update/:userid", function (req, res) {
     upAdmin,
     userid,
   ];
-  
+
   db.exec(sql, data, function (results, fields) {
     if (newPW) {
-      db.exec(sql2, [Encrypted(newPW), userid], function (results, fields) {});
+      db.exec(sql2, [Encrypted(newPW), userid], function (results, fields) { });
     }
     res.send({ message: "success", data: results });
   });
@@ -336,11 +336,11 @@ dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
     upAddress,
     employeeid,
   ];
-  
+
   db.exec(sql1, data1, function (results, fields) {
     if (newPassWord) {
       const data2 = [Encrypted(newPassWord), employeeid];
-      db.exec(sql2, data2, function (results, fields) {});
+      db.exec(sql2, data2, function (results, fields) { });
     }
     res.send({ message: "success", data: results });
   });
@@ -384,13 +384,13 @@ dashboard.get("/member/memberinfo/", function (req, res) {
 });
 
 // 會員專區修改個人資料
-dashboard.put("/member/memberinfo/update/", function (req, res) {
+dashboard.post("/member/memberinfo/update/", function (req, res) {
   const userid = req.session.user[0].userid;
-  const { upPhone, upRural, upAddress } = req.body;
+  const { phone, rural, address } = req.body;
   const sql = `UPDATE userinfo
  SET phone =?, rural =?, address =? WHERE userid =? `;
 
-  const data = [upPhone, upRural, upAddress, userid];
+  const data = [phone, rural, address, userid];
   db.exec(sql, data, function (results, fields) {
     res.send({ message: "success", data: results });
   });
@@ -402,25 +402,31 @@ dashboard.get("/member/changepwd/", function (req, res) {
   const sql = `SELECT password FROM userinfo WHERE userid = ?`;
   const data = [userid];
 
+
   db.exec(sql, data, function (results, fields) {
     res.send(results);
   });
 });
 
 // 會員專區修改密碼
-dashboard.put("/member/changepwd/update/", function (req, res) {
+dashboard.post("/member/changepwd/update/", function (req, res) {
   const userid = req.session.user[0].userid;
   const { uppassword } = req.body;
   const sql = `UPDATE userinfo
- SET 	password =? WHERE userid =? `;
-
-
+   SET password =? WHERE userid =? `;
 
   const data = [Encrypted(uppassword), userid];
-  db.exec(sql, data, function (results, fields) {
-    res.send({ message: "success", data: results });
+  
+  db.exec(sql, data, function (error, results, fields) {
+    if (error) {
+      console.error("Error updating password:", error);
+      res.status(500).send({ message: "Internal Server Error" });
+    } else {
+      res.send({ message: "success", data: results });
+    }
   });
 });
+
 
 // 會員訂單資料表
 dashboard.get("/member", function (req, res) {
