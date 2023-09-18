@@ -167,7 +167,6 @@ bookRouter.get("/member-info/:uid", (req, res) => {
 // 新增訂單至資料庫
 bookRouter.post("/new-order", async (req, res) => {
   try {
-    console.log(req.body);
     let {
       uid,
       employeeid,
