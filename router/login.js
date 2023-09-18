@@ -29,6 +29,7 @@ login.post('/login', function (req, res) {
   var email = req.body.email;
   var password = req.body.password;
 
+
   // userinfo資料表
   var sql1 = 'SELECT * FROM userinfo WHERE email=?';
 
@@ -37,30 +38,34 @@ login.post('/login', function (req, res) {
 
   //判斷會員帳號是否存在
   db.exec(sql1, email, function (results1, fields1) {
-    if(results1 && results1[0]?.email===email){ 
-      checkAccount(sql1,email,res) //跑會員表
-    }else{
-      checkAccount(sql2,email,res) //跑員工表
+    if (results1 && results1[0]?.email === email) {
+      if (results1[0].blacklist == 0) {
+        checkAccount(sql1, email, res) //跑會員表 
+      } 
+    } else {
+      checkAccount(sql2, email, res) //跑員工表
     }
   });
 
+
   // 帳號密碼確認
-  function checkAccount(sql,data,res){
+  function checkAccount(sql, data, res) {
     db.exec(sql, data, function (results1, fields1) {
-  if(results1 && results1[0]?.email === data && Decrypt(results1[0].password) === password){
-    req.session.username = "Member";
-    req.session.user = results1;
-    req.session.isLogin = true;
-    res.send({ status: 0, msg: '登入成功', data: req.session.user });
-  }else if(results1 && results1[0]?.employeeemail === data && password === Decrypt(results1[0].employeepw)){
-    req.session.username = "Employee";
-    req.session.user = results1;
-    req.session.isLogin = true;
-    res.send({ status: 0, msg: '登入成功', data: req.session.user });
-  }else{
-    res.status(401).json({ message: '密碼不正確' });
+      if (results1 && results1[0]?.email === data && Decrypt(results1[0].password) === password) {
+        req.session.username = "Member";
+        req.session.user = results1;
+        req.session.isLogin = true;
+        res.send({ status: 0, msg: '登入成功', data: req.session.user });
+      } else if (results1 && results1[0]?.employeeemail === data && password === Decrypt(results1[0].employeepw)) {
+        req.session.username = "Employee";
+        req.session.user = results1;
+        req.session.isLogin = true;
+        res.send({ status: 0, msg: '登入成功', data: req.session.user });
+      } else {
+        res.status(401).json({ message: '密碼不正確' });
+      }
+    })
   }
-})}
 });
 
 
