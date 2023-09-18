@@ -394,31 +394,20 @@ dashboard.post("/member/memberinfo/update/", function (req, res) {
   });
 });
 
-// 會員專區密碼
-dashboard.get("/member/changepwd/", function (req, res) {
-  const userid = req.session.user[0].userid;
-  const sql = `SELECT password FROM userinfo WHERE userid = ?`;
-  const data = [userid];
-
-
-  db.exec(sql, data, function (results, fields) {
-    res.send(results);
-  });
-});
-
 // 會員專區修改密碼
 dashboard.post("/member/changepwd/update/", function (req, res) {
   const userid = req.session.user[0].userid;
   const { uppassword } = req.body;
+  console.log("Received request to update password. UserID:", userid, "New Password:", uppassword);
+
   const sql = `UPDATE userinfo
    SET password =? WHERE userid =? `;
 
   const data = [Encrypted(uppassword), userid];
-  
-  db.exec(sql, data, function (error, results, fields) {
-    if (error) {
-      console.error("Error updating password:", error);
-      res.status(500).send({ message: "Internal Server Error" });
+
+  db.exec(sql, data, function (results, fields) {
+    if (!results) {
+      res.send({ message: "failed", data: results });
     } else {
       res.send({ message: "success", data: results });
     }
@@ -454,14 +443,14 @@ dashboard.get("/member/:orderNumber", function (req, res) {
   AVG(careful) AS careful,
   AVG(manner) AS manner
   FROM evaluate GROUP by ?`;
-  const sql4=`SELECT reply FROM evaluate WHERE employeeid=? AND ornumber=?`
+  const sql4 = `SELECT reply FROM evaluate WHERE employeeid=? AND ornumber=?`
   const data1 = [orderNumber];
   db.exec(sql1, data1, function (results1, fields) {
     const data2 = [results1[0]?.employeeid];
     db.exec(sql2, data2, function (results2, fields) {
       db.exec(sql3, data2, function (results3, fields) {
-        db.exec(sql4, [data2,orderNumber], function (results4, fields) {
-          res.send({results1:results1,results2:results2,results3:results3,results4:results4});
+        db.exec(sql4, [data2, orderNumber], function (results4, fields) {
+          res.send({ results1: results1, results2: results2, results3: results3, results4: results4 });
         });
       });
     });
@@ -470,13 +459,13 @@ dashboard.get("/member/:orderNumber", function (req, res) {
 
 // 訂單評價更新
 dashboard.put("/member/updata/:orderNumber", function (req, res) {
-  const orderNumber =req.params.orderNumber
-  const values=JSON.parse(JSON.stringify(req.body.data))
-  const reply=req.body.comment
-  const {employeeid,state}=req.body.orderAPI
-  const [clean,efficiency,manner,careful]=[values[0].value,values[1].value,values[2].value,values[3].value]
-  const data=[clean,efficiency,manner,careful,orderNumber,employeeid,state,reply]
-  const sql =`INSERT INTO 
+  const orderNumber = req.params.orderNumber
+  const values = JSON.parse(JSON.stringify(req.body.data))
+  const reply = req.body.comment
+  const { employeeid, state } = req.body.orderAPI
+  const [clean, efficiency, manner, careful] = [values[0].value, values[1].value, values[2].value, values[3].value]
+  const data = [clean, efficiency, manner, careful, orderNumber, employeeid, state, reply]
+  const sql = `INSERT INTO 
   evaluate (clean,efficiency,manner,careful,ornumber, employeeid,state,reply) 
   VALUES (?,?,?,?,?,?,?,?)`
   db.exec(sql, data, function (results1, fields) {
