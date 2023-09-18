@@ -2,10 +2,10 @@
 -- version 5.1.2
 -- https://www.phpmyadmin.net/
 --
--- 主機： localhost:3306
--- 產生時間： 2023-09-18 03:32:03
--- 伺服器版本： 5.7.24
--- PHP 版本： 8.0.1
+-- Host: localhost:3306
+-- Generation Time: Sep 18, 2023 at 05:38 AM
+-- Server version: 5.7.24
+-- PHP Version: 8.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,15 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 資料庫: `cleaning_services`
+-- Database: `cleaning_services`
 --
-CREATE DATABASE IF NOT EXISTS `cleaning_services` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `cleaning_services`;
 
 -- --------------------------------------------------------
 
 --
--- 資料表結構 `adreessdist`
+-- Table structure for table `adreessdist`
 --
 
 CREATE TABLE `adreessdist` (
@@ -36,12 +34,7 @@ CREATE TABLE `adreessdist` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- 資料表新增資料前，先清除舊資料 `adreessdist`
---
-
-TRUNCATE TABLE `adreessdist`;
---
--- 傾印資料表的資料 `adreessdist`
+-- Dumping data for table `adreessdist`
 --
 
 INSERT INTO `adreessdist` (`dist`, `v`, `A_I`) VALUES
@@ -67,7 +60,7 @@ INSERT INTO `adreessdist` (`dist`, `v`, `A_I`) VALUES
 -- --------------------------------------------------------
 
 --
--- 資料表結構 `attendance`
+-- Table structure for table `attendance`
 --
 
 CREATE TABLE `attendance` (
@@ -78,12 +71,7 @@ CREATE TABLE `attendance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- 資料表新增資料前，先清除舊資料 `attendance`
---
-
-TRUNCATE TABLE `attendance`;
---
--- 傾印資料表的資料 `attendance`
+-- Dumping data for table `attendance`
 --
 
 INSERT INTO `attendance` (`employeeid`, `mode`, `time`, `date`) VALUES
@@ -423,12 +411,58 @@ INSERT INTO `attendance` (`employeeid`, `mode`, `time`, `date`) VALUES
 ('RA006', 0, 1, '2023-09-27'),
 ('RA006', 0, 1, '2023-10-04'),
 ('RA006', 0, 1, '2023-10-11'),
-('RA006', 0, 1, '2023-10-18');
+('RA006', 0, 1, '2023-10-18'),
+('RA001', 0, 0, '2023-09-23'),
+('RA001', 0, 0, '2023-09-30'),
+('RA001', 0, 0, '2023-10-07'),
+('RA001', 0, 0, '2023-10-14'),
+('RA001', 0, 0, '2023-10-21'),
+('RA001', 0, 0, '2023-10-28'),
+('RA001', 0, 0, '2023-11-04'),
+('RA001', 0, 0, '2023-11-11'),
+('RA001', 0, 0, '2023-11-18'),
+('RA001', 0, 0, '2023-11-25'),
+('RA001', 0, 1, '2023-10-21'),
+('RA001', 0, 1, '2023-10-28'),
+('RA001', 0, 1, '2023-11-04'),
+('RA001', 0, 1, '2023-11-11'),
+('RA001', 0, 1, '2023-11-18'),
+('RA001', 0, 1, '2023-11-25'),
+('RA001', 0, 1, '2023-12-02'),
+('RA001', 0, 1, '2023-12-09'),
+('RA001', 0, 1, '2023-12-16'),
+('RA001', 0, 1, '2023-12-23'),
+('RA001', 0, 1, '2023-12-30'),
+('RA001', 0, 1, '2024-01-06'),
+('RA001', 0, 2, '2023-09-23'),
+('RA001', 0, 2, '2023-09-30'),
+('RA001', 0, 2, '2023-10-07'),
+('RA001', 0, 2, '2023-10-14'),
+('RA001', 0, 2, '2023-10-21'),
+('RA001', 0, 2, '2023-10-28'),
+('RA001', 0, 2, '2023-11-04'),
+('RA001', 0, 2, '2023-11-11'),
+('RA001', 0, 2, '2023-11-18'),
+('RA001', 0, 2, '2023-11-25'),
+('RA001', 0, 2, '2023-12-02'),
+('RA001', 0, 2, '2023-12-09'),
+('RA001', 0, 2, '2023-09-22'),
+('RA001', 0, 2, '2023-09-29'),
+('RA001', 0, 2, '2023-10-06'),
+('RA001', 0, 2, '2023-10-13'),
+('RA001', 0, 2, '2023-10-20'),
+('RA001', 0, 2, '2023-10-27'),
+('RA001', 0, 2, '2023-11-03'),
+('RA001', 0, 2, '2023-11-10'),
+('RA001', 0, 2, '2023-11-17'),
+('RA001', 0, 2, '2023-11-24'),
+('RA001', 0, 2, '2023-12-01'),
+('RA001', 0, 2, '2023-12-08');
 
 -- --------------------------------------------------------
 
 --
--- 資料表結構 `blacklist`
+-- Table structure for table `blacklist`
 --
 
 CREATE TABLE `blacklist` (
@@ -437,15 +471,10 @@ CREATE TABLE `blacklist` (
   `blacktime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- 資料表新增資料前，先清除舊資料 `blacklist`
---
-
-TRUNCATE TABLE `blacklist`;
 -- --------------------------------------------------------
 
 --
--- 資料表結構 `employeeinfo`
+-- Table structure for table `employeeinfo`
 --
 
 CREATE TABLE `employeeinfo` (
@@ -469,16 +498,11 @@ CREATE TABLE `employeeinfo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- 資料表新增資料前，先清除舊資料 `employeeinfo`
---
-
-TRUNCATE TABLE `employeeinfo`;
---
--- 傾印資料表的資料 `employeeinfo`
+-- Dumping data for table `employeeinfo`
 --
 
 INSERT INTO `employeeinfo` (`employeeid`, `employeename`, `employeephone`, `employeeemail`, `photo`, `vaccine`, `goodid`, `racheck`, `cases`, `employeepw`, `employeeidnumber`, `employeebirthday`, `empcity`, `emprural`, `empaddress`, `admin`, `employeetime`) VALUES
-('RA001', '張信彌', '0972840742', 'donald4276@hotmail.com', '/images/uploads/RA001-2023-09-18T01-37-03.430Z.png', 1, 1, 1, 6, '139b42f33703a71377b9f0314d761dd7', 'V130563555', '1997-09-09', '臺中市', '太平區', '永豐路30號', 1, '2023-09-18 01:37:03'),
+('RA001', '張信彌', '0972840742', 'donald4276@hotmail.com', '/images/uploads/RA001-2023-09-18T01-37-03.430Z.png', 1, 1, 1, 11, '139b42f33703a71377b9f0314d761dd7', 'V130563555', '1997-09-09', '臺中市', '太平區', '永豐路30號', 1, '2023-09-18 01:37:03'),
 ('RA002', '陸舟韜', '0934570939', 'pablo8236@gmail.com', '/images/uploads/RA002-2023-09-18T01-38-22.738Z.png', 1, 1, 1, 4, '64d6e178bf45ec5ca10a3a912825d9a0', 'S170185443', '2009-05-07', '臺中市', '西屯區', '福中七街8號', 1, '2023-09-18 01:38:22'),
 ('RA003', '陳玫菲', '0961441052', 'murphy9136@yahoo.com', '/images/uploads/RA003-2023-09-18T01-39-39.266Z.jpg', 1, 1, 1, 4, '7198074d3cd634ad6a292ff620ec6e69', 'L238073686', '1973-05-02', '臺中市', '西區', '忠信街21號', 1, '2023-09-18 01:39:39'),
 ('RA004', '阮嫣宛', '0912371835', 'kaylynn5375@gmail.com', '/images/uploads/RA004-2023-09-18T01-40-37.479Z.jpg', 1, 1, 1, 5, 'c05419d8a89e1cab13968f44b43eeb56', 'Q224242435', '1982-03-07', '臺中市', '西屯區', '朝富二街20號', 1, '2023-09-18 01:40:37'),
@@ -488,7 +512,7 @@ INSERT INTO `employeeinfo` (`employeeid`, `employeename`, `employeephone`, `empl
 -- --------------------------------------------------------
 
 --
--- 資料表結構 `evaluate`
+-- Table structure for table `evaluate`
 --
 
 CREATE TABLE `evaluate` (
@@ -503,12 +527,7 @@ CREATE TABLE `evaluate` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- 資料表新增資料前，先清除舊資料 `evaluate`
---
-
-TRUNCATE TABLE `evaluate`;
---
--- 傾印資料表的資料 `evaluate`
+-- Dumping data for table `evaluate`
 --
 
 INSERT INTO `evaluate` (`ornumber`, `employeeid`, `efficiency`, `clean`, `careful`, `manner`, `reply`, `state`) VALUES
@@ -522,7 +541,7 @@ INSERT INTO `evaluate` (`ornumber`, `employeeid`, `efficiency`, `clean`, `carefu
 -- --------------------------------------------------------
 
 --
--- 資料表結構 `orderlist`
+-- Table structure for table `orderlist`
 --
 
 CREATE TABLE `orderlist` (
@@ -543,12 +562,7 @@ CREATE TABLE `orderlist` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- 資料表新增資料前，先清除舊資料 `orderlist`
---
-
-TRUNCATE TABLE `orderlist`;
---
--- 傾印資料表的資料 `orderlist`
+-- Dumping data for table `orderlist`
 --
 
 INSERT INTO `orderlist` (`ornumber`, `orphone`, `oremail`, `orcity`, `orrural`, `oraddress`, `userid`, `orname`, `money`, `pay`, `ordertime`, `orderdone`, `state`, `note`) VALUES
@@ -581,12 +595,17 @@ INSERT INTO `orderlist` (`ornumber`, `orphone`, `oremail`, `orcity`, `orrural`, 
 ('23091810XU', '0926271764', 'arthur439@hotmail.com', '臺中市', '大里區', '建國西街31號', 'RA000010', '陳旭順', 8000, '1', '2023-09-18 02:19:01', '2023-09-18 10:26:32', 2, ''),
 ('23091810YJ', '0986550089', 'jerry8882@gmail.com', '臺中市', '南屯區', '文山一街16號', 'RA000006', '錢奕春', 33600, '1', '2023-09-18 02:08:36', NULL, 0, ''),
 ('23091810YZ', '0926271764', 'arthur439@hotmail.com', '臺中市', '大里區', '建國西街31號', 'RA000010', '陳旭順', 21600, '1', '2023-09-18 02:19:57', NULL, 0, ''),
-('23091810ZF', '0986550089', 'jerry8882@gmail.com', '臺中市', '南屯區', '文山一街16號', 'RA000006', '錢奕春', 32000, '1', '2023-09-18 02:09:18', NULL, 0, '');
+('23091810ZF', '0986550089', 'jerry8882@gmail.com', '臺中市', '南屯區', '文山一街16號', 'RA000006', '錢奕春', 32000, '1', '2023-09-18 02:09:18', NULL, 0, ''),
+('23091813CF', '0929720369', 'adames6343@hotmail.com', '臺中市', '烏日區', '自強街13號', 'RA000004', '鄭源瀾', 8000, '1', '2023-09-18 05:29:24', NULL, 0, ''),
+('23091813CN', '0930398746', 'barry3965@hotmail.com', '臺中市', '太平區', '園區五路6號', 'RA000005', '李傑寒', 21600, '1', '2023-09-18 05:32:02', NULL, 0, '我家有養小狗~'),
+('23091813MN', '0928958260', 'chantel6709@gmail.com', '臺中市', '大里區', '泉水街11號', 'RA000008', '蔣冉瑄', 14400, '1', '2023-09-18 05:30:51', NULL, 0, '我家的話很貴，請細心點'),
+('23091813WW', '0986550089', 'jerry8882@gmail.com', '臺中市', '南屯區', '文山一街16號', 'RA000006', '錢奕春', 21600, '1', '2023-09-18 05:33:47', NULL, 0, '家有小貓'),
+('23091813ZV', '0929720369', 'adames6343@hotmail.com', '臺中市', '烏日區', '自強街13號', 'RA000004', '鄭源瀾', 18000, '1', '2023-09-18 05:28:30', NULL, 0, '幫我掃乾淨點');
 
 -- --------------------------------------------------------
 
 --
--- 資料表結構 `pricelist`
+-- Table structure for table `pricelist`
 --
 
 CREATE TABLE `pricelist` (
@@ -595,12 +614,7 @@ CREATE TABLE `pricelist` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- 資料表新增資料前，先清除舊資料 `pricelist`
---
-
-TRUNCATE TABLE `pricelist`;
---
--- 傾印資料表的資料 `pricelist`
+-- Dumping data for table `pricelist`
 --
 
 INSERT INTO `pricelist` (`weeknumber`, `price`) VALUES
@@ -629,7 +643,7 @@ INSERT INTO `pricelist` (`weeknumber`, `price`) VALUES
 -- --------------------------------------------------------
 
 --
--- 資料表結構 `userinfo`
+-- Table structure for table `userinfo`
 --
 
 CREATE TABLE `userinfo` (
@@ -646,34 +660,29 @@ CREATE TABLE `userinfo` (
   `admin` int(1) DEFAULT '0',
   `userid` varchar(8) NOT NULL,
   `jointime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `blacklist` int(1) DEFAULT '0' NOT NULL
+  `blacklist` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- 資料表新增資料前，先清除舊資料 `userinfo`
---
-
-TRUNCATE TABLE `userinfo`;
---
--- 傾印資料表的資料 `userinfo`
+-- Dumping data for table `userinfo`
 --
 
 INSERT INTO `userinfo` (`uid`, `name`, `birthday`, `phone`, `email`, `id`, `password`, `city`, `rural`, `address`, `admin`, `userid`, `jointime`, `blacklist`) VALUES
-(1, '孫博國', '1968-06-20', '0936025896', 'johnson1848@gmail.com', 'V176777368', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '北屯區', '甲后路32號', 0, 'RA000001', '2023-09-18 01:26:24', NULL),
-(2, '沈子成', '2013-02-15', '0923230748', 'swift2607@icloud.com', 'H137147389', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '龍井區', '緯五路26號', 0, 'RA000002', '2023-09-18 01:27:28', NULL),
-(3, '劉星鋭', '1981-08-18', '0914009711', 'shelley5034@outlook.com', 'Q194326971', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '沙鹿區', '民族路6號', 0, 'RA000003', '2023-09-18 01:28:31', NULL),
-(4, '鄭源瀾', '2008-07-24', '0929720369', 'adames6343@hotmail.com', 'P232512436', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '烏日區', '自強街13號', 0, 'RA000004', '2023-09-18 01:29:06', NULL),
-(5, '李傑寒', '1975-12-20', '0930398746', 'barry3965@hotmail.com', 'Q167695858', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '太平區', '園區五路6號', 0, 'RA000005', '2023-09-18 01:29:49', NULL),
-(6, '錢奕春', '1994-12-03', '0986550089', 'jerry8882@gmail.com', 'Y169875145', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '南屯區', '文山一街16號', 0, 'RA000006', '2023-09-18 01:30:36', NULL),
-(7, '陳偲璐', '1974-06-06', '0922177963', 'lily2364@yahoo.com', 'F231251624', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '潭子區', '潭子街4號', 0, 'RA000007', '2023-09-18 01:32:07', NULL),
-(8, '蔣冉瑄', '1972-11-03', '0928958260', 'chantel6709@gmail.com', 'I291180474', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '大里區', '泉水街11號', 0, 'RA000008', '2023-09-18 01:32:48', NULL),
-(9, '王嘉堇', '1970-04-02', '0931347252', 'rodney2738@hotmail.com', 'U198074392', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '西屯區', '天水西一街24號', 0, 'RA000009', '2023-09-18 01:33:41', NULL),
-(10, '陳旭順', '2006-01-18', '0926271764', 'arthur439@hotmail.com', 'V138871509', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '大里區', '建國西街31號', 0, 'RA000010', '2023-09-18 01:34:18', NULL);
+(1, '孫博國', '1968-06-20', '0936025896', 'johnson1848@gmail.com', 'V176777368', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '北屯區', '甲后路32號', 0, 'RA000001', '2023-09-18 01:26:24', 0),
+(2, '沈子成', '2013-02-15', '0923230748', 'swift2607@icloud.com', 'H137147389', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '龍井區', '緯五路26號', 0, 'RA000002', '2023-09-18 01:27:28', 0),
+(3, '劉星鋭', '1981-08-18', '0914009711', 'shelley5034@outlook.com', 'Q194326971', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '沙鹿區', '民族路6號', 0, 'RA000003', '2023-09-18 01:28:31', 0),
+(4, '鄭源瀾', '2008-07-24', '0929720369', 'adames6343@hotmail.com', 'P232512436', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '烏日區', '自強街13號', 0, 'RA000004', '2023-09-18 01:29:06', 0),
+(5, '李傑寒', '1975-12-20', '0930398746', 'barry3965@hotmail.com', 'Q167695858', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '太平區', '園區五路6號', 0, 'RA000005', '2023-09-18 01:29:49', 0),
+(6, '錢奕春', '1994-12-03', '0986550089', 'jerry8882@gmail.com', 'Y169875145', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '南屯區', '文山一街16號', 0, 'RA000006', '2023-09-18 01:30:36', 0),
+(7, '陳偲璐', '1974-06-06', '0922177963', 'lily2364@yahoo.com', 'F231251624', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '潭子區', '潭子街4號', 0, 'RA000007', '2023-09-18 01:32:07', 0),
+(8, '蔣冉瑄', '1972-11-03', '0928958260', 'chantel6709@gmail.com', 'I291180474', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '大里區', '泉水街11號', 0, 'RA000008', '2023-09-18 01:32:48', 0),
+(9, '王嘉堇', '1970-04-02', '0931347252', 'rodney2738@hotmail.com', 'U198074392', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '西屯區', '天水西一街24號', 0, 'RA000009', '2023-09-18 01:33:41', 0),
+(10, '陳旭順', '2006-01-18', '0926271764', 'arthur439@hotmail.com', 'V138871509', '0a287bd7a986786eacde10abb90d5c3d', '臺中市', '大里區', '建國西街31號', 0, 'RA000010', '2023-09-18 01:34:18', 0);
 
 -- --------------------------------------------------------
 
 --
--- 資料表結構 `userorder`
+-- Table structure for table `userorder`
 --
 
 CREATE TABLE `userorder` (
@@ -686,12 +695,7 @@ CREATE TABLE `userorder` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- 資料表新增資料前，先清除舊資料 `userorder`
---
-
-TRUNCATE TABLE `userorder`;
---
--- 傾印資料表的資料 `userorder`
+-- Dumping data for table `userorder`
 --
 
 INSERT INTO `userorder` (`ornumber`, `employeeid`, `date`, `time`, `weeks`, `donetime`) VALUES
@@ -724,52 +728,57 @@ INSERT INTO `userorder` (`ornumber`, `employeeid`, `date`, `time`, `weeks`, `don
 ('23091810XU', 'RA004', '2023-09-20', 0, 4, 4),
 ('23091810YJ', 'RA004', '2023-09-27', 1, 21, 0),
 ('23091810YZ', 'RA005', '2023-09-27', 1, 12, 0),
-('23091810ZF', 'RA005', '2023-09-29', 1, 20, 0);
+('23091810ZF', 'RA005', '2023-09-29', 1, 20, 0),
+('23091813CF', 'RA001', '2023-10-21', 1, 4, 0),
+('23091813CN', 'RA001', '2023-09-23', 2, 12, 0),
+('23091813MN', 'RA001', '2023-11-18', 1, 8, 0),
+('23091813WW', 'RA001', '2023-09-22', 2, 12, 0),
+('23091813ZV', 'RA001', '2023-09-23', 0, 10, 0);
 
 --
--- 已傾印資料表的索引
+-- Indexes for dumped tables
 --
 
 --
--- 資料表索引 `adreessdist`
+-- Indexes for table `adreessdist`
 --
 ALTER TABLE `adreessdist`
   ADD PRIMARY KEY (`A_I`);
 
 --
--- 資料表索引 `blacklist`
+-- Indexes for table `blacklist`
 --
 ALTER TABLE `blacklist`
   ADD PRIMARY KEY (`userid`),
   ADD UNIQUE KEY `userid` (`userid`);
 
 --
--- 資料表索引 `employeeinfo`
+-- Indexes for table `employeeinfo`
 --
 ALTER TABLE `employeeinfo`
   ADD PRIMARY KEY (`employeeid`),
   ADD UNIQUE KEY `employeeemail` (`employeeemail`,`employeeidnumber`);
 
 --
--- 資料表索引 `evaluate`
+-- Indexes for table `evaluate`
 --
 ALTER TABLE `evaluate`
   ADD PRIMARY KEY (`ornumber`);
 
 --
--- 資料表索引 `orderlist`
+-- Indexes for table `orderlist`
 --
 ALTER TABLE `orderlist`
   ADD PRIMARY KEY (`ornumber`);
 
 --
--- 資料表索引 `pricelist`
+-- Indexes for table `pricelist`
 --
 ALTER TABLE `pricelist`
   ADD PRIMARY KEY (`weeknumber`);
 
 --
--- 資料表索引 `userinfo`
+-- Indexes for table `userinfo`
 --
 ALTER TABLE `userinfo`
   ADD PRIMARY KEY (`uid`),
@@ -777,23 +786,23 @@ ALTER TABLE `userinfo`
   ADD UNIQUE KEY `id` (`id`);
 
 --
--- 資料表索引 `userorder`
+-- Indexes for table `userorder`
 --
 ALTER TABLE `userorder`
   ADD PRIMARY KEY (`ornumber`);
 
 --
--- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- 使用資料表自動遞增(AUTO_INCREMENT) `adreessdist`
+-- AUTO_INCREMENT for table `adreessdist`
 --
 ALTER TABLE `adreessdist`
   MODIFY `A_I` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- 使用資料表自動遞增(AUTO_INCREMENT) `userinfo`
+-- AUTO_INCREMENT for table `userinfo`
 --
 ALTER TABLE `userinfo`
   MODIFY `uid` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
