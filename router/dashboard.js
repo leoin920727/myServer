@@ -6,7 +6,7 @@ const Encrypted = require("../middleware/Encrypted");
 
 // 員工驗證
 dashboard.get("/staffAdmin", function (req, res) {
-  if (req.session?.user[0]?.admin === 1) return res.send({ isAuthorised: true });
+  if (req.session) return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
 });
 // 會員驗證
