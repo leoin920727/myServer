@@ -646,7 +646,7 @@ CREATE TABLE `userinfo` (
   `admin` int(1) DEFAULT '0',
   `userid` varchar(8) NOT NULL,
   `jointime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `blacklist` int(1) DEFAULT NULL
+  `blacklist` int(1) DEFAULT "0" NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
