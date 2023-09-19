@@ -70,7 +70,8 @@ CREATE TABLE `attendance` (
   `employeeid` varchar(5) NOT NULL,
   `mode` int(1) NOT NULL,
   `time` int(1) NOT NULL,
-  `date` date NOT NULL
+  `date` date NOT NULL,
+  `ornumber` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -209,7 +210,7 @@ CREATE TABLE `userinfo` (
   `admin` int(1) DEFAULT 0,
   `userid` varchar(8) NOT NULL,
   `jointime` timestamp NOT NULL DEFAULT current_timestamp(),
-  `blacklist` int(1) DEFAULT 0
+  `blacklist` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
