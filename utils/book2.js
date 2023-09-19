@@ -1,4 +1,11 @@
-function sendMail(receiver, title, content) {
+// -- email:sswxx1004
+// -- password:aaqqzz1004
+// -- 蔡才芝
+
+// -- cleanservices1004@gmail.com
+// -- clean1004
+const nodemailer = require("nodemailer");
+function sendListMail({ receiver, title, content }) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -20,4 +27,4 @@ function sendMail(receiver, title, content) {
     .catch(console.error);
 }
 
-exports = { sendMail };
+module.exports = { sendListMail };
