@@ -294,7 +294,38 @@ bookRouter.post("/new-order", async (req, res) => {
     console.log(err);
   }
 });
-bookRouter.get('/send-vericode',(req, res)=>{
-  
-})
+bookRouter.post("/send-vericode", (req, res) => {
+  // req.body
+  const { email } = req.body;
+  // random code
+  let randomCode = "";
+  for (let i = 0; i < 6; i++) {
+    randomCode += Math.floor(Math.random() * 10).toString();
+  }
+  req.session[email] = randomCode;
+  params = {
+    receiver: email,
+    title: "varify your email",
+    content: `your validation code: ${randomCode}`,
+  };
+  try {
+    utils2.sendListMail(params); // code mail title -> obj
+    setTimeout(() => (req.session[email] = null));
+    return res.json({ msg: "send mail successfully!" });
+  } catch {
+    return res.status(500).json("msg", "something wrong");
+  }
+});
+
+bookRouter.post("/varify-code", (req, res) => {
+  const { code, email } = req.body;
+  if (req.session[email] === code) {
+    return res.json({ msg: "varify successfully" });
+  } else {
+    return res
+      .status(401)
+      .json({ msg: "validation code was wrong or expired" });
+  }
+});
+
 module.exports = bookRouter;
