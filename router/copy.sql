@@ -186,7 +186,7 @@ CREATE TABLE `employeeinfo` (
   `vaccine` int(1) NOT NULL,
   `goodid` int(1) NOT NULL,
   `racheck` int(1) NOT NULL,
-  `cases` int(5) NOT NULL,
+  `cases` int(5) NOT NULL DEFAULT 0,
   `employeepw` varchar(50) NOT NULL,
   `employeeidnumber` varchar(10) NOT NULL,
   `employeebirthday` date NOT NULL,
@@ -337,7 +337,7 @@ CREATE TABLE `userinfo` (
   `admin` int(1) DEFAULT 0,
   `userid` varchar(8) NOT NULL,
   `jointime` timestamp NOT NULL DEFAULT current_timestamp(),
-  `blacklist` int(1) DEFAULT NULL
+  `blacklist` int(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --

@@ -31,7 +31,6 @@ signup.post('/signup', function (req, res) {
 
 
     db.exec(sqllength, [], function (result, failed) {
-        console.log(result[0].count);
         const userid = `RA${String(result[0].count + 1).padStart(6, "0")}`;
         var sql = `INSERT INTO userinfo(name,birthday,phone,email,id,rural,address,admin,userid,password) 
         VALUES(?,?,?,?,?,?,?,?,?,?)`
