@@ -3,6 +3,7 @@ const db = require("../db");
 const dashboard = express.Router();
 const upload = require("../middleware/multer");
 const Encrypted = require("../middleware/Encrypted");
+const Decrypt = require("../middleware/Decrypt");
 
 // 員工驗證
 dashboard.get("/staffAdmin", function (req, res) {
@@ -393,6 +394,23 @@ dashboard.post("/member/memberinfo/update/", function (req, res) {
     res.send({ message: "success", data: results });
   });
 });
+
+// // 會員專區取得密碼
+// dashboard.get("/member/changepwd/", function (req, res) {
+//   const userid = req.session?.user[0]?.userid;
+//   const sql = `SELECT password FROM userinfo WHERE userid =? `;
+//   const data = [userid];
+//   db.exec(sql, data, function (results, fields1) {
+//     if (results.length > 0) {
+//       const encryptedPassword = results[0].password;
+//       const decryptedPassword = Decrypt(encryptedPassword);
+//       res.send({ password: decryptedPassword });
+//     }
+//     else {
+//       res.status(404).send({ error: "User not found" });
+//     }
+//   })
+// });
 
 // 會員專區修改密碼
 dashboard.post("/member/changepwd/update/", function (req, res) {
