@@ -5,14 +5,30 @@ const upload = require("../middleware/multer");
 const Encrypted = require("../middleware/Encrypted");
 const Decrypt = require("../middleware/Decrypt");
 
-// 員工驗證
+//新增打掃時間
+dashboard.post("/member/orderdonetime",function (req, res) {
+  const ornumber = req.body.orderNumber
+  const sql = "SELECT * FROM attendance WHERE ornumber =?"
+  const data = [ornumber];
+    db.exec(sql, data, function (results, fields) {
+      res.send({data:results, message: "success" });
+    });
+  }
+);
+
+// 管理者驗證
 dashboard.get("/staffAdmin", function (req, res) {
-  if (req.session?.user[0]?.admin === 1) return res.send({ isAuthorised: true });
+  if (req.session) return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
 });
 // 會員驗證
 dashboard.get("/memberAdmin", function (req, res) {
   if (req.session?.user[0]?.admin === 0) return res.send({ isAuthorised: true });
+  res.send({ isAuthorised: false });
+});
+// 員工驗證
+dashboard.get("/memberAdmin", function (req, res) {
+  if (req.session?.user[0]?.admin === 2) return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
 });
 
