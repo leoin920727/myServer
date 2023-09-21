@@ -497,8 +497,8 @@ dashboard.get("/employeeDone", function (req, res) {
   FROM userorder AS UO 
   INNER JOIN orderlist AS OL ON OL.ornumber = UO.ornumber
   WHERE UO.employeeid = ?;`;
-  const userid = req.session?.user[0]?.userid;
-  const data = [];
+  const employeeid = req.session?.employeeid[0]?.employeeid;
+  const data = [employeeid];
   db.exec(sql, data, function (result, fields) {
     res.send(result);
   });
