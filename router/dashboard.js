@@ -3,19 +3,31 @@ const db = require("../db");
 const dashboard = express.Router();
 const upload = require("../middleware/multer");
 const Encrypted = require("../middleware/Encrypted");
+const Decrypt = require("../middleware/Decrypt");
 
+//新增打掃時間
+dashboard.post("/member/orderdonetime",function (req, res) {
+  const ornumber = req.body.orderNumber
+  const sql = "SELECT * FROM attendance WHERE ornumber =?"
+  const data = [ornumber];
+    db.exec(sql, data, function (results, fields) {
+      res.send({data:results, message: "success" });
+    });
+  }
+);
+
+// 管理者驗證
+dashboard.get("/staffAdmin", function (req, res) {
+  if (req.session) return res.send({ isAuthorised: true });
+  res.send({ isAuthorised: false });
+});
 // 會員驗證
 dashboard.get("/memberAdmin", function (req, res) {
   if (req.session?.user[0]?.admin === 0) return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
 });
-// 管理驗證
-dashboard.get("/staffAdmin", function (req, res) {
-  if (req.session?.user[0]?.admin === 1) return res.send({ isAuthorised: true });
-  res.send({ isAuthorised: false });
-});
 // 員工驗證
-dashboard.get("/employeeAdmin", function (req, res) {
+dashboard.get("/memberAdmin", function (req, res) {
   if (req.session?.user[0]?.admin === 2) return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
 });
@@ -47,11 +59,11 @@ dashboard.get("/AdminOrder/:ornumber", function (req, res) {
 // 後台訂單資料(更新)
 dashboard.put("/AdminOrder/updata/:ornumber", function (req, res) {
   const ornumber = req.params.ornumber;
-  const { donetime, state } = req.body.data;
+  const { donetime, state ,orderdone} = req.body.data;
   const data1 = [donetime, ornumber];
-  const data2 = [state, ornumber];
+  const data2 = [orderdone,state, ornumber];
   const sql1 = `UPDATE userorder SET donetime=? WHERE ornumber=?`;
-  const sql2 = `UPDATE orderlist SET orderdone=NOW() , state=? WHERE ornumber=?`;
+  const sql2 = `UPDATE orderlist SET orderdone=? , state=? WHERE ornumber=?`;
   db.exec(sql1, data1, function (result, fields) {
     db.exec(sql2, data2, function (result, fields) {
       res.send({ data: result, message: "success" });
@@ -225,7 +237,7 @@ dashboard.delete("/dashboard/PersonalInfo/delete/:userid", function (req, res) {
   WHERE userinfo.userid = ?;
 `;
 
-  db.exec(sql, [uid], (error, results) => {
+  db.exec(sql, [userid], (error, results) => {
     if (error) {
       console.error("Error deleting data:", error);
       res.status(500).json({ error: "Error deleting data" });
@@ -399,6 +411,23 @@ dashboard.post("/member/memberinfo/update/", function (req, res) {
   });
 });
 
+// // 會員專區取得密碼
+// dashboard.get("/member/changepwd/", function (req, res) {
+//   const userid = req.session?.user[0]?.userid;
+//   const sql = `SELECT password FROM userinfo WHERE userid =? `;
+//   const data = [userid];
+//   db.exec(sql, data, function (results, fields1) {
+//     if (results.length > 0) {
+//       const encryptedPassword = results[0].password;
+//       const decryptedPassword = Decrypt(encryptedPassword);
+//       res.send({ password: decryptedPassword });
+//     }
+//     else {
+//       res.status(404).send({ error: "User not found" });
+//     }
+//   })
+// });
+
 // 會員專區修改密碼
 dashboard.post("/member/changepwd/update/", function (req, res) {
   const userid = req.session.user[0].userid;
@@ -477,5 +506,18 @@ dashboard.put("/member/updata/:orderNumber", function (req, res) {
     res.send({ message: "success", data: results1 });
   })
 })
+
+// 員工歷史訂單
+dashboard.get("/employeeDone", function (req, res) {
+  const sql = `SELECT UO.ornumber, UO.employeeid, UO.weeks, UO.donetime, OL.money, OL.state, OL.ordertime 
+  FROM userorder AS UO 
+  INNER JOIN orderlist AS OL ON OL.ornumber = UO.ornumber
+  WHERE UO.employeeid = ?;`;
+  const employeeid = req.session?.employeeid[0]?.employeeid;
+  const data = [employeeid];
+  db.exec(sql, data, function (result, fields) {
+    res.send(result);
+  });
+});
 
 module.exports = dashboard;
