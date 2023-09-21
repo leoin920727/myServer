@@ -491,4 +491,17 @@ dashboard.put("/member/updata/:orderNumber", function (req, res) {
   })
 })
 
+// 員工歷史訂單
+dashboard.get("/employeeDone", function (req, res) {
+  const sql = `SELECT UO.ornumber, UO.employeeid, UO.weeks, UO.donetime, OL.money, OL.state, OL.ordertime 
+  FROM userorder AS UO 
+  INNER JOIN orderlist AS OL ON OL.ornumber = UO.ornumber
+  WHERE UO.employeeid = ?;`;
+  const userid = req.session?.user[0]?.userid;
+  const data = [];
+  db.exec(sql, data, function (result, fields) {
+    res.send(result);
+  });
+});
+
 module.exports = dashboard;

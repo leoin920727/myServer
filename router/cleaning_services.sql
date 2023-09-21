@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-09-21 03:25:28
+-- 產生時間： 2023-09-21 10:24:26
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -72,7 +72,8 @@ CREATE TABLE `attendance` (
   `time` int(1) NOT NULL,
   `date` date NOT NULL,
   `ornumber` varchar(10) NOT NULL,
-  `donetime` timestamp NULL DEFAULT current_timestamp()
+  `donetime` timestamp NULL DEFAULT NULL,
+  `orderphoto` varchar(1500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
