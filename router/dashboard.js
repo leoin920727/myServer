@@ -43,11 +43,11 @@ dashboard.get("/AdminOrder/:ornumber", function (req, res) {
 // 後台訂單資料(更新)
 dashboard.put("/AdminOrder/updata/:ornumber", function (req, res) {
   const ornumber = req.params.ornumber;
-  const { donetime, state } = req.body.data;
+  const { donetime, state ,orderdone} = req.body.data;
   const data1 = [donetime, ornumber];
-  const data2 = [state, ornumber];
+  const data2 = [orderdone,state, ornumber];
   const sql1 = `UPDATE userorder SET donetime=? WHERE ornumber=?`;
-  const sql2 = `UPDATE orderlist SET orderdone=NOW() , state=? WHERE ornumber=?`;
+  const sql2 = `UPDATE orderlist SET orderdone=? , state=? WHERE ornumber=?`;
   db.exec(sql1, data1, function (result, fields) {
     db.exec(sql2, data2, function (result, fields) {
       res.send({ data: result, message: "success" });
@@ -221,7 +221,7 @@ dashboard.delete("/dashboard/PersonalInfo/delete/:userid", function (req, res) {
   WHERE userinfo.userid = ?;
 `;
 
-  db.exec(sql, [uid], (error, results) => {
+  db.exec(sql, [userid], (error, results) => {
     if (error) {
       console.error("Error deleting data:", error);
       res.status(500).json({ error: "Error deleting data" });
