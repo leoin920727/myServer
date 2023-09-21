@@ -1,8 +1,7 @@
 let express = require("express");
 const bookRouter = express.Router();
 const utils = require("../utils/book");
-const session = require("express-session");
-
+const utils2 = require("../utils/book2");
 // -------- DB --------
 let mysql = require("mysql");
 const { json } = require("body-parser");
@@ -210,8 +209,8 @@ bookRouter.post("/new-order", async (req, res) => {
 
     // add attendance data
     for (let i = 0; i < weeks; i++) {
-      sqlStr = `INSERT INTO attendance (employeeid, mode, time, date) VALUES (?, ?, ?, DATE_ADD(?, INTERVAL ? DAY))`;
-      await queryPromise(sqlStr, [employeeid, 0, time, date, i * 7]);
+      sqlStr = `INSERT INTO attendance (employeeid, mode, time, date, ornumber) VALUES (?, ?, ?, DATE_ADD(?, INTERVAL ? DAY),?)`;
+      await queryPromise(sqlStr, [employeeid, 0, time, date, i * 7, orderId]);
     }
 
     // update employee cases count
@@ -248,6 +247,47 @@ bookRouter.post("/new-order", async (req, res) => {
       0,
       note,
     ]);
+
+    // email
+    let mailObj = {};
+    const bookWeeks = [
+      "星期日",
+      "星期一",
+      "星期二",
+      "星期三",
+      "星期四",
+      "星期五",
+      "星期六",
+    ];
+    const bookTime = ["08:00", "13:00", "18:00"];
+    const bookDay = new Date(date).getDay();
+    sqlStr = `SELECT email FROM \`userinfo\` WHERE userid = ?;`;
+    mailObj.receiver = (await queryPromise(sqlStr, [uid]))[0].email;
+    sqlStr = `SELECT \`date\` FROM \`attendance\` WHERE ornumber = ?;`;
+    const bookDates = await queryPromise(sqlStr, [orderId]);
+    sqlStr = `SELECT \`employeename\` FROM \`employeeinfo\` WHERE employeeid = ?;`;
+    mailObj.employeeName = (
+      await queryPromise(sqlStr, [employeeid])
+    )[0].employeename;
+    mailObj.title = "浣熊管家定期清掃訂單明細";
+    let bookDateStr = "";
+    bookDates.forEach(
+      (ele) => (bookDateStr += utils.toDateString(ele.date) + ", ")
+    );
+    bookDateStr = bookDateStr.slice(0, -2);
+    mailObj.content = `
+      <h2>${name}, 您好！</h2>
+      <h3>感謝您的預約！</h3>
+      <h4>您詳細預約的明細如下：</h4>
+      <p>訂單編號：${orderId}</p>
+      <p>訂單金額：${price}</p>
+      <p>打掃專員：${mailObj.employeeName}</p>
+      <p>預約週數：${weeks} 週</p>
+      <p>預約時段：${bookWeeks[bookDay]}  ${bookTime[time]}</p>
+      <p>到府清掃日期：${bookDateStr}</p>
+      <p>訂單備註：${note}</p>
+    `;
+    utils2.sendListMail(mailObj);
     return res.json(orderId);
   } catch (err) {
     res.json(err);

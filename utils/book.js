@@ -84,15 +84,26 @@ function getRandomOrderId() {
   const year = now.getFullYear().toString().slice(-2); // 只取年份的最後兩位
   const month = String(now.getMonth() + 1).padStart(2, "0"); // 月份需要補零
   const day = String(now.getDate()).padStart(2, "0");
-  const hour = String(now.getHours()).padStart(2, "0");
 
   // 生成兩位隨機碼
-  const randomCode =
-    String.fromCharCode(65 + Math.floor(Math.random() * 26)) +
-    String.fromCharCode(65 + Math.floor(Math.random() * 26));
+  let randomCode = ``;
+  for (let i = 0; i < 4; i++) {
+    randomCode += String.fromCharCode(65 + Math.floor(Math.random() * 26));
+  }
 
   // 組合成訂單編號
-  return `${year}${month}${day}${hour}${randomCode}`;
+  return `${year}${month}${day}${randomCode}`;
+}
+
+function toDateString(date) {
+  // 獲取當前日期和時間
+  const newDate = new Date(date);
+
+  // 從當前日期和時間獲取年、月、日、時
+  const year = newDate.getFullYear().toString(); // 只取年份的最後兩位
+  const month = String(newDate.getMonth() + 1).padStart(2, "0"); // 月份需要補零
+  const day = String(newDate.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 module.exports = {
@@ -102,4 +113,5 @@ module.exports = {
   getFreeTime,
   getFreeDate,
   getRandomOrderId,
+  toDateString,
 };
