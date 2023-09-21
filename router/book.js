@@ -296,21 +296,23 @@ bookRouter.post("/new-order", async (req, res) => {
 });
 bookRouter.post("/send-vericode", (req, res) => {
   // req.body
-  const { email } = req.body;
+  const { userMail } = req.body;
   // random code
   let randomCode = "";
   for (let i = 0; i < 6; i++) {
     randomCode += Math.floor(Math.random() * 10).toString();
   }
-  req.session[email] = randomCode;
+  req.session[userMail] = randomCode;
   params = {
-    receiver: email,
-    title: "varify your email",
-    content: `your validation code: ${randomCode}`,
+    receiver: userMail,
+    title: "浣熊管家 信箱驗證碼",
+    content: `<h5>您的驗證碼: <b> ${randomCode} </b> </h5>
+      <p>請於註冊介面驗證碼欄位輸入，該驗證碼將於1分鐘後失效!</p>
+    `,
   };
   try {
     utils2.sendListMail(params); // code mail title -> obj
-    setTimeout(() => (req.session[email] = null));
+    setTimeout(() => (req.session[userMail] = null), 60000);
     return res.json({ msg: "send mail successfully!" });
   } catch {
     return res.status(500).json("msg", "something wrong");
@@ -318,13 +320,13 @@ bookRouter.post("/send-vericode", (req, res) => {
 });
 
 bookRouter.post("/varify-code", (req, res) => {
-  const { code, email } = req.body;
-  if (req.session[email] === code) {
-    return res.json({ msg: "varify successfully" });
+  const { code, userMail } = req.body;
+  if (req.session[userMail] === code) {
+    return true;
+    // res.json({ msg: "varify successfully" });
   } else {
-    return res
-      .status(401)
-      .json({ msg: "validation code was wrong or expired" });
+    return false;
+    res.status(401).json({ msg: "validation code was wrong or expired" });
   }
 });
 
