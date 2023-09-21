@@ -4,14 +4,19 @@ const dashboard = express.Router();
 const upload = require("../middleware/multer");
 const Encrypted = require("../middleware/Encrypted");
 
-// 員工驗證
-dashboard.get("/staffAdmin", function (req, res) {
-  if (req.session) return res.send({ isAuthorised: true });
-  res.send({ isAuthorised: false });
-});
 // 會員驗證
 dashboard.get("/memberAdmin", function (req, res) {
   if (req.session?.user[0]?.admin === 0) return res.send({ isAuthorised: true });
+  res.send({ isAuthorised: false });
+});
+// 管理驗證
+dashboard.get("/staffAdmin", function (req, res) {
+  if (req.session?.user[0]?.admin === 1) return res.send({ isAuthorised: true });
+  res.send({ isAuthorised: false });
+});
+// 員工驗證
+dashboard.get("/employeeAdmin", function (req, res) {
+  if (req.session?.user[0]?.admin === 2) return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
 });
 
