@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-09-15 08:47:40
+-- 產生時間： 2023-09-21 03:25:28
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -70,7 +70,9 @@ CREATE TABLE `attendance` (
   `employeeid` varchar(5) NOT NULL,
   `mode` int(1) NOT NULL,
   `time` int(1) NOT NULL,
-  `date` date NOT NULL
+  `date` date NOT NULL,
+  `ornumber` varchar(10) NOT NULL,
+  `donetime` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -209,7 +211,7 @@ CREATE TABLE `userinfo` (
   `admin` int(1) DEFAULT 0,
   `userid` varchar(8) NOT NULL,
   `jointime` timestamp NOT NULL DEFAULT current_timestamp(),
-  `blacklist` int(1) DEFAULT 0
+  `blacklist` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -298,19 +300,19 @@ ALTER TABLE `userorder`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `adreessdist`
 --
 ALTER TABLE `adreessdist`
-  MODIFY `A_I` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+  MODIFY `A_I` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `oruid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+  MODIFY `oruid` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `userinfo`
 --
 ALTER TABLE `userinfo`
-  MODIFY `uid` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+  MODIFY `uid` int(10) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

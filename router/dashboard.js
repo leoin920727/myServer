@@ -3,10 +3,11 @@ const db = require("../db");
 const dashboard = express.Router();
 const upload = require("../middleware/multer");
 const Encrypted = require("../middleware/Encrypted");
+const Decrypt = require("../middleware/Decrypt");
 
 // 員工驗證
 dashboard.get("/staffAdmin", function (req, res) {
-  if (req.session) return res.send({ isAuthorised: true });
+  if (req.session?.user[0]?.admin === 1) return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
 });
 // 會員驗證
@@ -200,10 +201,10 @@ dashboard.put("/dashboard/PersonalInfo/update/:userid", function (req, res) {
     upAdmin,
     userid,
   ];
-  
+
   db.exec(sql, data, function (results, fields) {
     if (newPW) {
-      db.exec(sql2, [Encrypted(newPW), userid], function (results, fields) {});
+      db.exec(sql2, [Encrypted(newPW), userid], function (results, fields) { });
     }
     res.send({ message: "success", data: results });
   });
@@ -334,11 +335,11 @@ dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
     upAddress,
     employeeid,
   ];
-  
+
   db.exec(sql1, data1, function (results, fields) {
     if (newPassWord) {
       const data2 = [Encrypted(newPassWord), employeeid];
-      db.exec(sql2, data2, function (results, fields) {});
+      db.exec(sql2, data2, function (results, fields) { });
     }
     res.send({ message: "success", data: results });
   });
@@ -382,43 +383,55 @@ dashboard.get("/member/memberinfo/", function (req, res) {
 });
 
 // 會員專區修改個人資料
-dashboard.put("/member/memberinfo/update/", function (req, res) {
+dashboard.post("/member/memberinfo/update/", function (req, res) {
   const userid = req.session.user[0].userid;
-  const { upPhone, upRural, upAddress } = req.body;
+  const { phone, rural, address } = req.body;
   const sql = `UPDATE userinfo
  SET phone =?, rural =?, address =? WHERE userid =? `;
 
-  const data = [upPhone, upRural, upAddress, userid];
+  const data = [phone, rural, address, userid];
   db.exec(sql, data, function (results, fields) {
     res.send({ message: "success", data: results });
   });
 });
 
-// 會員專區密碼
-dashboard.get("/member/changepwd/", function (req, res) {
-  const userid = req.session.user[0].userid;
-  const sql = `SELECT password FROM userinfo WHERE userid = ?`;
-  const data = [userid];
-
-  db.exec(sql, data, function (results, fields) {
-    res.send(results);
-  });
-});
+// // 會員專區取得密碼
+// dashboard.get("/member/changepwd/", function (req, res) {
+//   const userid = req.session?.user[0]?.userid;
+//   const sql = `SELECT password FROM userinfo WHERE userid =? `;
+//   const data = [userid];
+//   db.exec(sql, data, function (results, fields1) {
+//     if (results.length > 0) {
+//       const encryptedPassword = results[0].password;
+//       const decryptedPassword = Decrypt(encryptedPassword);
+//       res.send({ password: decryptedPassword });
+//     }
+//     else {
+//       res.status(404).send({ error: "User not found" });
+//     }
+//   })
+// });
 
 // 會員專區修改密碼
-dashboard.put("/member/changepwd/update/", function (req, res) {
+dashboard.post("/member/changepwd/update/", function (req, res) {
   const userid = req.session.user[0].userid;
   const { uppassword } = req.body;
+  console.log("Received request to update password. UserID:", userid, "New Password:", uppassword);
+
   const sql = `UPDATE userinfo
- SET 	password =? WHERE userid =? `;
-
-
+   SET password =? WHERE userid =? `;
 
   const data = [Encrypted(uppassword), userid];
+
   db.exec(sql, data, function (results, fields) {
-    res.send({ message: "success", data: results });
+    if (!results) {
+      res.send({ message: "failed", data: results });
+    } else {
+      res.send({ message: "success", data: results });
+    }
   });
 });
+
 
 // 會員訂單資料表
 dashboard.get("/member", function (req, res) {
@@ -448,14 +461,14 @@ dashboard.get("/member/:orderNumber", function (req, res) {
   AVG(careful) AS careful,
   AVG(manner) AS manner
   FROM evaluate GROUP by ?`;
-  const sql4=`SELECT reply FROM evaluate WHERE employeeid=? AND ornumber=?`
+  const sql4 = `SELECT reply FROM evaluate WHERE employeeid=? AND ornumber=?`
   const data1 = [orderNumber];
   db.exec(sql1, data1, function (results1, fields) {
     const data2 = [results1[0]?.employeeid];
     db.exec(sql2, data2, function (results2, fields) {
       db.exec(sql3, data2, function (results3, fields) {
-        db.exec(sql4, [data2,orderNumber], function (results4, fields) {
-          res.send({results1:results1,results2:results2,results3:results3,results4:results4});
+        db.exec(sql4, [data2, orderNumber], function (results4, fields) {
+          res.send({ results1: results1, results2: results2, results3: results3, results4: results4 });
         });
       });
     });
@@ -464,13 +477,13 @@ dashboard.get("/member/:orderNumber", function (req, res) {
 
 // 訂單評價更新
 dashboard.put("/member/updata/:orderNumber", function (req, res) {
-  const orderNumber =req.params.orderNumber
-  const values=JSON.parse(JSON.stringify(req.body.data))
-  const reply=req.body.comment
-  const {employeeid,state}=req.body.orderAPI
-  const [clean,efficiency,manner,careful]=[values[0].value,values[1].value,values[2].value,values[3].value]
-  const data=[clean,efficiency,manner,careful,orderNumber,employeeid,state,reply]
-  const sql =`INSERT INTO 
+  const orderNumber = req.params.orderNumber
+  const values = JSON.parse(JSON.stringify(req.body.data))
+  const reply = req.body.comment
+  const { employeeid, state } = req.body.orderAPI
+  const [clean, efficiency, manner, careful] = [values[0].value, values[1].value, values[2].value, values[3].value]
+  const data = [clean, efficiency, manner, careful, orderNumber, employeeid, state, reply]
+  const sql = `INSERT INTO 
   evaluate (clean,efficiency,manner,careful,ornumber, employeeid,state,reply) 
   VALUES (?,?,?,?,?,?,?,?)`
   db.exec(sql, data, function (results1, fields) {
