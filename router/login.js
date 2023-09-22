@@ -32,22 +32,21 @@ login.post('/login', function (req, res) {
 
   // userinfo資料表
   var sql1 = 'SELECT * FROM userinfo WHERE email=?';
-
   // employeeinfo資料表
   var sql2 = 'SELECT * FROM employeeinfo WHERE employeeemail=?';
-
+  
   //判斷會員帳號是否存在
   db.exec(sql1, email, function (results1, fields1) {
+    console.log(results1)
     if (results1 && results1[0]?.email === email) {
-      if (results1[0].blacklist == 0) {
+      if (results1[0].blacklist == 0)
         checkAccount(sql1, email, res) //跑會員表 
-      }
     } else {
-      checkAccount(sql2, email, res) //跑員工表
+       checkAccount(sql2, email, res) //跑員工表
     }
   });
 
-
+  
   // 帳號密碼確認
   function checkAccount(sql, data, res) {
     db.exec(sql, data, function (results1, fields1) {
