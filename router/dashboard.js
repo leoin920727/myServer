@@ -43,9 +43,9 @@ dashboard.get("/AdminOrder/:ornumber", function (req, res) {
 // 後台訂單資料(更新)
 dashboard.put("/AdminOrder/updata/:ornumber", function (req, res) {
   const ornumber = req.params.ornumber;
-  const { donetime, state ,orderdone} = req.body.data;
+  const { donetime, state, orderdone } = req.body.data;
   const data1 = [donetime, ornumber];
-  const data2 = [orderdone,state, ornumber];
+  const data2 = [orderdone, state, ornumber];
   const sql1 = `UPDATE userorder SET donetime=? WHERE ornumber=?`;
   const sql2 = `UPDATE orderlist SET orderdone=? , state=? WHERE ornumber=?`;
   db.exec(sql1, data1, function (result, fields) {

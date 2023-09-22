@@ -17,11 +17,11 @@ app.use(
     saveUninitialized: true, // 固定寫法
 
     cookie: {
-      // 目前設定五分鐘
+      // 目前設定10天
       secure: false,
       // 當httpOnly設定為false時會有安全問題 會使網頁可以使用JS存取cookie
       httpOnly: true,
-      maxAge: 60 * 1000 * 60,
+      maxAge: 60 * 1000 * 60 * 24 * 10,
     },
   })
 );
