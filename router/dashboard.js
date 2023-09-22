@@ -16,19 +16,19 @@ dashboard.post("/member/orderdonetime",function (req, res) {
   }
 );
 
+// 員工驗證
+dashboard.get("/employeeAdmin", function (req, res) {
+  if (req.session?.user[0]?.admin === 2) return res.send({ isAuthorised: true });
+  res.send({ isAuthorised: false });
+});
 // 管理者驗證
 dashboard.get("/staffAdmin", function (req, res) {
-  if (req.session) return res.send({ isAuthorised: true });
+  if (req.session?.user[0]?.admin === 1) return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
 });
 // 會員驗證
 dashboard.get("/memberAdmin", function (req, res) {
   if (req.session?.user[0]?.admin === 0) return res.send({ isAuthorised: true });
-  res.send({ isAuthorised: false });
-});
-// 員工驗證
-dashboard.get("/memberAdmin", function (req, res) {
-  if (req.session?.user[0]?.admin === 2) return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
 });
 
@@ -508,12 +508,12 @@ dashboard.put("/member/updata/:orderNumber", function (req, res) {
 })
 
 // 員工歷史訂單
-dashboard.get("/employeeDone", function (req, res) {
+dashboard.get("/employeelist", function (req, res) {
   const sql = `SELECT UO.ornumber, UO.employeeid, UO.weeks, UO.donetime, OL.money, OL.state, OL.ordertime 
   FROM userorder AS UO 
   INNER JOIN orderlist AS OL ON OL.ornumber = UO.ornumber
   WHERE UO.employeeid = ?;`;
-  const employeeid = req.session?.employeeid[0]?.employeeid;
+  const employeeid = req.session?.user[0]?.employeeid;
   const data = [employeeid];
   db.exec(sql, data, function (result, fields) {
     res.send(result);
