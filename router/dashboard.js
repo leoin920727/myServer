@@ -507,7 +507,7 @@ dashboard.put("/member/updata/:orderNumber", function (req, res) {
   })
 })
 
-// 員工歷史訂單
+// 員工訂單
 dashboard.get("/employeelist", function (req, res) {
   const sql = `SELECT UO.ornumber, UO.employeeid, UO.weeks, UO.donetime, OL.money, OL.state, OL.ordertime 
   FROM userorder AS UO 
