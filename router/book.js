@@ -2,6 +2,7 @@ let express = require("express");
 const bookRouter = express.Router();
 const utils = require("../utils/book");
 const utils2 = require("../utils/book2");
+const varifyCode = {};
 // -------- DB --------
 let mysql = require("mysql");
 const { json } = require("body-parser");
@@ -33,6 +34,44 @@ function queryPromise(sql, params) {
     });
   });
 }
+
+bookRouter.post("/send-vericode", (req, res) => {
+  // req.body
+  const { userMail } = req.body;
+  // random code
+  let randomCode = "";
+  for (let i = 0; i < 6; i++) {
+    randomCode += Math.floor(Math.random() * 10).toString();
+  }
+  varifyCode[userMail] = randomCode;
+  params = {
+    receiver: userMail,
+    title: "浣熊管家 信箱驗證碼",
+    content: `<h5>您的驗證碼: <b> ${randomCode} </b> </h5>
+      <p>請於註冊介面驗證碼欄位輸入，該驗證碼將於5分鐘後失效!</p>
+    `,
+  };
+  try {
+    utils2.sendListMail(params); // code mail title -> obj
+    setTimeout(() => {
+      varifyCode[userMail] = null;
+    }, 300000);
+    return res.json({ msg: "send mail successfully!" });
+  } catch {
+    return res.status(500).json("msg", "something wrong");
+  }
+});
+
+bookRouter.post("/varify-code", (req, res) => {
+  const { code, userMail } = req.body;
+  if (varifyCode[userMail] === code) {
+    return res.json({ msg: "varify successfully" });
+  } else {
+    return res
+      .status(401)
+      .json({ msg: "validation code was wrong or expired" });
+  }
+});
 
 // -------- API --------
 // login check
@@ -281,6 +320,7 @@ bookRouter.post("/new-order", async (req, res) => {
       <h4>您詳細預約的明細如下：</h4>
       <p>訂單編號：${orderId}</p>
       <p>訂單金額：${price}</p>
+      <p>付款方式：信用卡一次付清</p>
       <p>打掃專員：${mailObj.employeeName}</p>
       <p>預約週數：${weeks} 週</p>
       <p>預約時段：${bookWeeks[bookDay]}  ${bookTime[time]}</p>
@@ -294,4 +334,5 @@ bookRouter.post("/new-order", async (req, res) => {
     console.log(err);
   }
 });
+
 module.exports = bookRouter;

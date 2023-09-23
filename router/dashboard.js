@@ -5,7 +5,23 @@ const upload = require("../middleware/multer");
 const Encrypted = require("../middleware/Encrypted");
 const Decrypt = require("../middleware/Decrypt");
 
+//新增打掃時間
+dashboard.post("/member/orderdonetime",function (req, res) {
+  const ornumber = req.body.orderNumber
+  const sql = "SELECT * FROM attendance WHERE ornumber =?"
+  const data = [ornumber];
+    db.exec(sql, data, function (results, fields) {
+      res.send({data:results, message: "success" });
+    });
+  }
+);
+
 // 員工驗證
+dashboard.get("/employeeAdmin", function (req, res) {
+  if (req.session?.user[0]?.admin === 2) return res.send({ isAuthorised: true });
+  res.send({ isAuthorised: false });
+});
+// 管理者驗證
 dashboard.get("/staffAdmin", function (req, res) {
   if (req.session?.user[0]?.admin === 1) return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
@@ -490,5 +506,18 @@ dashboard.put("/member/updata/:orderNumber", function (req, res) {
     res.send({ message: "success", data: results1 });
   })
 })
+
+// 員工訂單
+dashboard.get("/employeelist", function (req, res) {
+  const sql = `SELECT UO.ornumber, UO.employeeid, UO.weeks, UO.donetime, OL.money, OL.state, OL.ordertime 
+  FROM userorder AS UO 
+  INNER JOIN orderlist AS OL ON OL.ornumber = UO.ornumber
+  WHERE UO.employeeid = ?;`;
+  const employeeid = req.session?.user[0]?.employeeid;
+  const data = [employeeid];
+  db.exec(sql, data, function (result, fields) {
+    res.send(result);
+  });
+});
 
 module.exports = dashboard;

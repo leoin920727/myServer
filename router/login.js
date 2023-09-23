@@ -37,7 +37,6 @@ login.post('/login', function (req, res) {
   
   //判斷會員帳號是否存在
   db.exec(sql1, email, function (results1, fields1) {
-    console.log(results1)
     if (results1 && results1[0]?.email === email) {
       if (results1[0].blacklist == 0)
         checkAccount(sql1, email, res) //跑會員表 
