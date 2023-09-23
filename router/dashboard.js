@@ -1,17 +1,19 @@
 const express = require("express");
 const db = require("../db");
 const dashboard = express.Router();
-const upload = require("../middleware/multer");
+// const upload = require("../middleware/multer");
+const multer = require("multer");
+const upload = multer()
 const Encrypted = require("../middleware/Encrypted");
 const Decrypt = require("../middleware/Decrypt");
 
 //新增打掃時間
 dashboard.post("/member/orderdonetime",function (req, res) {
   const ornumber = req.body.orderNumber
-  const sql = "SELECT * FROM attendance WHERE ornumber =?"
+  const sql = "SELECT * FROM attendance WHERE ornumber =? AND mode= 1"
   const data = [ornumber];
     db.exec(sql, data, function (results, fields) {
-      res.send({data:results, message: "success" });
+      res.send({ data: results, message: "success" });
     });
   }
 );
@@ -23,7 +25,7 @@ dashboard.get("/employeeAdmin", function (req, res) {
 });
 // 管理者驗證
 dashboard.get("/staffAdmin", function (req, res) {
-  if (req.session?.user[0]?.admin === 1) return res.send({ isAuthorised: true });
+  if (req.session) return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
 });
 // 會員驗證
@@ -519,5 +521,10 @@ dashboard.get("/employeelist", function (req, res) {
     res.send(result);
   });
 });
+
+//接收打掃圖片
+dashboard.put("/updata/orderdoneimages", upload.array("photo",6), function (req, res) {
+  console.log(req.files)
+ })
 
 module.exports = dashboard;
