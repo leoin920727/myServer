@@ -1,17 +1,16 @@
 const express = require("express");
 const db = require("../db");
 const dashboard = express.Router();
-// const upload = require("../middleware/multer");
-const multer = require("multer");
-const upload = multer()
+const upload = require("../middleware/multer");
+const orderImg = require("../middleware/multer_order");
 const Encrypted = require("../middleware/Encrypted");
 const Decrypt = require("../middleware/Decrypt");
 
 //新增打掃時間
 dashboard.post("/member/orderdonetime",function (req, res) {
-  const ornumber = req.body.orderNumber
-  const sql = "SELECT * FROM attendance WHERE ornumber =? AND mode= 1"
-  const data = [ornumber];
+  const ornumber = req.body.ornumber
+  const sql = `SELECT * FROM attendance WHERE ornumber = ? AND mode = 1 `
+  const data = [ornumber]; 
     db.exec(sql, data, function (results, fields) {
       res.send({ data: results, message: "success" });
     });
@@ -523,8 +522,33 @@ dashboard.get("/employeelist", function (req, res) {
 });
 
 //接收打掃圖片
-dashboard.put("/updata/orderdoneimages", upload.array("photo",6), function (req, res) {
-  console.log(req.files)
+dashboard.put("/updata/orderdoneimages", orderImg.array("photo",8), function (req, res) {
+  const { weeks,ornumber,date,donetime,employeeid}=JSON.parse(req.body.data)
+  const filePath = req.files.map((file) => { 
+    return `${file.destination.slice(27)}${file.filename}`
+  }).join(",")
+  const sql1 = `UPDATE userorder SET donetime = ? WHERE  employeeid=? AND ornumber= ?`
+  const sql2 = `UPDATE attendance 
+  SET mode =?, donetime =NOW(),orderphoto=?
+  WHERE mode = 0 AND ornumber = ? AND employeeid=?
+  ORDER BY oruid ASC 
+  LIMIT 1;`
+  const sql3 = `UPDATE orderlist SET state= ?,orderdone =NOW() WHERE ornumber=?`
+  const data1 = [donetime+1,employeeid,ornumber]
+  const data2 = [1,filePath,ornumber,employeeid]
+  const data3 = [2, ornumber]
+  db.exec(sql1, data1, function (result1, fields) {
+    db.exec(sql2, data2, function (result2, fields) {
+      console.log(weeks,donetime)
+      if (weeks !== (donetime + 1)) {
+        res.send({result1:result1,result2:result2})
+      } else { 
+        db.exec(sql3, data3, function (result3, fields) { 
+          res.send([result1,result2,result3])
+        })
+      }
+    });
+  });
  })
 
 module.exports = dashboard;
