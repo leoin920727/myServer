@@ -2,7 +2,9 @@ let express = require("express");
 const bookRouter = express.Router();
 const utils = require("../utils/book");
 const utils2 = require("../utils/book2");
-const varifyCode = {};
+const Encrypted = require("../middleware/Encrypted");
+const verifyCode = {}; // for register validation
+const resetPwVerifyCode = {}; // for forgetting password
 // -------- DB --------
 let mysql = require("mysql");
 const { json } = require("body-parser");
@@ -35,26 +37,37 @@ function queryPromise(sql, params) {
   });
 }
 
-bookRouter.post("/send-vericode", (req, res) => {
+bookRouter.post("/send-vericode", async (req, res) => {
   // req.body
   const { userMail } = req.body;
+  let sql = `SELECT COUNT(*) FROM userinfo WHERE email = ?`;
+  if (userMail) {
+    let result = await queryPromise(sql, [userMail]);
+
+    if (result[0]["COUNT(*)"]) {
+      return res.status(400).json({ msg: "Email has been used" });
+    }
+  } else {
+    return res.status(400).json({ msg: "no Email" });
+  }
+
   // random code
   let randomCode = "";
   for (let i = 0; i < 6; i++) {
     randomCode += Math.floor(Math.random() * 10).toString();
   }
-  varifyCode[userMail] = randomCode;
+  verifyCode[userMail] = randomCode;
   params = {
     receiver: userMail,
     title: "浣熊管家 信箱驗證碼",
-    content: `<h5>您的驗證碼: <b> ${randomCode} </b> </h5>
+    content: `<h5>您的驗證碼:<b> ${randomCode} </b> </h5>
       <p>請於註冊介面驗證碼欄位輸入，該驗證碼將於5分鐘後失效!</p>
     `,
   };
   try {
     utils2.sendListMail(params); // code mail title -> obj
     setTimeout(() => {
-      varifyCode[userMail] = null;
+      verifyCode[userMail] = null;
     }, 300000);
     return res.json({ msg: "send mail successfully!" });
   } catch {
@@ -62,14 +75,68 @@ bookRouter.post("/send-vericode", (req, res) => {
   }
 });
 
-bookRouter.post("/varify-code", (req, res) => {
+bookRouter.post("/verify-code", (req, res) => {
   const { code, userMail } = req.body;
-  if (varifyCode[userMail] === code) {
-    return res.json({ msg: "varify successfully" });
+  if (verifyCode[userMail] === code) {
+    return res.json({ msg: "verify successfully" });
   } else {
     return res
       .status(401)
       .json({ msg: "validation code was wrong or expired" });
+  }
+});
+
+// send verify mail for forgetting password
+bookRouter.post("/forget-password", async (req, res) => {
+  // req.body
+  const { userMail } = req.body;
+  let sql = `SELECT COUNT(*) FROM userinfo WHERE email = ?`;
+  if (userMail) {
+    let result = await queryPromise(sql, [userMail]);
+    if (!result[0]["COUNT(*)"]) {
+      return res.status(404).json({ msg: "Email not found!" });
+    }
+  } else {
+    return res.status(400).json({ msg: "no email" });
+  }
+  // random code
+  let randomCode = Math.random().toString(36).slice(-10);
+  resetPwVerifyCode[randomCode] = userMail;
+  params = {
+    receiver: userMail,
+    title: "浣熊管家 密碼重設",
+    content: `<h5>請點選連結進行重設密碼: <a href="http://localhost:3000/renewpwd?code=${randomCode}">Click Me!</a> </h5>
+      <p>該連結將於5分鐘後失效!</p>
+    `,
+  };
+  try {
+    utils2.sendListMail(params); // code mail title -> obj
+    setTimeout(() => {
+      resetPwVerifyCode[randomCode] = null;
+    }, 300000);
+    return res.json({ msg: "send mail successfully!" });
+  } catch {
+    return res.status(500).json({ msg: "something wrong" });
+  }
+});
+
+// change password
+bookRouter.post("/change-password", async (req, res) => {
+  const { validationCode, newPwd } = req.body;
+  // get the user mail from validation code
+  let userMail = resetPwVerifyCode[validationCode];
+  if (userMail) {
+    const sqlStr = `UPDATE userinfo SET password =? WHERE email =? `;
+    try {
+      await queryPromise(sqlStr, [Encrypted(newPwd), userMail]);
+      return res.json({ msg: "change successfully" });
+    } catch {
+      return res.status(500).json({ msg: "something wrang!" });
+    }
+  } else {
+    return res
+      .status(401)
+      .json({ msg: "Unauthorize or validation code expire!" });
   }
 });
 

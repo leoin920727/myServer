@@ -12,6 +12,7 @@ function sendListMail({ receiver, title, content }) {
       user: "cleanservices1004@gmail.com",
       pass: "vmya hhev ezbx zbth",
     },
+    logging: false,
   });
 
   transporter
