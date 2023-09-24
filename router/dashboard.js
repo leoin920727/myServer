@@ -481,7 +481,7 @@ dashboard.get("/member/:orderNumber", function (req, res) {
   AVG(careful) AS careful,
   AVG(manner) AS manner
   FROM evaluate GROUP by ?`;
-  const sql4 = `SELECT reply FROM evaluate WHERE employeeid=? AND ornumber=?`;
+  const sql4 = `SELECT * FROM evaluate WHERE employeeid=? AND ornumber=?`;
   const data1 = [orderNumber];
   db.exec(sql1, data1, function (results1, fields) {
     const data2 = [results1[0]?.employeeid];
