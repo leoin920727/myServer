@@ -521,6 +521,56 @@ dashboard.get("/employeelist", function (req, res) {
   });
 });
 
+// 員工專區資料
+dashboard.get("/employeelist/employeeinfo/", function (req, res) {
+  const employeeid = req.session?.user[0]?.employeeid;
+  const sql1 = `SELECT * FROM employeeinfo`;
+  const sql2 = `SELECT * FROM employeeinfo WHERE employeeid =?`;
+  const sql3 = `SELECT * FROM adreessdist`;
+  const data = [employeeid];
+  db.exec(sql1, [], function (number, fields) {
+    db.exec(sql2, data, function (results, fields) {
+      db.exec(sql3, data, function (address, fields) {
+        const len = number.length;
+        res.send({ data: results, length: len, address: address });
+      });
+    });
+  });
+});
+
+// 員工專區修改個人資料
+dashboard.post("/employeelist/employeeinfo/update/", function (req, res) {
+  const employeeid = req.session.user[0].employeeid;
+  const { employeephone, emprural, empaddress } = req.body;
+  const sql = `UPDATE employeeinfo
+ SET employeephone =?, emprural =?, empaddress =? WHERE employeeid =? `;
+
+  const data = [employeephone, emprural, empaddress, employeeid];
+  db.exec(sql, data, function (results, fields) {
+    res.send({ message: "success", data: results });
+  });
+});
+
+// 員工專區修改密碼
+dashboard.post("/employeelist/employeepwd/update/", function (req, res) {
+  const employeeid = req.session.user[0].employeeid;
+  const { uppassword } = req.body;
+  console.log("Received request to update password. EmployeeID:", employeeid, "New Password:", uppassword);
+
+  const sql = `UPDATE employeeinfo
+   SET employeepw =? WHERE employeeid =? `;
+
+  const data = [Encrypted(uppassword), employeeid];
+
+  db.exec(sql, data, function (results, fields) {
+    if (!results) {
+      res.send({ message: "failed", data: results });
+    } else {
+      res.send({ message: "success", data: results });
+    }
+  });
+});
+
 //接收打掃圖片
 dashboard.put("/updata/orderdoneimages", orderImg.array("photo",8), function (req, res) {
   const { weeks,ornumber,date,donetime,employeeid}=JSON.parse(req.body.data)
