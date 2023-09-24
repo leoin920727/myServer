@@ -7,19 +7,19 @@ const Encrypted = require("../middleware/Encrypted");
 const Decrypt = require("../middleware/Decrypt");
 
 //新增打掃時間
-dashboard.post("/member/orderdonetime",function (req, res) {
-  const ornumber = req.body.ornumber
-  const sql = `SELECT * FROM attendance WHERE ornumber = ? AND mode = 1 `
-  const data = [ornumber]; 
-    db.exec(sql, data, function (results, fields) {
-      res.send({ data: results, message: "success" });
-    });
-  }
-);
+dashboard.post("/member/orderdonetime", function (req, res) {
+  const ornumber = req.body.ornumber;
+  const sql = `SELECT * FROM attendance WHERE ornumber = ? AND mode = 1 `;
+  const data = [ornumber];
+  db.exec(sql, data, function (results, fields) {
+    res.send({ data: results, message: "success" });
+  });
+});
 
 // 員工驗證
 dashboard.get("/employeeAdmin", function (req, res) {
-  if (req.session?.user[0]?.admin === 2) return res.send({ isAuthorised: true });
+  if (req.session?.user[0]?.admin === 2)
+    return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
 });
 // 管理者驗證
@@ -29,7 +29,8 @@ dashboard.get("/staffAdmin", function (req, res) {
 });
 // 會員驗證
 dashboard.get("/memberAdmin", function (req, res) {
-  if (req.session?.user[0]?.admin === 0) return res.send({ isAuthorised: true });
+  if (req.session?.user[0]?.admin === 0)
+    return res.send({ isAuthorised: true });
   res.send({ isAuthorised: false });
 });
 
@@ -221,7 +222,7 @@ dashboard.put("/dashboard/PersonalInfo/update/:userid", function (req, res) {
 
   db.exec(sql, data, function (results, fields) {
     if (newPW) {
-      db.exec(sql2, [Encrypted(newPW), userid], function (results, fields) { });
+      db.exec(sql2, [Encrypted(newPW), userid], function (results, fields) {});
     }
     res.send({ message: "success", data: results });
   });
@@ -337,8 +338,6 @@ dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
   WHERE employeeid=?`;
   const sql2 = `UPDATE employeeinfo SET employeepw=? WHERE employeeid=?`;
 
-
-
   const data1 = [
     upName,
     upPhone,
@@ -356,7 +355,7 @@ dashboard.put("/dashboard/StaffList/update/:employeeid", function (req, res) {
   db.exec(sql1, data1, function (results, fields) {
     if (newPassWord) {
       const data2 = [Encrypted(newPassWord), employeeid];
-      db.exec(sql2, data2, function (results, fields) { });
+      db.exec(sql2, data2, function (results, fields) {});
     }
     res.send({ message: "success", data: results });
   });
@@ -433,7 +432,12 @@ dashboard.post("/member/memberinfo/update/", function (req, res) {
 dashboard.post("/member/changepwd/update/", function (req, res) {
   const userid = req.session.user[0].userid;
   const { uppassword } = req.body;
-  console.log("Received request to update password. UserID:", userid, "New Password:", uppassword);
+  console.log(
+    "Received request to update password. UserID:",
+    userid,
+    "New Password:",
+    uppassword
+  );
 
   const sql = `UPDATE userinfo
    SET password =? WHERE userid =? `;
@@ -448,7 +452,6 @@ dashboard.post("/member/changepwd/update/", function (req, res) {
     }
   });
 });
-
 
 // 會員訂單資料表
 dashboard.get("/member", function (req, res) {
@@ -466,7 +469,7 @@ dashboard.get("/member", function (req, res) {
 // 會員訂單內容
 dashboard.get("/member/:orderNumber", function (req, res) {
   // const userid = req.session.user[0].userid; //會員編號
-  const orderNumber = req.params.orderNumber //訂單編號
+  const orderNumber = req.params.orderNumber; //訂單編號
 
   const sql1 = `SELECT * FROM userorder 
   INNER JOIN orderlist ON  userorder.ornumber = orderlist.ornumber
@@ -478,14 +481,19 @@ dashboard.get("/member/:orderNumber", function (req, res) {
   AVG(careful) AS careful,
   AVG(manner) AS manner
   FROM evaluate GROUP by ?`;
-  const sql4 = `SELECT reply FROM evaluate WHERE employeeid=? AND ornumber=?`
+  const sql4 = `SELECT reply FROM evaluate WHERE employeeid=? AND ornumber=?`;
   const data1 = [orderNumber];
   db.exec(sql1, data1, function (results1, fields) {
     const data2 = [results1[0]?.employeeid];
     db.exec(sql2, data2, function (results2, fields) {
       db.exec(sql3, data2, function (results3, fields) {
         db.exec(sql4, [data2, orderNumber], function (results4, fields) {
-          res.send({ results1: results1, results2: results2, results3: results3, results4: results4 });
+          res.send({
+            results1: results1,
+            results2: results2,
+            results3: results3,
+            results4: results4,
+          });
         });
       });
     });
@@ -494,19 +502,33 @@ dashboard.get("/member/:orderNumber", function (req, res) {
 
 // 訂單評價更新
 dashboard.put("/member/updata/:orderNumber", function (req, res) {
-  const orderNumber = req.params.orderNumber
-  const values = JSON.parse(JSON.stringify(req.body.data))
-  const reply = req.body.comment
-  const { employeeid, state } = req.body.orderAPI
-  const [clean, efficiency, manner, careful] = [values[0].value, values[1].value, values[2].value, values[3].value]
-  const data = [clean, efficiency, manner, careful, orderNumber, employeeid, state, reply]
+  const orderNumber = req.params.orderNumber;
+  const values = JSON.parse(JSON.stringify(req.body.data));
+  const reply = req.body.comment;
+  const { employeeid, state } = req.body.orderAPI;
+  const [clean, efficiency, manner, careful] = [
+    values[0].value,
+    values[1].value,
+    values[2].value,
+    values[3].value,
+  ];
+  const data = [
+    clean,
+    efficiency,
+    manner,
+    careful,
+    orderNumber,
+    employeeid,
+    state,
+    reply,
+  ];
   const sql = `INSERT INTO 
   evaluate (clean,efficiency,manner,careful,ornumber, employeeid,state,reply) 
-  VALUES (?,?,?,?,?,?,?,?)`
+  VALUES (?,?,?,?,?,?,?,?)`;
   db.exec(sql, data, function (results1, fields) {
     res.send({ message: "success", data: results1 });
-  })
-})
+  });
+});
 
 // 員工訂單
 dashboard.get("/employeelist", function (req, res) {
@@ -555,7 +577,12 @@ dashboard.post("/employeelist/employeeinfo/update/", function (req, res) {
 dashboard.post("/employeelist/employeepwd/update/", function (req, res) {
   const employeeid = req.session.user[0].employeeid;
   const { uppassword } = req.body;
-  console.log("Received request to update password. EmployeeID:", employeeid, "New Password:", uppassword);
+  console.log(
+    "Received request to update password. EmployeeID:",
+    employeeid,
+    "New Password:",
+    uppassword
+  );
 
   const sql = `UPDATE employeeinfo
    SET employeepw =? WHERE employeeid =? `;
@@ -572,38 +599,50 @@ dashboard.post("/employeelist/employeepwd/update/", function (req, res) {
 });
 
 //接收打掃圖片
-dashboard.put("/updata/orderdoneimages", orderImg.array("photo",8), function (req, res) {
-  const { weeks,ornumber,date,donetime,employeeid}=JSON.parse(req.body.data)
-  const filePath = req.files.map((file) => { 
-    return `${file.destination.slice(27)}${file.filename}`
-  }).join(",")
-  const sql1 = `UPDATE userorder SET donetime = ? WHERE  employeeid=? AND ornumber= ?`
-  const sql2 = `UPDATE attendance 
+dashboard.put(
+  "/updata/orderdoneimages",
+  orderImg.array("photo", 8),
+  function (req, res) {
+    const { weeks, ornumber, date, donetime, employeeid } = JSON.parse(
+      req.body.data
+    );
+    const filePath = req.files
+      .map((file) => {
+        return `${file.destination.slice(27)}${file.filename}`;
+      })
+      .join(",");
+    const sql1 = `UPDATE userorder SET donetime = ? WHERE  employeeid=? AND ornumber= ?`;
+    const sql2 = `UPDATE attendance 
   SET mode =?, donetime =NOW(),orderphoto=?
   WHERE mode = 0 AND ornumber = ? AND employeeid=?
   ORDER BY oruid ASC 
-  LIMIT 1;`
-  const sql3 = `UPDATE orderlist SET state= 1 WHERE ornumber=?`
-  const sql4 = `UPDATE orderlist SET state= ?,orderdone =NOW() WHERE ornumber=?`
-  const data1 = [donetime+1,employeeid,ornumber]
-  const data2 = [1,filePath,ornumber,employeeid]
-  const data3 = [ornumber]
-  const data4 = [2, ornumber]
-  db.exec(sql1, data1, function (result1, fields) {
-    db.exec(sql2, data2, function (result2, fields) {
-      if (donetime === 0) {
-        db.exec(sql3, data3, function (result3, fields) {
-          res.send({result1:result1,result2:result2,result3:result3})
-        });
-      } else {
-        if (weeks === (donetime + 1)) { 
-          db.exec(sql4, data4, function (result4, fields) {
-            res.send({result1:result1,result2:result2,result4:result4})
+  LIMIT 1;`;
+    const sql3 = `UPDATE orderlist SET state= 1 WHERE ornumber=?`;
+    const sql4 = `UPDATE orderlist SET state= ?,orderdone =NOW() WHERE ornumber=?`;
+    const data1 = [donetime + 1, employeeid, ornumber];
+    const data2 = [1, filePath, ornumber, employeeid];
+    const data3 = [ornumber];
+    const data4 = [2, ornumber];
+    db.exec(sql1, data1, function (result1, fields) {
+      db.exec(sql2, data2, function (result2, fields) {
+        if (donetime === 0) {
+          db.exec(sql3, data3, function (result3, fields) {
+            res.send({ result1: result1, result2: result2, result3: result3 });
           });
-        } 
-       }
+        } else {
+          if (weeks === donetime + 1) {
+            db.exec(sql4, data4, function (result4, fields) {
+              res.send({
+                result1: result1,
+                result2: result2,
+                result4: result4,
+              });
+            });
+          }
+        }
+      });
     });
-  });
- })
+  }
+);
 
 module.exports = dashboard;
