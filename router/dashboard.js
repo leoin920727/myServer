@@ -57,20 +57,20 @@ dashboard.get("/AdminOrder/:ornumber", function (req, res) {
     res.send(result);
   });
 });
-// 後台訂單資料(更新)
-dashboard.put("/AdminOrder/updata/:ornumber", function (req, res) {
-  const ornumber = req.params.ornumber;
-  const { donetime, state ,orderdone} = req.body.data;
-  const data1 = [donetime, ornumber];
-  const data2 = [orderdone,state, ornumber];
-  const sql1 = `UPDATE userorder SET donetime=? WHERE ornumber=?`;
-  const sql2 = `UPDATE orderlist SET orderdone=? , state=? WHERE ornumber=?`;
-  db.exec(sql1, data1, function (result, fields) {
-    db.exec(sql2, data2, function (result, fields) {
-      res.send({ data: result, message: "success" });
-    });
-  });
-});
+// 後台訂單資料(更新)無用
+// dashboard.put("/AdminOrder/updata/:ornumber", function (req, res) {
+//   const ornumber = req.params.ornumber;
+//   const { donetime, state ,orderdone} = req.body.data;
+//   const data1 = [donetime, ornumber];
+//   const data2 = [orderdone,state, ornumber];
+//   const sql1 = `UPDATE userorder SET donetime=? WHERE ornumber=?`;
+//   const sql2 = `UPDATE orderlist SET orderdone=? , state=? WHERE ornumber=?`;
+//   db.exec(sql1, data1, function (result, fields) {
+//     db.exec(sql2, data2, function (result, fields) {
+//       res.send({ data: result, message: "success" });
+//     });
+//   });
+// });
 
 // 會員資料表
 dashboard.get("/dashboard/memberInfo", function (req, res) {
@@ -533,20 +533,25 @@ dashboard.put("/updata/orderdoneimages", orderImg.array("photo",8), function (re
   WHERE mode = 0 AND ornumber = ? AND employeeid=?
   ORDER BY oruid ASC 
   LIMIT 1;`
-  const sql3 = `UPDATE orderlist SET state= ?,orderdone =NOW() WHERE ornumber=?`
+  const sql3 = `UPDATE orderlist SET state= 1 WHERE ornumber=?`
+  const sql4 = `UPDATE orderlist SET state= ?,orderdone =NOW() WHERE ornumber=?`
   const data1 = [donetime+1,employeeid,ornumber]
   const data2 = [1,filePath,ornumber,employeeid]
-  const data3 = [2, ornumber]
+  const data3 = [ornumber]
+  const data4 = [2, ornumber]
   db.exec(sql1, data1, function (result1, fields) {
     db.exec(sql2, data2, function (result2, fields) {
-      console.log(weeks,donetime)
-      if (weeks !== (donetime + 1)) {
-        res.send({result1:result1,result2:result2})
-      } else { 
-        db.exec(sql3, data3, function (result3, fields) { 
-          res.send([result1,result2,result3])
-        })
-      }
+      if (donetime === 0) {
+        db.exec(sql3, data3, function (result3, fields) {
+          res.send({result1:result1,result2:result2,result3:result3})
+        });
+      } else {
+        if (weeks === (donetime + 1)) { 
+          db.exec(sql4, data4, function (result4, fields) {
+            res.send({result1:result1,result2:result2,result4:result4})
+          });
+        } 
+       }
     });
   });
  })

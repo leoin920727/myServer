@@ -110,7 +110,7 @@ CREATE TABLE `employeeinfo` (
   `empcity` varchar(10) NOT NULL DEFAULT '臺中市',
   `emprural` varchar(10) NOT NULL,
   `empaddress` varchar(50) NOT NULL,
-  `admin` int(1) NOT NULL DEFAULT 1,
+  `admin` int(1) NOT NULL DEFAULT 2,
   `employeetime` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
