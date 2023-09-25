@@ -192,4 +192,29 @@ total.get("/modal", (req, res) => {
 });
 
 
+total.get("/stars", (req, res) => {
+  db.exec(
+    `SELECT e.employeeid,
+    e.total_stars,
+    v.ornumber
+FROM (
+ SELECT p.employeeid,
+        ROUND((AVG(v.efficiency) + AVG(v.clean) + AVG(v.careful) + AVG(v.manner))/4, 1) AS total_stars
+ FROM employeeinfo AS p
+ LEFT JOIN evaluate AS v ON p.employeeid = v.employeeid
+ GROUP BY p.employeeid
+) AS e
+INNER JOIN evaluate AS v ON e.employeeid = v.employeeid;
+  `,
+    (err, data) => {
+      if (err) {
+        console.log("sql有錯");
+        console.log(err);
+      }
+      return res.json(data);
+    }
+  );
+});
+
+
 module.exports = total;
