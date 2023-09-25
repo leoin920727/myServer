@@ -9,10 +9,13 @@ const Decrypt = require("../middleware/Decrypt");
 //新增打掃時間
 dashboard.post("/member/orderdonetime", function (req, res) {
   const ornumber = req.body.ornumber;
-  const sql = `SELECT * FROM attendance WHERE ornumber = ? AND mode = 1 `;
-  const data = [ornumber];
-  db.exec(sql, data, function (results, fields) {
-    res.send({ data: results, message: "success" });
+  const sql1 = `SELECT * FROM attendance WHERE ornumber = ? AND mode = 1 `;
+  const sql2 = `SELECT * FROM attendance WHERE ornumber = ?`;
+  const data1 = [ornumber];
+  db.exec(sql1, data1, function (results1, fields) {
+    db.exec(sql2, data1, function (results2, fields) {
+      res.send({ time: results2, data: results1, message: "success" });
+    });
   });
 });
 
